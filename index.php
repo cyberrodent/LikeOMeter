@@ -140,7 +140,7 @@ if ($token) {
       <div>
         <h1>Welcome, <strong><?php echo idx($basic, 'name'); ?></strong></h1>
         <p class="tagline">
-          This is your app
+          This is your facebook app
           <a href="<?php echo(idx($app_info, 'link'));?>"><?php echo(idx($app_info, 'name')); ?></a>
         </p>
         <div id="share-app">
