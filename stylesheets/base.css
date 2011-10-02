@@ -275,7 +275,7 @@ header .tagline {
 #samples ul {
   background: url("../images/picture-sketch.png") 4px 8px;
   background-repeat: repeat-y;
-  height: 161px;
+  /* height: 161px; */
   overflow: hidden;
   padding-top: 8px;
 }

@@ -70,8 +70,11 @@ class FBUtils {
     // permissions your app needs.
     // See https://developers.facebook.com/docs/reference/api/permissions/
     // for a full list of permissions
-    $scope = 'user_likes,user_photos,user_photo_video_tags';
-    session_start();
+	$scope = 'user_likes,user_photos,user_status,'.
+		'read_stream,offline_access,'.
+		'friends_likes,friends_status,friends_about_me,'.
+		'friends_religion_politics';
+	session_start();
     $code = $_REQUEST["code"];
     // If we don't have a code returned from Facebook, the first step is to get
     // that code

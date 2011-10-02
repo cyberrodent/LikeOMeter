@@ -9,7 +9,7 @@ if ($_SERVER['HTTP_X_FORWARDED_PROTO'] == "http" && $_SERVER['REMOTE_ADDR'] != '
 /**
  * This sample app is provided to kickstart your experience using Facebook's
  * resources for developers.  This sample app provides examples of several
- * key concepts, including authentication, the Graph API, and FQL (Facebook
+ * key concepts, including authentication, the Graph API, and ,read_stream,offline_accessFQL (Facebook
  * Query Language). Please visit the docs at 'developers.facebook.com/docs'
  * to learn more about the resources available to you
  */
@@ -46,26 +46,47 @@ if ($token) {
   // This fetches some things that you like . 'limit=*" only returns * values.
   // To see the format of the data you are retrieving, use the "Graph API
   // Explorer" which is at https://developers.facebook.com/tools/explorer/
-  $likes = array_values(
-    idx(FBUtils::fetchFromFBGraph("me/likes?access_token=$token&limit=4"), 'data')
-  );
+  //$likes = array_values(
+  //  idx(FBUtils::fetchFromFBGraph("me/likes?access_token=$token&limit=14"), 'data')
+  //);
 
   // This fetches 4 of your friends.
   $friends = array_values(
-    idx(FBUtils::fetchFromFBGraph("me/friends?access_token=$token&limit=4"), 'data')
+		  idx(FBUtils::fetchFromFBGraph("me/friends?access_token=$token&limit=4"), 'data')
   );
 
+
+
+
+
   // And this returns 16 of your photos.
-  $photos = array_values(
-    idx($raw = FBUtils::fetchFromFBGraph("me/photos?access_token=$token&limit=16"), 'data')
-  );
+  //$photos = array_values(
+  //  idx($raw = FBUtils::fetchFromFBGraph("me/photos?access_token=$token&limit=16"), 'data')
+  //);
+  $photos = array();
 
   // Here is an example of a FQL call that fetches all of your friends that are
   // using this app
+  /*
   $app_using_friends = FBUtils::fql(
     "SELECT uid, name, is_app_user, pic_square FROM user WHERE uid in (SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 1",
     $token
   );
+*/
+
+
+$statuses = array();
+foreach($friends as $friend) {
+	$status = idx(FBUtils::fetchFromFBGraph("{$friend['id']}/feed?access_token=$token"), 'data');
+	print "<p><a target=\"_blank\" href=\"https://graph.facebook.com/{$friend['id']}/feed?access_token=$token\">peek</a></p>";
+	$statuses[ $friend['id'] ] = $status; 
+}
+// print_r($statuses);
+
+	// get all friend's status with fql
+	// SELECT uid, status_id, message FROM status WHERE uid IN 
+	// $friends_status = FBUtils::fql( "SELECT uid, name, pic_square FROM user WHERE uid = me() OR uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) ", $token);
+
 
   // This formats our home URL so that we can pass it as a web request
   $encoded_home = urlencode(AppInfo::getHome());
@@ -160,13 +181,11 @@ if ($token) {
         </div>
       </div>
     </header>
-    <section id="get-started">
-      <p>Welcome to your Facebook app, running on <span>heroku</span>!</p>
-      <a href="http://devcenter.heroku.com/articles/facebook" class="button">Learn How to Edit This App</a>
+<!--    <section id="get-started">
     </section>
-
+-->
     <section id="samples" class="clearfix">
-      <h1>Examples of the Facebook Graph API</h1>
+      <h1>What's up with your friends? VIA Graph</h1>
 
       <div class="list">
         <h3>A few of your friends</h3>
@@ -189,6 +208,29 @@ if ($token) {
         </ul>
       </div>
 
+	<div class="xlist xinline">
+<?php
+foreach ($statuses as $key => $status) {
+	print "<p><span style='color:black;'>$key</span>";
+	foreach ($status as $k => $v) {
+	array_key_exists('message',$v) and print $v['message'];
+	if (array_key_exists('likes',$v)) {
+		print "<hr>";
+		foreach ($v['likes'] as $kl => $vl) { 
+			print "+1  " . $vl[0]['name'];
+		}
+
+		print "<hr>";
+	}
+
+	
+	}
+	print "</p>";
+die();
+	}
+?>
+	</div>
+<!-- 
       <div class="list inline">
         <h3>Recent photos</h3>
         <ul class="photos">
@@ -255,35 +297,17 @@ if ($token) {
           ?>
         </ul>
       </div>
+-->
+
     </section>
 
     <section id="guides" class="clearfix">
-      <h1>Learn More About Heroku &amp; Facebook Apps</h1>
-      <ul>
-        <li>
-          <a href="http://www.heroku.com/" class="icon heroku">Heroku</a>
-          <p>Learn more about <a href="http://www.heroku.com/">Heroku</a>, or read developer docs in the Heroku <a href="http://devcenter.heroku.com/">Dev Center</a>.</p>
-        </li>
-        <li>
-          <a href="http://developers.facebook.com/docs/guides/web/" class="icon websites">Websites</a>
-          <p>
-            Drive growth and engagement on your site with
-            Facebook Login and Social Plugins.
-          </p>
-        </li>
-        <li>
-          <a href="http://developers.facebook.com/docs/guides/mobile/" class="icon mobile-apps">Mobile Apps</a>
-          <p>
-            Integrate with our core experience by building apps
-            that operate within Facebook.
-          </p>
-        </li>
-        <li>
-          <a href="http://developers.facebook.com/docs/guides/canvas/" class="icon apps-on-facebook">Apps on Facebook</a>
-          <p>Let users find and connect to their friends in mobile apps and games.</p>
-        </li>
-      </ul>
+      <h1>What shall I do? I wish I knew.</h1>
+
     </section>
+
+
+
   </body>
   </body>
 </html>
