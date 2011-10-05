@@ -52,11 +52,8 @@ if ($token) {
 
   // This fetches 4 of your friends.
   $friends = array_values(
-		  idx(FBUtils::fetchFromFBGraph("me/friends?access_token=$token&limit=4"), 'data')
+		  idx(FBUtils::fetchFromFBGraph("me/friends?access_token=$token&limit=24"), 'data')
   );
-
-
-
 
 
   // And this returns 16 of your photos.
@@ -74,6 +71,12 @@ if ($token) {
   );
 */
 
+$likes = array();
+foreach($friends as $friend) {
+	$like = idx(FBUtils::fetchFromFBGraph("{$friend['id']}/likes?access_token=$token"), 'data');
+	print "<p><a target=\"_blank\" href=\"https://graph.facebook.com/{$friend['id']}/likes?access_token=$token\">peek</a></p>";
+	$likes[ $friend['id'] ] = $like; 
+}
 
 $statuses = array();
 foreach($friends as $friend) {
@@ -226,7 +229,7 @@ foreach ($statuses as $key => $status) {
 	
 	}
 	print "</p>";
-die();
+
 	}
 ?>
 	</div>
