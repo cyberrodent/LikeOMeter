@@ -8,7 +8,9 @@
 class Urls {
 
 	static  $urls = array(
-			'dex2' => array('Homepage','Hello'),
+		'/' => array('Homepage','Hello'),
+		'/index' => array('Homepage','Hello'),
+
 			'/resource' => array('Homepage','Show'),
 	);
 }
