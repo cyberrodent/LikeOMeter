@@ -4,6 +4,6 @@
  */
 ?>
 
-This is the new homepage
+This is the new homepage. Welcome <?php echo $data->name ?>
 
 

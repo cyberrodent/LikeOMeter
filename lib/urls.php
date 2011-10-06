@@ -8,9 +8,8 @@
 class Urls {
 
 	static  $urls = array(
-		'/' => array('Homepage','Hello'),
+		'/' => array('Homepage_Controller','Hello'),
 		'/index' => array('Homepage','Hello'),
-
-			'/resource' => array('Homepage','Show'),
+		'/resource' => array('Homepage','Show'),
 	);
 }
