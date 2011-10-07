@@ -16,7 +16,11 @@ require_once('lib/FBUtils.php');
 require_once('lib/AppInfo.php');
 // This provides access to helper functions defined in 'utils.php'
 require_once('lib/utils.php');
-require('lib/urls.php');
-require_once('lib/FrontController.php');
+
+require "lib/urls.php";
+require "lib/FrontController.php";
+require "lib/Model.php";
+require "lib/Friend_Model.php";
+
 
 FrontController::dispatch();

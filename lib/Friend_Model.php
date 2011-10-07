@@ -1,0 +1,5 @@
+<?php
+/**
+ * Friend_Model
+ */
+

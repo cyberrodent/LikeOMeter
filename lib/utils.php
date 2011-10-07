@@ -55,4 +55,12 @@ function assertNumeric($value) {
     return null;
   }
 }
-
+function dumper($var) {
+	print "<pre>";
+	print_r($var);
+	print "</pre>";
+}
+function splat($var) {
+	dumper($var);
+	die();
+}

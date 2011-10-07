@@ -9,7 +9,7 @@ class Urls {
 
 	static  $urls = array(
 		'/' => array('Homepage_Controller','Hello'),
-		'/index' => array('Homepage','Hello'),
-		'/resource' => array('Homepage','Show'),
+		'/index' => array('Homepage_Controller','Hello'),
+		'/resource' => array('Homepage_Controller','Show'),
 	);
 }
