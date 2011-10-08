@@ -8,7 +8,7 @@
 
 class DataPoint {
 	private $__name__ = "DataPoint";
-	private $data_dir = "/private/tmp/";
+	private $data_dir = "/Users/jkolber/Projects/fb_data/";
 	private $data_file_prefix = "jkdp_";
 	public $data = null;
 
