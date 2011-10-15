@@ -70,7 +70,7 @@ class FBUtils {
     // permissions your app needs.
     // See https://developers.facebook.com/docs/reference/api/permissions/
     // for a full list of permissions
-	$scope = 'user_likes,user_photos,user_status,'.
+	$scope = 'user_likes,user_photos,user_status,user_about_me,'.
 		'read_stream,offline_access,'.
 		'friends_likes,friends_status,friends_about_me,'.
 		'friends_religion_politics';
