@@ -5,11 +5,19 @@ require_once 'lib/Controller.php';
  */
 class FrontController {
 
+
+	public static $mode = 'offline'; // online or offline
+
 	public static function dispatch($options = null) {
 
 		$request = new StdClass();
 		// this is a facebook app so lets make the token part of the request
-		$request->token = FBUtils::login(AppInfo::getHome());
+
+		if (self::$mode == 'online') { 
+			$request->token = FBUtils::login(AppInfo::getHome());
+		} else { 
+			$request->token = 'mock token';
+		}
 
 		$response = new StdClass();
 		$response->template = 'default';
