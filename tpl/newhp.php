@@ -42,85 +42,6 @@ if (array_key_exists('me', $data->likes)) {
 <?php
 // TODO: Move me where template function go
 //
-/**
- * renderPropertyForFriends 
- *
- * @DEPRECATED 
- *
- * @param mixed $data 
- * @param mixed $property 
- * @access public
- * @return void
- */
-function renderPropertyForFriends($data, $property) {
-	$out = "";
-	// how many of each to show?
-	$display_limit = 3; 
-	$properties = array_keys((array)$data);
-	print implode(", ",$properties) . "<br />";
-	print $property;
-	$data_property = $data->$property;
-	if (!$data_property) {
-			return;
-	}
-	if (!isset($data->friends)) {
-		return "no friends";
-	}
-
-	foreach ($data->friends as $friend) {
-		if (!isset($data_property[$friend->id][$friend->id])){
-			print_r($data_property);
-			throw new Exception("Something unexpected. oh no");
-		}
-		$count_properties = count($data_property[$friend->id][$friend->id]) ; 
-		$out .= "<div>";
-		$out .= $friend->name; 
-		$out .= $friend->id . " --"; 
-		$out .= "<strong>$property " .
-				$count_properties .
-				" things.</strong>";
-		$out .= "</div>";
-		if ($count_properties == 0) { continue; }
-			// just show 3 things the friend likes
-			//
-			// dumper($data_property[$friend->id]);
-		$out .= "<ul>";
-		$i = 1;
-		foreach($data_property[$friend->id][$friend->id]  as $_property) {
-			$out .="<li>";
-//			 $out .= "<pre>";
-//			 $out .= print_r($_property,1);
-//			 $out .= "</pre>";
-			if (array_key_exists('category',(array)$_property)) { 
-				$out .= $_property->category . ": ";
-			}
-			if (array_key_exists('name',(array)$_property)) { 
-				$out .= $_property->name . ": ";
-			}
-			// this is a special case to handle the posts 
-			// which have a slightly different structure
-			if (array_key_exists('story',(array)$_property)) { 
-				$out .= $_property->story. ": ";
-			}
-
-			$out .= " </li>";
-			if (++$i > $display_limit) {
-				break 1;
-			}
-		}
-		$out .="</ul>";
-	}
-	return $out;
-}
-
-
-
-# print renderPropertyForFriends($data, 'musics');
-# print renderPropertyForFriends($data, 'likes');
-# print renderPropertyForFriends($data, 'books');
-# print renderPropertyForFriends($data, 'posts');
-
-
 
 function renderFriend($id, $attr, $tag) {
 	?><div class="<?php e($tag) ?>">
@@ -129,8 +50,6 @@ function renderFriend($id, $attr, $tag) {
 		</div><?php	
 
 }
-
-
 
 function renderSome($data, $limit = 25) {
 	$i = 1;
