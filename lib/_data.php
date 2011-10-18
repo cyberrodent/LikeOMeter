@@ -8,7 +8,7 @@
 
 class DataPoint {
 	private $__name__ = "DataPoint";
-	private $data_dir = "/Users/jkolber/Projects/fb_data/";
+	private $data_dir = "./data_cache/";
 	private $data_file_prefix = "jkdp_";
 	private $ttl_file_suffix = "_ttl";
 	/**
@@ -31,6 +31,7 @@ class DataPoint {
 	function __construct($name = "DataPointObject") { 
 		// make an empty DataPoint ojecct
 		$this->__name__ = $name;
+		@ mkdir($this->data_dir);
 	}
 	function makeKey($token, $uri) {
 		// TODO : make sure that "me" isn;t in the uri
