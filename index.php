@@ -2,6 +2,7 @@
 /**
  * main file for this webapp 
  */
+
 // Enforce https on production
 if ((array_key_exists('HTTP_X_FORWARDED_PROTO', $_SERVER) 
 	and $_SERVER['HTTP_X_FORWARDED_PROTO'] == "http") 
@@ -9,7 +10,6 @@ if ((array_key_exists('HTTP_X_FORWARDED_PROTO', $_SERVER)
   header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
   exit();
 }
-
 
 // Provides access to Facebook specific utilities defined in 'FBUtils.php'
 require_once('lib/FBUtils.php');
@@ -19,10 +19,13 @@ require_once('lib/AppInfo.php');
 // This provides access to helper functions defined in 'utils.php'
 require_once('lib/utils.php');
 
+// This is our little framework
 require "lib/urls.php";
 require "lib/FrontController.php";
 require "lib/Model.php";
 require "lib/Friend_Model.php";
 
+// 
+FrontController::$mode = 'online';
 
 FrontController::dispatch();
