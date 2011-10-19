@@ -26,8 +26,6 @@ class Homepage_Controller extends Controller {
 			$set[$id] = $_atr->data;
 		} else { 
 			$set[$id] = $_atr;
-			//echo "unknown ";
-			//splat($_atr);
 		}
 		return $set;
 	}
@@ -39,10 +37,11 @@ class Homepage_Controller extends Controller {
 		$res->template = "flikes";
 		// this is the list of friends
 		$friends = Modelize($req->token, "me/friends",null);
+
 		if (isset($friends->data) and count($friends->data)) { 
 			foreach ($friends->data as $friend) {
 				if (array_key_exists('id', (array)$friend)) { 
-					$likes[$friend->id]      = $this->getAtr("likes", $friend->id, $req->token);
+					$likes[$friend->id] = $this->getAtr("likes", $friend->id, $req->token);
 				}
 			}
 		}

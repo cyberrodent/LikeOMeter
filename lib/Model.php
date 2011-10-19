@@ -5,7 +5,7 @@
  */
 
 require "lib/_data.php";
-
+require "lib/_mongo_data.php";
 
 	function Modelize($token, $id, $meta_data = false) {
 
@@ -18,7 +18,8 @@ require "lib/_data.php";
 		}
 
 		// cache doesn't know about metadata option
-		$dp = new DataPoint();
+		$dp = new MongoDataPoint();
+
 		if ($data = $dp->getFromCache($token, $id)) {
 			return $data;
 		}
