@@ -6,7 +6,7 @@ require_once 'lib/Controller.php';
 class FrontController {
 
 
-	public static $mode = 'offline'; // online or offline
+	public static $mode = 'online'; // online or offline
 
 	public static function dispatch($options = null) {
 
