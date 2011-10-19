@@ -14,8 +14,10 @@ class MongoDataPoint extends DataPoint implements _data_point {
 		$user = "operator";
 		$pass = "canyouhelpme";
 		$db = "fbdata";
+
+		$dsn = getenv("MONGOLAB_URI");
 		try { 
-			$this->m = new Mongo("mongodb://$user:$pass@dbh63.mongolab.com:27637/$db");
+			$this->m = new Mongo($dsn);
 		} catch (Exception $e) {
 			print $e->getMessage();
 			die("cant connect to mongodb");
