@@ -55,6 +55,7 @@ function renderSome($data, $limit = 25) {
 	$i = 1;
 
 	foreach ($data as $d) { 
+			$d = (object)$d;
 		?><li><?php 
 
 		if (array_key_exists('name',(array)$d)) { 

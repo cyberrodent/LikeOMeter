@@ -28,10 +28,10 @@ class MongoDataPoint extends DataPoint implements _data_point {
 		$key = $this->makeKey($token, $uri);
 		$collection = "f";
 		$data = $this->db->$collection->findOne(  array("key" => $key) );
-		dumper($key);
+		error_log("fetched $key from MongoDB");	
 
-
-		return null;	
+		return (object)$data;
+	
 
 	}
 	function storeToCache($token, $uri, $data) {
