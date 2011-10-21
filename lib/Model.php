@@ -25,9 +25,12 @@ require "lib/_mongo_data.php";
 		}
 
 		$data = FBUtils::fetchFromFBGraph($id.$qs, $token);
+
 		if ($data) { 
 			$dp->storeToCache($token, $id, $data);
-		}   // else log an error? 
+			return (object)$data;
+		} else {
+			throw new Exception("no data returned from graph");
+		}
 
-		return (object)$data;
 	}
