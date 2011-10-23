@@ -26,18 +26,15 @@ class Model {
 			$qs = "?access_token=$token";
 		}
 
-		// cache doesn't know about metadata option
-
 		$dp = new MongoDataPoint();
 		$data = $dp->getFromCache($token, $id);
 		if (!empty($data)) { 
-
 			if (is_array($data) and self::$return_object) {
 				return self::_to_object($data);
 			}
-
 			return $data;
 		}
+
 		error_log("Fetching $id from Facebook");
 		$data = FBUtils::fetchFromFBGraph($id.$qs, $token);
 		error_log("fetched from fb $data");
@@ -51,7 +48,7 @@ class Model {
 
 			return $data;
 		} else {
-			throw new Exception("no data returned from graph");
+			throw new Exception("no data returned from graph for $id$qs");
 		}
 	}
 

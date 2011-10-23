@@ -16,7 +16,13 @@ function compareLikeCounts(stdClass $like1, stdClass $like2) {
 	return ($like1->count > $like2->count) ? 1 : -1;
 }
 
-
+function keyById($array) {
+	$ret = array();
+	foreach ($array as $k => $v) {
+		$ret[$v['id']] = $v; 
+	}	
+	return $ret;
+}
 
 
 
@@ -27,6 +33,9 @@ function compareLikeCounts(stdClass $like1, stdClass $like2) {
  * @author Jeff Kolber 
  */
 class Homepage_Controller extends Controller {
+
+
+	
 
 	/**
 	 * getAtr 
@@ -58,6 +67,9 @@ class Homepage_Controller extends Controller {
 		// this is the list of friends
 		$friends = Model::ize($req->token, "me/friends",null);
 		$friends = (array)$friends;
+
+		$friend_idx = keyById($friends['data']);
+
 		if (array_key_exists('data', $friends) and count($friends['data'])) {
 			foreach ($friends['data'] as $friend) {
 				if (array_key_exists('id', $friend)) { 
@@ -79,18 +91,15 @@ class Homepage_Controller extends Controller {
 
 
 		foreach ($top as $pos => $thing) {
-
 			$graph = $this->getAtr(false , $thing->id, $req->token);
-			echo "graph";
-			splat($graph);	
-
+			$thing->graph = $graph[ $thing->id];
 		}
 
 		return (Object)array(
 			'name' => 'Jeff',
 			'token' => $req->token,
-			'friends' => isset($friends->data) ? $friends->data : null,
-			'liked' => $liked,
+			'friend_idx' => $friend_idx,	
+			'top' => $top,
 		);
 
 	}
@@ -203,29 +212,59 @@ class Homepage_Controller extends Controller {
 		// $head->id = 0; // the id of the thing liked
 		// $head->likers = array(); // users ids who like this
 		// $head->count = 0; // count of this->likers
-		
+
+
+
 		// the stuff we want is an enigma wrapped in an array wrapped in a twinkie
 		//  and this is how we have to unwrap it.
+/*
+Array (
+    [106412] => Array
+        (
+            [106412] => Array
+                (
+                    [_id] => MongoId Object
+                        (
+                            [$id] => 4ea42a5b584baffb37000002
+                        )
+
+                    [data] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [name] => The State
+                                    [category] => Tv show
+                                    [id] => 10042595019
+                                    [created_time] => 2011-07-27T22:25:11+0000
+                                )
+
+                            [1] => Array
+                                (
+                                    [name] => Dog Bless You
+                                    [category] => Non-profit organization
+                                    [id] => 114790481886534
+                                    [created_time] => 2011-06-03T18:00:38+0000
+                                )
+etc...
+*/
 		foreach ($all_likes as $uid => $likes) { 
 			foreach ($likes as $aLike) {	
-
-				foreach ($aLike as $like) {
-					if (!array_key_exists($like['id'], $liked)) {
+				foreach ($aLike['data'] as $like) {
+					$like = (object)$like;
+					if (!array_key_exists($like->id, $liked)) {
 						$myO = new stdClass();
-						$myO->id = $like['id'];
-						$myO->category = $like['category'];
-						$myO->name = $like['name'];
+						$myO->id = $like->id;
+						$myO->category = $like->category;
+						$myO->name = $like->name;
 						if (!property_exists($myO, 'likers')) {
 							$myO->likers = array();
 						}
-						$liked[$like['id']] = $myO;
+						$liked[$like->id] = $myO;
 					} 
-					$myO = $liked[$like['id']];
+					$myO = $liked[$like->id];
 					array_push($myO->likers, $uid);
 					$myO->count = count($myO->likers);
-					$liked[$like['id']] = $myO;
-
-
+					$liked[$like->id] = $myO;
 
 					/* on hold for now: keep track of the most pop
 					 *
