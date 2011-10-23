@@ -45,6 +45,7 @@ class FrontController {
 			@ print "uri: $uri<br />"; 
 			@ print "handler: $handler_name <br />";
 			@ print "method: $method <br />";
+			// print debug_backtrace();
 			die();
 		}
 	}

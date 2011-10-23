@@ -39,13 +39,14 @@ class Homepage_Controller extends Controller {
 	private function getAtr($atr, $id, $token)
 	{
 		$set = array();
-		$_atr = Modelize($token, $id . ($atr ? "/$atr" : '') , null);
+		$_atr = Model::ize($token, $id . ($atr ? "/$atr" : '') , null);
 
 		if (isset($_atr->data)) { 
 			$set[$id] = $_atr->data;
 		} else { 
 			$set[$id] = $_atr;
 		}
+
 		return $set;
 	}
 
@@ -55,21 +56,36 @@ class Homepage_Controller extends Controller {
 
 		$res->template = "flikes";
 		// this is the list of friends
-		$friends = Modelize($req->token, "me/friends",null);
-
-		if (isset($friends->data) and count($friends->data)) { 
-			foreach ($friends->data as $friend) {
-				if (array_key_exists('id', (array)$friend)) { 
-					$likes[$friend->id] = $this->getAtr("likes", $friend->id, $req->token);
+		$friends = Model::ize($req->token, "me/friends",null);
+		$friends = (array)$friends;
+		if (array_key_exists('data', $friends) and count($friends['data'])) {
+			foreach ($friends['data'] as $friend) {
+				if (array_key_exists('id', $friend)) { 
+					$likes[$friend['id']] = $this->getAtr("likes", $friend['id'], $req->token);
 				}
 			}
 		}
+
 		$likes['me'] = $this->getAtr("likes", 'me', $req->token);
 
 		$liked = $this->collateLikes( $likes );
 
 		usort($liked, "compareLikeCounts");
 		$liked = array_reverse($liked);
+
+
+		$all_liked = $liked;
+		$top = array_splice($liked,0,10);
+
+
+		foreach ($top as $pos => $thing) {
+
+			$graph = $this->getAtr(false , $thing->id, $req->token);
+			echo "graph";
+			splat($graph);	
+
+		}
+
 		return (Object)array(
 			'name' => 'Jeff',
 			'token' => $req->token,
@@ -93,10 +109,10 @@ class Homepage_Controller extends Controller {
 		$res->template = "newhp";
 
 		// this is the list of friends
-		$friends = Modelize($req->token, "me/friends",null);
-	
-//		dumper($req); dumper($friends); 
-//			die('Modelized friends');
+		Model::setReturnObject(true);
+		$friends = Model::ize($req->token, "me/friends",null);
+
+
 
 		if (isset($friends->data) and count($friends->data)) { 
 			foreach ($friends->data as $friend) {
@@ -183,30 +199,33 @@ class Homepage_Controller extends Controller {
 		$liked = array(); // an array of stdClass objs tracking our friend's like
 
 		// the idea here was to find the most liked as we go ... on hold for now
-		$head = new StdClass();
-		$head->id = 0; // the id of the thing liked
-		$head->likers = array(); // users ids who like this
-		$head->count = 0; // count of this->likers
-
+		// $head = new StdClass();
+		// $head->id = 0; // the id of the thing liked
+		// $head->likers = array(); // users ids who like this
+		// $head->count = 0; // count of this->likers
+		
 		// the stuff we want is an enigma wrapped in an array wrapped in a twinkie
 		//  and this is how we have to unwrap it.
 		foreach ($all_likes as $uid => $likes) { 
 			foreach ($likes as $aLike) {	
+
 				foreach ($aLike as $like) {
-					if (!array_key_exists($like->id, $liked)) {
+					if (!array_key_exists($like['id'], $liked)) {
 						$myO = new stdClass();
-						$myO->id = $like->id;
-						$myO->category = $like->category;
-						$myO->name = $like->name;
+						$myO->id = $like['id'];
+						$myO->category = $like['category'];
+						$myO->name = $like['name'];
 						if (!property_exists($myO, 'likers')) {
 							$myO->likers = array();
 						}
-						$liked[$like->id] = $myO;
+						$liked[$like['id']] = $myO;
 					} 
-					$myO = $liked[$like->id];
+					$myO = $liked[$like['id']];
 					array_push($myO->likers, $uid);
 					$myO->count = count($myO->likers);
-					$liked[$like->id] = $myO;
+					$liked[$like['id']] = $myO;
+
+
 
 					/* on hold for now: keep track of the most pop
 					 *

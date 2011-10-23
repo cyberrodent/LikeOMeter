@@ -7,6 +7,7 @@ class MongoDataPoint extends DataPoint implements _data_point {
 	private $__name__ = "MongoDataPoint";
 	private $m; // mongo
 	private $collection; //
+	private $use_cache = true;
 
 	function __construct($name = "MongoDataPoint") {
 		$this->__name__ = $name;
@@ -27,10 +28,11 @@ class MongoDataPoint extends DataPoint implements _data_point {
 
 		$key = $this->makeKey($token, $uri);
 		$collection = "f";
+		error_log("fetching $uri ($key) from MongoDB");	
 		$data = $this->db->$collection->findOne(  array("key" => $key) );
 		error_log("fetched $key from MongoDB");	
-
-		return (object)$data;
+		error_log("got $data");	
+		return $data;
 	
 
 	}
@@ -39,28 +41,19 @@ class MongoDataPoint extends DataPoint implements _data_point {
 			error_log("tried to cache empty data for $uri");
 			return; 
 		} 
-
-		// dumper($token);
-		// $data = $_data['data'];
 	
-		dumper($uri);
-
 		$key = $this->makeKey($token, $uri);
 
 		$data['key'] = $key;
 
-		//  dumper($data);	
 		$collection = "f";
-		$this->db->$collection->ensureIndex(array("key" => 1) , array("unique"=>1));
+//		$this->db->$collection->ensureIndex(array("key" => 1) , array("unique"=>1));
 		$this->db->$collection->insert( (object)$data)  ;
 		if ($this->db->$collection->update( array("key" => $key),  (object)$data) ) { 
-
+			error_log("updated mongo");
 		} else { 
-
 			die("failes trying updated");
 		}
-		
-
 	}
 
 }

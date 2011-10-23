@@ -7,7 +7,16 @@
 require "lib/_data.php";
 require "lib/_mongo_data.php";
 
-	function Modelize($token, $id, $meta_data = false) {
+
+class Model {
+	/**
+	 * is true then return an object-ified data
+	 * otherwise return whatever you got, presumably
+	 * an array
+	 */
+	private static $return_object = false;
+
+	static function ize($token, $id, $meta_data = false) {
 
 		$fetched = 0;
 
@@ -18,19 +27,45 @@ require "lib/_mongo_data.php";
 		}
 
 		// cache doesn't know about metadata option
-		$dp = new MongoDataPoint();
 
-		if ($data = $dp->getFromCache($token, $id)) {
+		$dp = new MongoDataPoint();
+		$data = $dp->getFromCache($token, $id);
+		if (!empty($data)) { 
+
+			if (is_array($data) and self::$return_object) {
+				return self::_to_object($data);
+			}
+
 			return $data;
 		}
-
+		error_log("Fetching $id from Facebook");
 		$data = FBUtils::fetchFromFBGraph($id.$qs, $token);
+		error_log("fetched from fb $data");
 
 		if ($data) { 
 			$dp->storeToCache($token, $id, $data);
-			return (object)$data;
+			
+			if (is_array($data) and self::$return_object) {
+				return self::_to_object($data);
+			}
+
+			return $data;
 		} else {
 			throw new Exception("no data returned from graph");
 		}
-
 	}
+
+	private static function _to_object($array) {
+		$ret = new stdClass();
+		foreach($array as $k => $v) {
+			// only get string keys
+			if (!is_numeric($k)) {
+				$ret->$k = $v;
+			}
+		}
+		return $ret;
+	}
+	public static function setReturnObject($bool) {
+		self::$return_object = $bool ? true : false; 
+	}
+}
