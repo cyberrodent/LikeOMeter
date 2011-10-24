@@ -87,7 +87,7 @@ class Homepage_Controller extends Controller {
 
 
 		$all_liked = $liked;
-		$top = array_splice($liked,0,10);
+		$top = array_splice($liked,0,20);
 
 
 		foreach ($top as $pos => $thing) {
