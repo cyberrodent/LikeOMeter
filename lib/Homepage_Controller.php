@@ -19,7 +19,9 @@ function compareLikeCounts(stdClass $like1, stdClass $like2) {
 function keyById($array) {
 	$ret = array();
 	foreach ($array as $k => $v) {
-		$ret[$v['id']] = $v; 
+		if (strpos($k, "_") !== 0) {
+			$ret[$v['id']] = $v; 
+		}		
 	}	
 	return $ret;
 }
@@ -68,7 +70,6 @@ class Homepage_Controller extends Controller {
 		$friends = Model::ize($req->token, "me/friends",null);
 		$friends = (array)$friends;
 
-		$friend_idx = keyById($friends['data']);
 
 		if (array_key_exists('data', $friends) and count($friends['data'])) {
 			foreach ($friends['data'] as $friend) {
@@ -78,7 +79,18 @@ class Homepage_Controller extends Controller {
 			}
 		}
 
-		$likes['me'] = $this->getAtr("likes", 'me', $req->token);
+		Model::setReturnObject(true);
+		$me = Model::ize($req->token, "me", null);
+		Model::setReturnObject(false);
+
+		$likes[$me->id] = $this->getAtr("likes", $me->id, $req->token);
+
+		$friend_idx = keyById($friends['data']);
+
+		$friend_idx[$me->id] =  array(
+			'id' => $me->id,
+			'name' => $me->name
+			);
 
 		$liked = $this->collateLikes( $likes );
 
@@ -104,6 +116,9 @@ class Homepage_Controller extends Controller {
 
 	}
 	public function Hello($req, $res) {
+		$CONF = array();
+		$CONF['dofriends'] = false; // 
+
 
 		$likes = array();
 		$musics = array();
@@ -119,60 +134,62 @@ class Homepage_Controller extends Controller {
 
 		// this is the list of friends
 		Model::setReturnObject(true);
-		$friends = Model::ize($req->token, "me/friends",null);
+
+		$me = Model::ize($req->token, "me", null);
 
 
 
-		if (isset($friends->data) and count($friends->data)) { 
-			foreach ($friends->data as $friend) {
-				if (array_key_exists('id', (array)$friend)) { 
 
-				$friend = (object)$friend;	
+		if ($CONF['dofriends']) {
 
-					$core[$friend->id]       = $this->getAtr('', $friend->id, $req->token);  
+			$friends = Model::ize($req->token, "me/friends",null);
+			if (isset($friends->data) and count($friends->data)) { 
+				foreach ($friends->data as $friend) {
+					if (array_key_exists('id', (array)$friend)) { 
 
+						$friend = (object)$friend;	
 
-//				dumper($core); 
-//				die('Modelized core');
+						$core[$friend->id]       = $this->getAtr('', $friend->id, $req->token);  
 
-					$likes[$friend->id]      = $this->getAtr("likes", $friend->id, $req->token);
-					$books[$friend->id]      = $this->getAtr("books", $friend->id, $req->token);
-					$movies[$friend->id]     = $this->getAtr("movies", $friend->id, $req->token);
-					$musics[$friend->id]     = $this->getAtr("music", $friend->id, $req->token);
-					$television[$friend->id] = $this->getAtr("television", $friend->id, $req->token);
-					// $posts[$friend->id] = $this->getAtr("posts", $friend->id, $req->token);
-					
-					// calculate some sort of score for this friend...
-					$score = $this->calculateScore(
-						array(
-							//	$core[$friend->id],
-							$likes[$friend->id],
-							$books[$friend->id],
-							$movies[$friend->id],
-							$musics[$friend->id],
-							$television[$friend->id],
-						)
-					);
-					$scores[$friend->id]  = $score;
+						$likes[$friend->id]      = $this->getAtr("likes", $friend->id, $req->token);
+						$books[$friend->id]      = $this->getAtr("books", $friend->id, $req->token);
+						$movies[$friend->id]     = $this->getAtr("movies", $friend->id, $req->token);
+						$musics[$friend->id]     = $this->getAtr("music", $friend->id, $req->token);
+						$television[$friend->id] = $this->getAtr("television", $friend->id, $req->token);
+						// $posts[$friend->id] = $this->getAtr("posts", $friend->id, $req->token);
+
+						// calculate some sort of score for this friend...
+						$score = $this->calculateScore(
+							array(
+								//	$core[$friend->id],
+								$likes[$friend->id],
+								$books[$friend->id],
+								$movies[$friend->id],
+								$musics[$friend->id],
+								$television[$friend->id],
+							)
+						);
+						$scores[$friend->id]  = $score;
+					}
 				}
 			}
 		}
-
-
+		$meid = $me->id;
 		// get all this data for the current user too
-		// FIXME : using 'me' could ufck pu the cache - 2 different me
-		$core['me'] = $this->getAtr('', 'me', $req->token);  
-		$likes['me'] = $this->getAtr("likes", 'me', $req->token);
+		// FIXME : using $meid could ufck pu the cache - 2 different me
+		$core[$meid] = $this->getAtr('', $meid, $req->token);  
+		$likes[$meid] = $this->getAtr("likes", $meid, $req->token);
 
 
-		$books['me'] = $this->getAtr("books", 'me', $req->token);
-		$movies['me'] = $this->getAtr("movies", 'me', $req->token);
-		$musics['me'] = $this->getAtr("music", 'me', $req->token);
-		$television['me'] = $this->getAtr("television", 'me', $req->token);
+		$books[$meid] = $this->getAtr("books", $meid, $req->token);
+		$movies[$meid] = $this->getAtr("movies", $meid, $req->token);
+		$musics[$meid] = $this->getAtr("music", $meid, $req->token);
+		$television[$meid] = $this->getAtr("television", $meid, $req->token);
 
 
 		return (Object)array(
 			'name' => 'Jeff',
+			'meid' => $meid,
 			'token' => $req->token,
 			'friends' => isset($friends->data) ? $friends->data : null,
 			'likes' => $likes,

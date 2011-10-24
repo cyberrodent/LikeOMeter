@@ -1,6 +1,6 @@
 <?php
 /**
- * your file
+ * template for showing the commonest likes amongst your friends
  */
 function drawWebsiteLink($website) {
 	$sites = explode("\n",$website);
@@ -15,7 +15,7 @@ function drawWebsiteLink($website) {
 
 
 ?><html><head>
-	<title>What your friends like on Facebook</title>
+	<title>The Company You Keep</title>
 <style>
 body {
 margin:80px 0 0 0; 
@@ -43,13 +43,18 @@ display:block;
 width:100%; 
 margin-bottom:70px;
 }
+
+.small { font-size:66%;
+
+}
 </style>
 
 </head>
 <body>	
 <div class="fixy"> 
 <h1 class="clean">
-	What all your friends like on Facebook
+	The Company You Keep: 
+	<span class="small">What your friends say about you.</span>
 </h1></div>
 
 <div class="holder">

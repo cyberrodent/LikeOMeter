@@ -2,30 +2,29 @@
 /**
  * new home page
  */
-function e($str) {
-	echo $str;	
-}
+
 ?>
-This is the new homepage. 
+<h1>This is a person page</h1>
 <div class="friend"><img src="https://graph.facebook.com/me/picture?type=normal&access_token=<?php e($data->token) ?>" />
 <h2>
 <?php echo $data->name ?></h2>
 <?php
+$meid = $data->meid;
 
-if (array_key_exists('me', $data->likes)) {
-		renderFriend('me', $data->likes, "likes");
+if (array_key_exists($meid, $data->likes)) {
+		renderFriend($meid, $data->likes, "likes");
 	}
-	if (array_key_exists('me', $data->movies)) {
-		renderFriend('me', $data->movies, "movies");
+	if (array_key_exists($meid, $data->movies)) {
+		renderFriend($meid, $data->movies, "movies");
 	}
-	if (array_key_exists('me', $data->musics)) {
-		renderFriend('me', $data->musics, "music");
+	if (array_key_exists($meid, $data->musics)) {
+		renderFriend($meid, $data->musics, "music");
 	}
-	if (array_key_exists('me', $data->books)) {
-		renderFriend('me', $data->books, "books");
+	if (array_key_exists($meid, $data->books)) {
+		renderFriend($meid, $data->books, "books");
 	}
-	if (array_key_exists('me', $data->television)) {
-		renderFriend('me', $data->television, "television");
+	if (array_key_exists($meid, $data->television)) {
+		renderFriend($meid, $data->television, "television");
 	}
 
 ?>
@@ -79,7 +78,10 @@ function renderSome($data, $limit = 25) {
 
 
 $out = '';
-foreach (  array_slice($data->friends,4,25) as $friend) {
+
+if (false) { 
+
+	foreach (  array_slice($data->friends,4,25) as $friend) {
 
 ?>
 <br clear="all" />
@@ -90,10 +92,10 @@ foreach (  array_slice($data->friends,4,25) as $friend) {
 			<?php echo $friend->name ?> <span class="score">(
 			<?php echo $data->scores[$friend->id] ?>
 			)</span></h2>
-			<?php 
-	
-	
-	if (array_key_exists($friend->id, $data->core)){ 
+<?php 
+
+
+		if (array_key_exists($friend->id, $data->core)){ 
 
 /*
 		#		print_r(  $data->core[$friend->id] ); 
@@ -118,28 +120,30 @@ foreach (  array_slice($data->friends,4,25) as $friend) {
 		} 
  */
 
-	} else { 
-		echo "this apple has no core";
-	}
+		} else { 
+			echo "this apple has no core";
+		}
 
 
 
-	if (array_key_exists($friend->id, $data->likes)) {
-		renderFriend($friend->id, $data->likes, "likes");
+		if (array_key_exists($friend->id, $data->likes)) {
+			renderFriend($friend->id, $data->likes, "likes");
+		}
+		if (array_key_exists($friend->id, $data->movies)) {
+			renderFriend($friend->id, $data->movies, "movies");
+		}
+		if (array_key_exists($friend->id, $data->musics)) {
+			renderFriend($friend->id, $data->musics, "music");
+		}
+		if (array_key_exists($friend->id, $data->books)) {
+			renderFriend($friend->id, $data->books, "books");
+		}
+		if (array_key_exists($friend->id, $data->television)) {
+			renderFriend($friend->id, $data->television, "television");
+		}
+		?></div></div><?php 
 	}
-	if (array_key_exists($friend->id, $data->movies)) {
-		renderFriend($friend->id, $data->movies, "movies");
-	}
-	if (array_key_exists($friend->id, $data->musics)) {
-		renderFriend($friend->id, $data->musics, "music");
-	}
-	if (array_key_exists($friend->id, $data->books)) {
-		renderFriend($friend->id, $data->books, "books");
-	}
-	if (array_key_exists($friend->id, $data->television)) {
-		renderFriend($friend->id, $data->television, "television");
-	}
-?></div></div><?php 
+
 }
 
 print $out;

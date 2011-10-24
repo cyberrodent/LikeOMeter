@@ -37,7 +37,10 @@ class FrontController {
 
 			$data = $handler->$method($request, $response);
 
+
+			require "tpl/".  "header.php";	
 			require "tpl/". $response->template . ".php";	
+			require "tpl/". "footer.php";	
 
 		} catch (Exception $e) {
 			require 'uhoh.php';

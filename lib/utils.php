@@ -64,3 +64,6 @@ function splat($var) {
 	dumper($var);
 	die();
 }
+function e($str) {
+	echo $str;	
+}
