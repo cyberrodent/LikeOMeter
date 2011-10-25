@@ -5,3 +5,4 @@
 ?><div id="page-foooter">
 	This is the footer include
 </div>
+</body></html>

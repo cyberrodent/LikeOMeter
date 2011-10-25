@@ -14,50 +14,7 @@ function drawWebsiteLink($website) {
 }
 
 
-?><html><head>
-	<title>The Company You Keep</title>
-<style>
-body {
-margin:80px 0 0 0; 
-padding:0; 
-border:0; 
-font-family: Helvetica, Arial,sans-serif; 
-font-size:100%;
-} 
-.lefty { float: left;  }
-.w300 { width: 350px; } 
-.w500 { width: 450px; } 
-h1.clean { border:0; margin:0; padding:0; line-height:70px; } 
-div.holder {  padding-top:0px; padding-left:10px; padding-right:10px; } 
-.holder h1 { padding-top:80px; border-top:1px dashed #ccc; } 
-div.fixy { 
-padding-left:10px;
-top:0;
-position:fixed;
-border:0; 
-height:70px; 
-line-height:50px; 
-background-color:#627AAD; 
-color:white;
-display:block;
-width:100%; 
-margin-bottom:70px;
-}
-
-.small { font-size:66%;
-
-}
-</style>
-
-</head>
-<body>	
-<div class="fixy"> 
-<h1 class="clean">
-	The Company You Keep: 
-	<span class="small">What your friends say about you.</span>
-</h1></div>
-
-<div class="holder">
+?><div class="holder">
 	<a name="top"></a>
 	<h1>Summary: Top 20</h1>	
 	<ol class="lefty w500">
@@ -127,4 +84,4 @@ foreach ($data->top as $liked_thing) { ?>
 
 }
 
-?></div></body></html>
+?></div>

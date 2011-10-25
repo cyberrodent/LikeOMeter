@@ -1,0 +1,95 @@
+body {
+margin:80px 0 0 0; 
+padding:0; 
+border:0; 
+font-family: Helvetica, Arial,sans-serif; 
+font-size:100%;
+} 
+.lefty { float: left;  }
+.w300 { width: 350px; } 
+.w500 { width: 450px; } 
+h1.clean { border:0; margin:0; padding:0; line-height:70px; } 
+
+
+
+div.holder {  padding-top:0px; padding-left:10px; padding-right:10px; } 
+.holder h1 { padding-top:80px; border-top:1px dashed #ccc; } 
+#page-header{ 
+  padding-left:10px;
+  top:0;
+  position:fixed;
+  border:0; 
+  height:70px; 
+  background-color:#627AAD; 
+  color:white;
+  display:block;
+  width:100%; 
+  margin-bottom:70px;
+}
+#page-header a { color: #eee; } 
+#page-header a:hover{ color: #f99; } 
+.small { font-size:66%; 
+	font-weight: normal;
+} 
+
+#page-header ul { display: inline; } 
+#page-header ul li { 
+display: inline; 
+margin-right:10px;
+} 
+#page-header h1.clean  {
+	line-height:32px;
+	font-size:28px;
+}
+#page-footer {
+
+
+}
+
+
+h3 { padding:0px; margin:0; } 
+h2 { 
+	line-height:48px;
+	font-size:48px;
+	margin:0; 
+	padding-top:2px; 
+	color: #000024;
+	font-weight:normal;
+
+}
+
+
+h2 .score {
+	font-size:14px;
+	line-height:14px;
+} 
+.clearall { clear: both; float:none; } 
+
+.television, .movies, .likes, .posts, .music, .books {
+	width:180px;
+	height:120px;
+	float:left;
+	padding:8px;
+	overflow:scroll;
+	background-color: #eee;
+	margin-right:8px;
+	margin-left:0px;
+	margin-bottom:10px;
+	font-size:80%;
+}
+.category { color:#090; font-size:0.8em; } 
+
+div.friend { 
+
+
+}
+div.friend img { 
+	float:left; 
+	/* width:150px; */
+	height:154px;
+	border:solid black 2px;
+	margin-bottom:20px;
+}
+
+
+
