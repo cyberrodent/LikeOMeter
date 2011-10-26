@@ -113,6 +113,7 @@ class FBUtils {
     // In the event that the two states do not match, we return false to signify
     // that something has gone wrong during authentication
     } else {
+	// FIXME : have to handle this better
       echo("States do not match.  CSRF?");
       return false;
     }

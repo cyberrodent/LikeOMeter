@@ -8,11 +8,11 @@ class MongoDataPoint extends DataPoint implements _data_point {
 	private $m; // mongo
 	private $collection; //
 	private $use_cache = true;
+	private $verbose; // log or not
 
 	function __construct($name = "MongoDataPoint") {
 		$this->__name__ = $name;
 		//   mongodb://<user>:<password>@dbh08.mongolab.com:27087/
-
 		$dsn = getenv("MONGOLAB_URI");
 	
 		try { 
@@ -28,10 +28,10 @@ class MongoDataPoint extends DataPoint implements _data_point {
 
 		$key = $this->makeKey($token, $uri);
 		$collection = "f";
-		error_log("fetching $uri ($key) from MongoDB");	
+		$this->verbose and error_log("fetching $uri ($key) from MongoDB");	
 		$data = $this->db->$collection->findOne(  array("key" => $key) );
-		error_log("fetched $key from MongoDB");	
-		error_log("got $data");	
+		$this->verbose and error_log("fetched $key from MongoDB");	
+		$this->verbose and error_log("got $data");	
 		return $data;
 	
 
@@ -45,14 +45,18 @@ class MongoDataPoint extends DataPoint implements _data_point {
 		$key = $this->makeKey($token, $uri);
 
 		$data['key'] = $key;
+		$data['uri'] = $uri;
 
 		$collection = "f";
-//		$this->db->$collection->ensureIndex(array("key" => 1) , array("unique"=>1));
-		$this->db->$collection->insert( (object)$data)  ;
-		if ($this->db->$collection->update( array("key" => $key),  (object)$data) ) { 
-			error_log("updated mongo");
+
+		// $this->db->$collection->ensureIndex(array("key" => 1) , array("unique"=>1));
+		$ok = $this->db->$collection->insert( (object)$data)  ;
+		if ($ok) {
+			$this->verbose and error_log("Insert OK for $uri");
+		} else if ($this->db->$collection->update( array("key" => $key),  (object)$data) ) { 
+			$this->verbose and error_log("Update OK for $uri");
 		} else { 
-			die("failes trying updated");
+			die("faileds " . __CLASS__ ."::".__FUNCTION__ ." $uri $token");
 		}
 	}
 

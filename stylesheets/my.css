@@ -6,12 +6,25 @@ font-family: Helvetica, Arial,sans-serif;
 font-size:100%;
 } 
 .lefty { float: left;  }
+.righty { float: right;  }
 .w300 { width: 350px; } 
 .w500 { width: 450px; } 
 h1.clean { border:0; margin:0; padding:0; line-height:70px; } 
 
-
-
+.liker {
+	float:left;
+	width:166px;
+}
+.liker ul li { 
+	list-style-type: none; 
+	clear:left;
+	}
+.liker img { float:left; margin-right:4px; } 
+.liker_name {
+	padding-top:2px;
+	height:28px;
+	font-size:70%;
+}
 div.holder {  padding-top:0px; padding-left:10px; padding-right:10px; } 
 .holder h1 { padding-top:80px; border-top:1px dashed #ccc; } 
 #page-header{ 

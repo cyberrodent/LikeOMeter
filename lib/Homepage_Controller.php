@@ -31,12 +31,8 @@ function keyById($array) {
 
 /**
  * Homepage_Controller 
- * 
- * @author Jeff Kolber 
  */
 class Homepage_Controller extends Controller {
-
-
 	
 
 	/**
@@ -136,13 +132,14 @@ class Homepage_Controller extends Controller {
 		Model::setReturnObject(true);
 
 		$me = Model::ize($req->token, "me", null);
-
-
+		$meid = $me->id;
+		error_log("$meid    User: " . $me->name . "    " . __FUNCTION__);
 
 
 		if ($CONF['dofriends']) {
 
-			$friends = Model::ize($req->token, "me/friends",null);
+	
+			$friends = Model::ize($req->token, "$meid/friends",null);
 			if (isset($friends->data) and count($friends->data)) { 
 				foreach ($friends->data as $friend) {
 					if (array_key_exists('id', (array)$friend)) { 
@@ -174,9 +171,7 @@ class Homepage_Controller extends Controller {
 				}
 			}
 		}
-		$meid = $me->id;
 		// get all this data for the current user too
-		// FIXME : using $meid could ufck pu the cache - 2 different me
 		$core[$meid] = $this->getAtr('', $meid, $req->token);  
 		$likes[$meid] = $this->getAtr("likes", $meid, $req->token);
 
@@ -188,8 +183,8 @@ class Homepage_Controller extends Controller {
 
 
 		return (Object)array(
-			'name' => 'Jeff',
-			'meid' => $meid,
+			'name' => $me->name,
+			'meid' => $me->id,
 			'token' => $req->token,
 			'friends' => isset($friends->data) ? $friends->data : null,
 			'likes' => $likes,
@@ -200,7 +195,6 @@ class Homepage_Controller extends Controller {
 			'core' => $core,
 			'television' => $television,
 			'scores' => $scores,
-		
 		);
 	}
 	public function calculateScore($stuff) {

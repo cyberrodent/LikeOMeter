@@ -4,7 +4,7 @@
  */
 
 ?>
-<h1>This is a person page</h1>
+<h1>This is a person page. id=<?php e($data->meid) ?></h1>
 <div class="friend"><img src="https://graph.facebook.com/me/picture?type=normal&access_token=<?php e($data->token) ?>" />
 <h2>
 <?php echo $data->name ?></h2>

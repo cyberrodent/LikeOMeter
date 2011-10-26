@@ -27,7 +27,7 @@ class Model {
 		}
 
 		$dp = new MongoDataPoint();
-		$data = $dp->getFromCache($token, $id);
+		$data = ($id != 'me/friends' ) ? $dp->getFromCache($token, $id) : null ;
 		if (!empty($data)) { 
 			if (is_array($data) and self::$return_object) {
 				return self::_to_object($data);
