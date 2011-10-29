@@ -3,25 +3,26 @@
  * header php 
  */
 ?><html><head>
-	<title>The Company You Keep</title>
+	<title>The Things Your Friends Like ... on Facebook</title>
     <link rel="stylesheet" href="stylesheets/my.css" media="screen">
 </head>
 <body>	
 <div id="page-header">
 	<h1 class="clean">
-		The Company You Keep: 
-		<span class="small">What your friends say about you.</span>
+		The Things Your Friends Like ... on Facebook
 	</h1>
-
+	<br />
 	<ul>
 	<li>&gt;<a href="/?<?php
 e($_SERVER['QUERY_STRING']);
-?>">You and what you like</a></li>
-	<li>&gt;Common Interests</li>
+?>">You And What You Like</a></li>
 	<li>&gt;<a href="/flikes?<?php
 
 e($_SERVER['QUERY_STRING']);
-?>">Friends Like</a></li>
+?>">What Your Friends Like</a></li>
 
+	<li>&gt;<a href="/common?<?php
+e($_SERVER['QUERY_STRING']);
+?>">Common Interests</a></li>
 	</ul>
 	</div>
