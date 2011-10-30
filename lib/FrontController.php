@@ -10,37 +10,42 @@ class FrontController {
 
 	public static function dispatch($options = null) {
 
-		$request = new StdClass();
-		// this is a facebook app so lets make the token part of the request
+		// we create a request and response object 
+		// that we use to handle the client request
 
+		$request = new StdClass();
+		// this is a facebook app so lets make the token part of our request object
 		if (self::$mode == 'online') { 
 			$request->token = FBUtils::login(AppInfo::getHome());
-		} else { 
+		} else {
+			error_log("Issued mock token");
 			$request->token = 'mock token';
 		}
+
 
 		$response = new StdClass();
 		$response->template = 'default';
 
 		// strip some common file extensions if present and the query string
-		$uri = trim(preg_replace("/(\.(html|asp|php))?(\?.*)?/","",$_SERVER['REQUEST_URI']));
+		$uri = trim(preg_replace("/(^\/)?(\.(html|asp|php))?(\?.*)?/","",$_SERVER['REQUEST_URI']));
 
 		try {
 
 			if (!$request->token) { 
 				throw new Exception("No Facebook Token.");
 			}
-			list($handler_name, $method) = self::deriveAction($uri);
+
+			list($handler_name, $method, $options, $matches) = self::deriveAction($uri);
+
+
 			require "lib/$handler_name.php";
-
-			$handler = new $handler_name();
-
+			$handler = new $handler_name($options);
 			$data = $handler->$method($request, $response);
-
 
 			require "tpl/".  "header.php";	
 			require "tpl/". $response->template . ".php";	
-			require "tpl/". "footer.php";	
+			require "tpl/". "footer.php";
+
 
 		} catch (Exception $e) {
 			require 'uhoh.php';
@@ -55,9 +60,16 @@ class FrontController {
 
 
 	private static function deriveAction($uri) {
-		if (array_key_exists($uri, Urls::$urls)) {
-			return Urls::$urls[$uri];
-		}	
+		//if (array_key_exists($uri, Urls::$urls)) {
+		//	return Urls::$urls[$uri];
+		//}
+		foreach (Urls::$urls as $route => $setup) {
+			$matches = null;
+			if (preg_match($route, $uri, $matches)) {
+				Urls::$urls[$route][] = $matches;
+				return Urls::$urls[$route];
+			}
+		}
 		throw new Exception("no action could be derived");
 	}
 }
