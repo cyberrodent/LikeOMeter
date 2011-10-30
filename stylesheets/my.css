@@ -79,16 +79,16 @@ h2 .score {
 .clearall { clear: both; float:none; } 
 
 .television, .movies, .likes, .posts, .music, .books {
-	width:180px;
-	height:120px;
+	width:210px;
+	min-height:100px;
 	float:left;
-	padding:8px;
-	overflow:scroll;
-	background-color: #eee;
-	margin-right:8px;
+	padding:5px 10px;
+	background-color: #ddd;
+	margin-right:18px;
 	margin-left:0px;
 	margin-bottom:10px;
 	font-size:80%;
+	overflow:auto;
 }
 .category { color:#090; font-size:0.8em; } 
 
@@ -102,6 +102,8 @@ div.friend img {
 	height:154px;
 	border:solid black 2px;
 	margin-bottom:20px;
+	margin-right:10px;
+	margin-left:10px;
 }
 
 

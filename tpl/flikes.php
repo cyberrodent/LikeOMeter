@@ -56,7 +56,7 @@ foreach ($data->top as $liked_thing) { ?>
 
 	<a name="pos<?php echo $pos++ ?>"></a>
 	<h1>#<?php echo $pos  ?>) <?php echo($liked_thing->name) ?> (<?php echo($liked_thing->category); ?>)</h1>
-	<div class="righty "><a href="#top">Back to top</a></div>
+	<div class="righty "><a href="#top">Back to Summary</a></div>
 	<div style="float:left; width:500px;">
 		<img src="<?php echo $liked_thing->graph['picture'] ?>" />
 		<ul>
@@ -68,7 +68,7 @@ foreach ($data->top as $liked_thing) { ?>
 				print "<li> $k = $v</li>";
 			}
 		?></ul>
-		<p><a href="#top">Back to top</a></p>
+		<p><a href="#top">Back to Summary</a></p>
 	</div>
 
 	
@@ -82,7 +82,7 @@ foreach ($data->top as $liked_thing) { ?>
 					'<img src="https://graph.facebook.com/'.$liker.'/picture?type=square" height="28" width="28" alt="friend" border="1" /><div class="liker_name">'.
 $data->friend_idx[$liker]['name'] . 
 					"</div></li>";
-				if ($i++ % 10 == 0) {
+				if ($i++ % 20 == 0) {
 					print '</ul></div> <div class="liker"><ul>';
 				}
 			}
