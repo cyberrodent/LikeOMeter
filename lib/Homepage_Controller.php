@@ -16,17 +16,6 @@ function compareLikeCounts(stdClass $like1, stdClass $like2) {
 	return ($like1->count > $like2->count) ? 1 : -1;
 }
 
-function keyById($array) {
-	$ret = array();
-	foreach ($array as $k => $v) {
-		if (strpos($k, "_") !== 0) {
-			$ret[$v['id']] = $v; 
-		}		
-	}	
-	return $ret;
-}
-
-
 
 
 /**
@@ -128,12 +117,11 @@ class Homepage_Controller extends Controller {
 
 		$res->template = "newhp";
 
-		// this is the list of friends
 		Model::setReturnObject(true);
 
 		$me = Model::ize($req->token, "me", null);
 		$meid = $me->id;
-		error_log("$meid    User: " . $me->name . "    " . __FUNCTION__);
+		// error_log("$meid    User: " . $me->name . "    " . __FUNCTION__);
 
 
 		if ($CONF['dofriends']) {

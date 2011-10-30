@@ -67,3 +67,15 @@ function splat($var) {
 function e($str) {
 	echo $str;	
 }
+
+function keyById($array) {
+	$ret = array();
+	foreach ($array as $k => $v) {
+		if (strpos($k, "_") !== 0) {
+			$ret[$v['id']] = $v; 
+		}		
+	}	
+	return $ret;
+}
+
+
