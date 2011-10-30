@@ -10,5 +10,6 @@ class Urls {
 		'/flikes' => array('Homepage_Controller','youAndYourFriendsLike'),
 		'/resource' => array('Homepage_Controller','Show'),
 		'/common' => array('Common_Interest_Controller','Show'),
+		'/person' => array('Common_Interest_Controller','Show'),
 	);
 }
