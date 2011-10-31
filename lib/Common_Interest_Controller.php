@@ -22,7 +22,7 @@ class Common_Interest_Controller extends Controller {
 	public function Show($req, $res) {
 		/* this shows a set of users who like the same things that you do */
 		$res->template = "common_interest";
-
+		$data = new StdClass();
 		// get_what_you_like
 		Model::setReturnObject(true);
 		$likes = Model::ize($req->token, "me/likes",0);
@@ -31,7 +31,7 @@ class Common_Interest_Controller extends Controller {
 		Model::setReturnObject(false);
 		$i_like = array();
 		$my_friends = $friends->data;
-
+		$data->friends = keyById($my_friends);
 		foreach($likes->data as $like) {
 			$i_like[] = $like['id'];
 		}
@@ -44,7 +44,7 @@ class Common_Interest_Controller extends Controller {
 		$liked_things = array();
 		/* id_of_the_liked_thing => array(of details about this liked thing) */
 
-		foreach($my_friends as $friend) {
+		foreach ($my_friends as $friend) {
 			// get the things this friend likes
 			Model::setReturnObject(true);
 			$friend_likes = Model::ize($req->token,
@@ -54,7 +54,6 @@ class Common_Interest_Controller extends Controller {
 
 			foreach ($friend_likes->data as $tafl /* thing a friend likes */) {
 				if (in_array($tafl['id'], $i_like)) {
-					print $friend['name']." and you both like ".$tafl['name'] ." (".$tafl['category'] .")<br />";
 					if (array_key_exists($tafl['id'], $common_likes)) { 
 						$common_likes[$tafl['id']]['likers'][] = $friend['id'];
 					} else {
@@ -66,9 +65,8 @@ class Common_Interest_Controller extends Controller {
 		}
 
 		usort($common_likes, 'compare_common_likes');
-
-		
-		dumper($common_likes);
+		$data->common = $common_likes;
+		return $data;
 	}
 }
 

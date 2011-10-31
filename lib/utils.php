@@ -78,4 +78,4 @@ function keyById($array) {
 	return $ret;
 }
 
-
+require "./lib/Timing.php";

@@ -2,7 +2,7 @@
 /**
  * footer php 
  */
-?><div id="page-foooter">
+?><div id="page-footer">
 	This is the footer include
 </div>
 </body></html>

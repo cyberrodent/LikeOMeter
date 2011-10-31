@@ -55,8 +55,11 @@ margin-right:10px;
 	font-size:28px;
 }
 #page-footer {
+ clear:both;
+ float:none;
 
-
+  background-color:#627AAD; 
+  color:white;
 }
 
 
@@ -106,5 +109,6 @@ div.friend img {
 	margin-left:10px;
 }
 
-
-
+.CommonI { padding:0 20px; } 
+.CommonI img { float: left; width: 200px; margin-right:20px; } 
+.CommonI h3 { clear:both; float:none; padding-top:15px; } 
