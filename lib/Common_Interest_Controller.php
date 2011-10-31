@@ -1,4 +1,18 @@
 <?php
+
+
+function compare_common_likes($a,$b){
+	$ca = count($a['likers']);
+	$cb = count($b['likers']);
+	if ($ca < $cb) {
+		return 1;
+	} else if  ($ca == $cb) {
+		return 0;
+	} else { 
+		return -1;
+	}
+}
+
 /**
  * Common Interest Controller
  */
@@ -23,6 +37,12 @@ class Common_Interest_Controller extends Controller {
 		}
 
 		$common_likes = array();
+		/* 
+		 * looks like: 
+		 * id_of_the_liked_thing => array(of the user_ids who also like this)
+		 */
+		$liked_things = array();
+		/* id_of_the_liked_thing => array(of details about this liked thing) */
 
 		foreach($my_friends as $friend) {
 			// get the things this friend likes
@@ -32,17 +52,23 @@ class Common_Interest_Controller extends Controller {
 				0
 			);
 
-			foreach($friend_likes->data as $tafl /* thing a friend likes */) {
+			foreach ($friend_likes->data as $tafl /* thing a friend likes */) {
 				if (in_array($tafl['id'], $i_like)) {
-					print $friend['name']." and you both like ".$tafl['name']."<br />";
-					if (array_key_exists($tafl['id'], $common_likes) ) { 
-						$common_likes[$tafl['id']][] = $friend['id'];
+					print $friend['name']." and you both like ".$tafl['name'] ." (".$tafl['category'] .")<br />";
+					if (array_key_exists($tafl['id'], $common_likes)) { 
+						$common_likes[$tafl['id']]['likers'][] = $friend['id'];
 					} else {
-						$common_likes[$tafl['id']] = array($friend['id']);
+						$common_likes[$tafl['id']] = $tafl;
+						$common_likes[$tafl['id']]['likers'] = array($friend['id']);
 					}
 				}
 			}
 		}
+
+		usort($common_likes, 'compare_common_likes');
+
+		
 		dumper($common_likes);
 	}
 }
+
