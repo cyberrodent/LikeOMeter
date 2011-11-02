@@ -103,12 +103,15 @@ class Homepage_Controller extends Controller {
 	public function Hello($req, $res) {
 		$CONF = array();
 		$CONF['dofriends'] = false; // 
-
+		/* 
+		 *
+		 * memcache test
 		require_once("./lib/_memcache.php");
 		$mc = MC::getInstance();
 		$mc->set('key1','yo mamma');
 		$test = $mc->get('key1');
 		dumper($test);
+		 */
 
 
 

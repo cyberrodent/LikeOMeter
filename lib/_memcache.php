@@ -16,7 +16,7 @@ class MC {
 	public static $mc;
 	public static function getInstance() {
 		self::$mc = new Memcached();
-		self::$mc->addServer(MEMCACHE_SERVERS, 11211);
+		# self::$mc->addServer(MEMCACHE_SERVERS, 11211);
 		self::$mc->addServer('mc7.ec2.northscale.net',11211);
 		return self::$mc;
 	}
