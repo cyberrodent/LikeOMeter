@@ -107,13 +107,13 @@ class Homepage_Controller extends Controller {
 		 *
 		 * memcache test
 		 * 
-		 */
+		 
 		require_once("./lib/_memcache.php");
 		$mc = MC::getInstance();
 		$mc->set('key1','yo mamma');
 		$test = $mc->get('key1');
 		dumper($test);
-	
+		*/	
 
 
 
