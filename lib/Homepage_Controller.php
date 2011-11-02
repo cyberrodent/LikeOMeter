@@ -104,6 +104,13 @@ class Homepage_Controller extends Controller {
 		$CONF = array();
 		$CONF['dofriends'] = false; // 
 
+		require_once("./lib/_memcache.php");
+		$mc = MC::getInstance();
+		$mc->set('key1','yo mamma');
+		$test = $mc->get('key1');
+		dumper($test);
+
+
 
 		$likes = array();
 		$musics = array();
