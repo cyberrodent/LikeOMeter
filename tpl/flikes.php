@@ -37,20 +37,37 @@ arsort($cats);
 
 ?><div class="holder">
 	<a name="top"></a>
-	<h1>Summary: Top 20</h1>	
+	<h2>What your friends "like"</h2>
+	<h1>Summary: Top 20</h1>
+
+
+	<div>
+The things that your friends like on Facebook can be grouped by category and ranked 
+by how many things are in each category.  Here's how your friend's tastes break down.
+
 	<ul class="lefty w300">
 <?php 
 foreach ($cats as $cat => $ct) {
-	print "<li><strong>$cat</strong>: $ct out of top 20.</li>";
+	print "<li><strong>$cat</strong>: $ct things.</li>";
 }
 ?></ul>
+	</div>
+
+	<div>	
+	And here are the top things on facebook that your friends "like"
+
 	<ol class="lefty w500">
 	<?php echo $cat_list_out ?>	
 	</ol>
+	</div>
 <br clear="both" />
 
 
 <?php
+
+
+if (0) {
+
 $pos = 0;
 foreach ($data->top as $liked_thing) { ?>
 
@@ -91,5 +108,6 @@ $data->friend_idx[$liker]['name'] .
 	<br style="clear:both;" /><?php
 }
 
+}
 ?>that's all folks...
 

@@ -55,7 +55,6 @@ class Homepage_Controller extends Controller {
 		$friends = Model::ize($req->token, "me/friends",null);
 		$friends = (array)$friends;
 
-
 		if (array_key_exists('data', $friends) and count($friends['data'])) {
 			foreach ($friends['data'] as $friend) {
 				if (array_key_exists('id', $friend)) { 
