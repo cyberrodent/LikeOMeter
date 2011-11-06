@@ -1,2 +1,3 @@
-data_cache/jk*
+data_cache*
 *.swp
+.DS_Store
