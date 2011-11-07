@@ -14,6 +14,7 @@ class Model {
 	 * otherwise return whatever you got, presumably
 	 * an array
 	 */
+	private static $verbose = true;
 	private static $return_object = false;
 
 	static function ize($token, $id, $meta_data = false) {
@@ -27,21 +28,32 @@ class Model {
 		}
 
 		$dp = new MongoDataPoint();
+		if (self::$verbose) {
+			gentime();
+		}
 		$data = ($id != 'me/friends' ) ? $dp->getFromCache($token, $id) : null ;
+
+		if (self::$verbose) {
+			error_log("@ ".  gentime() ." fetched from mongo $data ");
+		}	
 		if (!empty($data)) { 
 			if (is_array($data) and self::$return_object) {
 				return self::_to_object($data);
 			}
 			return $data;
 		}
-
-		error_log("Fetching $id from Facebook");
+		
+		if (self::$verbose) {
+			gentime();
+		}
 		$data = FBUtils::fetchFromFBGraph($id.$qs, $token);
-		error_log("fetched from fb $data");
 
+		if (self::$verbose) {
+			error_log("@" . gentime() ." fetched from fb $data ");
+		}
 		if ($data) { 
 			$dp->storeToCache($token, $id, $data);
-			
+
 			if (is_array($data) and self::$return_object) {
 				return self::_to_object($data);
 			}

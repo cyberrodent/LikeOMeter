@@ -30,19 +30,22 @@ class Homepage_Controller extends Controller {
 	 * @param mixed $atr 
 	 * @param mixed $id 
 	 * @param mixed $token 
-	 * @return array of results from the graph
+	 * @return array of results from the graph keyed by id
 	 */
 	private function getAtr($atr, $id, $token)
 	{
-		$set = array();
 		$_atr = Model::ize($token, $id . ($atr ? "/$atr" : '') , null);
-
+		$set = null;
 		if (isset($_atr->data)) { 
-			$set[$id] = $_atr->data;
+			$set = $_atr->data;
+		} else if (array_key_exists('data', $_atr)) {
+			$set = $_atr['data'];
 		} else { 
-			$set[$id] = $_atr;
+			$set = $_atr;
 		}
-
+		if (is_array($set)) {
+			$set = keyById($set);
+		}
 		return $set;
 	}
 
@@ -52,30 +55,26 @@ class Homepage_Controller extends Controller {
 
 		$res->template = "flikes";
 		// this is the list of friends
-		$friends = Model::ize($req->token, "me/friends",null);
-		$friends = (array)$friends;
-
-		if (array_key_exists('data', $friends) and count($friends['data'])) {
-			foreach ($friends['data'] as $friend) {
-				if (array_key_exists('id', $friend)) { 
-					$likes[$friend['id']] = $this->getAtr("likes", $friend['id'], $req->token);
-				}
+		$friends = $this->getAtr("friends","me",$req->token);
+		foreach ($friends as $friend) {
+			if (array_key_exists('id', $friend)) { 
+				$likes[$friend['id']] = $this->getAtr("likes", $friend['id'], $req->token);
 			}
 		}
 
-		Model::setReturnObject(true);
+		
 		$me = Model::ize($req->token, "me", null);
-		Model::setReturnObject(false);
+	
 
-		$likes[$me->id] = $this->getAtr("likes", $me->id, $req->token);
+		$likes[$me['id']] = $this->getAtr("likes", $me['id'], $req->token);
 
-		$friend_idx = keyById($friends['data']);
+		$friend_idx = keyById($friends);
 
-		$friend_idx[$me->id] =  array(
-			'id' => $me->id,
-			'name' => $me->name
+		$friend_idx[$me['id']] =  array(
+			'id' => $me['id'],
+			'name' => $me['name']
 			);
-
+splat($likes);
 		$liked = $this->collateLikes( $likes );
 
 		usort($liked, "compareLikeCounts");
@@ -83,7 +82,7 @@ class Homepage_Controller extends Controller {
 
 
 		$all_liked = $liked;
-		$top = array_splice($liked,0,20);
+		$top = array_splice($liked,0,019);
 
 
 		foreach ($top as $pos => $thing) {
@@ -99,11 +98,83 @@ class Homepage_Controller extends Controller {
 		);
 
 	}
+
+
+	public function HomepageAction($req, $res) {
+		$res->template = "homepage";
+		$return = new StdClass();
+		$me = Model::ize($req->token, "me", null);
+		$friends = Model::ize($req->token, "{$me['id']}/friends",null);
+		$friend_ids = array_keys(keyById($friends['data']));
+
+		// define which of these attributes to fetch for each friend
+		$attributes = array(
+	 //		'friends' ,
+			'likes' ,
+		//	'books' ,
+		//	'musics' ,
+		//	'posts' ,
+		//	'movies' ,
+		//	'core' ,
+		//	'television' ,
+		//	'scores' ,  // score attemprs to reduce the
+			// friends likes to a single number for 
+			// comparison to each other
+		);
+		$atdata = $this->getgraph($friend_ids, $attributes, $req->token);
+		splat($atdata);
+		foreach ($attributes as $a) {
+			$return->$a = 0;
+		}
+
+		$return->friends = $friends;
+
+		$return->me = $me;
+		$return->meid = $me['id'];
+
+		return $return; 
+		/*
+		return (Object)array(
+			'name' => $me->name,
+			'meid' => $me->id,
+			'token' => $req->token,
+			'friends' => isset($friends->data) ? $friends->data : null,
+			'likes' => $likes,
+			'books' => $books,
+			'musics' => $musics,
+			'posts' => $posts,
+			'movies' => $movies,
+			'core' => $core,
+			'television' => $television,
+			'scores' => $scores,
+		);
+		 */
+	}
+
+
+	protected function getgraph($user_ids, $attributes, $token) {
+		// initialize the data structure we fill and return
+		$atdata = array();
+		foreach ($attributes as $at) {
+			$atdata[$at] = array();
+		}
+
+		foreach ($user_ids as $user_id) {
+			echo "for $user_id ...getting: ";
+			foreach ($attributes as $at) {
+				echo "$at .";
+				$atdata[$at][$user_id] = $this->getAtr($at, $user_id, $token);
+				echo ". ";
+			}
+			echo "<br />";
+			if (count($atdata) > 10) break;
+		}
+		return $atdata;
+	}
 	public function Hello($req, $res) {
-		$CONF = array();
-		$CONF['dofriends'] = false; // 
-		/* 
-		 *
+		// This is the homepage
+
+			/* 
 		 * memcache test
 		 * 
 		 
@@ -113,8 +184,6 @@ class Homepage_Controller extends Controller {
 		$test = $mc->get('key1');
 		dumper($test);
 		*/	
-
-
 
 		$likes = array();
 		$musics = array();
@@ -170,6 +239,8 @@ class Homepage_Controller extends Controller {
 				}
 			}
 		}
+
+
 		// get all this data for the current user too
 		$core[$meid] = $this->getAtr('', $meid, $req->token);  
 		$likes[$meid] = $this->getAtr("likes", $meid, $req->token);
@@ -258,8 +329,8 @@ Array (
 etc...
 */
 		foreach ($all_likes as $uid => $likes) { 
-			foreach ($likes as $aLike) {	
-				foreach ($aLike['data'] as $like) {
+			foreach ($likes as $like) {	
+				// foreach ($aLike['data'] as $like) {
 					$like = (object)$like;
 					if (!array_key_exists($like->id, $liked)) {
 						$myO = new stdClass();
@@ -286,7 +357,7 @@ etc...
 					}
 					 *
 					 */	
-				}
+				// }
 			}
 		}
 		return $liked;

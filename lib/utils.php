@@ -62,6 +62,9 @@ function dumper($var) {
 }
 function splat($var) {
 	dumper($var);
+	$bt = debug_backtrace();
+	$caller = $bt[0];
+	error_log("splat called from ". $caller['file'] ." line " .$caller['line'] );
 	die();
 }
 function e($str) {

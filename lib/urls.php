@@ -8,7 +8,7 @@ class Urls {
 
 		'/^$/' => array(
 			'Homepage_Controller',
-			'Hello',
+			'HomepageAction',
 			array(),	
 		),
 
