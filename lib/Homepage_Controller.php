@@ -62,7 +62,6 @@ class Homepage_Controller extends Controller {
 			}
 		}
 
-		
 		$me = Model::ize($req->token, "me", null);
 	
 
@@ -74,7 +73,7 @@ class Homepage_Controller extends Controller {
 			'id' => $me['id'],
 			'name' => $me['name']
 			);
-splat($likes);
+
 		$liked = $this->collateLikes( $likes );
 
 		usort($liked, "compareLikeCounts");
@@ -122,9 +121,9 @@ splat($likes);
 			// comparison to each other
 		);
 		$atdata = $this->getgraph($friend_ids, $attributes, $req->token);
-		splat($atdata);
+		
 		foreach ($attributes as $a) {
-			$return->$a = 0;
+			$return->$a = $atdata[$a];
 		}
 
 		$return->friends = $friends;

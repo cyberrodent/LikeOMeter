@@ -49,7 +49,7 @@ class Model {
 		$data = FBUtils::fetchFromFBGraph($id.$qs, $token);
 
 		if (self::$verbose) {
-			error_log("@" . gentime() ." fetched from fb $data ");
+			error_log("@ " . gentime() ." fetched from fb $data ");
 		}
 		if ($data) { 
 			$dp->storeToCache($token, $id, $data);
