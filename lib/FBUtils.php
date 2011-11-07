@@ -75,7 +75,10 @@ class FBUtils {
 		'friends_likes,friends_status,friends_about_me,'.
 		'friends_religion_politics';
 	session_start();
-    $code = $_REQUEST["code"];
+	$code = null;
+	if (array_key_exists('code',$_REQUEST)) {
+		$code = $_REQUEST["code"];
+	}
     // If we don't have a code returned from Facebook, the first step is to get
     // that code
     if (empty($code)) {
