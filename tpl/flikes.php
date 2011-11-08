@@ -66,7 +66,7 @@ foreach ($cats as $cat => $ct) {
 <?php
 
 
-if (0) {
+if (1) {
 
 $pos = 0;
 foreach ($data->top as $liked_thing) { ?>

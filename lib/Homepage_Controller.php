@@ -41,7 +41,7 @@ class Homepage_Controller extends Controller {
 		} else if (array_key_exists('data', $_atr)) {
 			$set = $_atr['data'];
 		} else { 
-			$set = $_atr;
+			$set = array($_atr);
 		}
 		if (is_array($set)) {
 			$set = keyById($set);
@@ -63,12 +63,9 @@ class Homepage_Controller extends Controller {
 		}
 
 		$me = Model::ize($req->token, "me", null);
-	
-
 		$likes[$me['id']] = $this->getAtr("likes", $me['id'], $req->token);
 
 		$friend_idx = keyById($friends);
-
 		$friend_idx[$me['id']] =  array(
 			'id' => $me['id'],
 			'name' => $me['name']
@@ -76,16 +73,19 @@ class Homepage_Controller extends Controller {
 
 		$liked = $this->collateLikes( $likes );
 
+		$all_friend_like_count = count($liked);
+		# is how many things we have liked
+
 		usort($liked, "compareLikeCounts");
 		$liked = array_reverse($liked);
 
 
 		$all_liked = $liked;
-		$top = array_splice($liked,0,019);
+		$top = array_splice($liked,0,10);
 
 
 		foreach ($top as $pos => $thing) {
-			$graph = $this->getAtr(false , $thing->id, $req->token);
+			$graph = $this->getAtr(false, $thing->id, $req->token);
 			$thing->graph = $graph[ $thing->id];
 		}
 
@@ -116,6 +116,7 @@ class Homepage_Controller extends Controller {
 		//	'movies' ,
 		//	'core' ,
 		//	'television' ,
+		
 		//	'scores' ,  // score attemprs to reduce the
 			// friends likes to a single number for 
 			// comparison to each other
@@ -132,22 +133,6 @@ class Homepage_Controller extends Controller {
 		$return->meid = $me['id'];
 
 		return $return; 
-		/*
-		return (Object)array(
-			'name' => $me->name,
-			'meid' => $me->id,
-			'token' => $req->token,
-			'friends' => isset($friends->data) ? $friends->data : null,
-			'likes' => $likes,
-			'books' => $books,
-			'musics' => $musics,
-			'posts' => $posts,
-			'movies' => $movies,
-			'core' => $core,
-			'television' => $television,
-			'scores' => $scores,
-		);
-		 */
 	}
 
 
@@ -166,7 +151,9 @@ class Homepage_Controller extends Controller {
 				echo ". ";
 			}
 			echo "<br />";
-			if (count($atdata) > 10) break;
+
+			// cut it short while were developing to speed up cycles;
+			if (count($atdata[$at]) > 2) break;
 		}
 		return $atdata;
 	}
@@ -293,45 +280,33 @@ class Homepage_Controller extends Controller {
 		// $head->likers = array(); // users ids who like this
 		// $head->count = 0; // count of this->likers
 
-
-
-		// the stuff we want is an enigma wrapped in an array wrapped in a twinkie
-		//  and this is how we have to unwrap it.
-/*
-Array (
+		/*
+Array
+(
     [106412] => Array
         (
-            [106412] => Array
+            [10042595019] => Array
                 (
-                    [_id] => MongoId Object
-                        (
-                            [$id] => 4ea42a5b584baffb37000002
-                        )
+                    [name] => The State
+                    [category] => Tv show
+                    [id] => 10042595019
+                    [created_time] => 2011-07-27T22:25:11+0000
+                )
 
-                    [data] => Array
-                        (
-                            [0] => Array
-                                (
-                                    [name] => The State
-                                    [category] => Tv show
-                                    [id] => 10042595019
-                                    [created_time] => 2011-07-27T22:25:11+0000
-                                )
-
-                            [1] => Array
-                                (
-                                    [name] => Dog Bless You
-                                    [category] => Non-profit organization
-                                    [id] => 114790481886534
-                                    [created_time] => 2011-06-03T18:00:38+0000
-                                )
-etc...
-*/
+            [114790481886534] => Array
+                (
+                    [name] => Dog Bless You
+                    [category] => Non-profit organization
+                    [id] => 114790481886534
+                    [created_time] => 2011-06-03T18:00:38+0000
+                )
+etc
+ */
 		foreach ($all_likes as $uid => $likes) { 
-			foreach ($likes as $like) {	
+			foreach ($likes as $like_id => $like) {	
 				// foreach ($aLike['data'] as $like) {
 					$like = (object)$like;
-					if (!array_key_exists($like->id, $liked)) {
+					if (!array_key_exists($like_id, $liked)) {
 						$myO = new stdClass();
 						$myO->id = $like->id;
 						$myO->category = $like->category;
