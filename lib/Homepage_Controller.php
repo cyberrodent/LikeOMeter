@@ -102,6 +102,7 @@ class Homepage_Controller extends Controller {
 	public function HomepageAction($req, $res) {
 		$res->template = "homepage";
 		$return = new StdClass();
+		$return->token = $req->token;
 		$me = Model::ize($req->token, "me", null);
 		$friends = Model::ize($req->token, "{$me['id']}/friends",null);
 		$friend_ids = array_keys(keyById($friends['data']));
@@ -110,18 +111,19 @@ class Homepage_Controller extends Controller {
 		$attributes = array(
 	 //		'friends' ,
 			'likes' ,
-		//	'books' ,
-		//	'musics' ,
+			'books' ,
+			'music' ,
 		//	'posts' ,
-		//	'movies' ,
+			'movies' ,
 		//	'core' ,
-		//	'television' ,
+			'television' ,
 		
 		//	'scores' ,  // score attemprs to reduce the
 			// friends likes to a single number for 
 			// comparison to each other
 		);
-		$atdata = $this->getgraph($friend_ids, $attributes, $req->token);
+
+		$atdata = $this->getgraph(array($me['id']), $attributes, $req->token);
 		
 		foreach ($attributes as $a) {
 			$return->$a = $atdata[$a];
