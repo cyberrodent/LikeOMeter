@@ -26,13 +26,11 @@ class Common_Interest_Controller extends Controller {
 		// get_what_you_like
 		Model::setReturnObject(true);
 		$likes = Model::ize($req->token, "me/likes",0);
-		$friends = Model::ize($req->token,
-			"me/friends",0);
+		$friends = Model::ize($req->token, "me/friends",0);
 		Model::setReturnObject(false);
 		$i_like = array();
-		$my_friends = $friends->data;
-		$data->friends = keyById($my_friends);
-		foreach($likes->data as $like) {
+		$data->friends = keyById($friends->data);
+		foreach ($likes->data as $like) {
 			$i_like[] = $like['id'];
 		}
 
@@ -44,7 +42,7 @@ class Common_Interest_Controller extends Controller {
 		$liked_things = array();
 		/* id_of_the_liked_thing => array(of details about this liked thing) */
 
-		foreach ($my_friends as $friend) {
+		foreach ($friends->data as $friend) {
 			// get the things this friend likes
 			Model::setReturnObject(true);
 			$friend_likes = Model::ize($req->token,
