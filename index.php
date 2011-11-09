@@ -2,7 +2,7 @@
 /**
  * main file for this webapp 
  */
-
+date_default_timezone_set('UTC');
 // Enforce https on production
 if ((array_key_exists('HTTP_X_FORWARDED_PROTO', $_SERVER) and $_SERVER['HTTP_X_FORWARDED_PROTO'] == "http") && $_SERVER['REMOTE_ADDR'] != '127.0.0.1') {
 	error_log("Redirecting to https because of http_x_forwarded_proto");
