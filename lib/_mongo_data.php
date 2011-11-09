@@ -13,7 +13,7 @@ class MongoDataPoint extends DataPoint implements _data_point {
 	private $collection; //
 	private $use_cache = true;
 	private $verbose = 1; // log or not
-	private $TTLMAXSEC = 600;
+	private $TTLMAXSEC = 3600;
 	
 
 	function __construct($name = "MongoDataPoint") {
