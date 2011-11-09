@@ -35,31 +35,26 @@ class MongoDataPoint extends DataPoint implements _data_point {
 		$collection = "f";
 		$this->verbose and error_log("fetching $uri ($key) from MongoDB");	
 		$data = $this->db->$collection->findOne(  array("key" => $key) );
-
-		if (array_key_exists('last_fetch_time', $data)) {
-
-			if ($data['last_fetch_time'] + $this->TTLMAXSEC < mktime()) {
-				// data is too old
-				// trigger a re-fetch form source
-				error_log("* * * * * * * * * * * * * * * * * ");
-				error_log("Data too old for $uri  key: " . $key);
-				error_log("* * * * * * * * * * * * * * * * * ");
+		if ($data) {
+			if (array_key_exists('last_fetch_time', $data)) {
+				if ($data['last_fetch_time'] + $this->TTLMAXSEC < mktime()) {
+					// data is too old
+					// trigger a re-fetch form source
+					error_log("* * * * * * * * * * * * * * * * * ");
+					error_log("Data too old for $uri  key: " . $key);
+					error_log("* * * * * * * * * * * * * * * * * ");
+					return false;
+				} 
+			} else { 
+				error_log("- - - - - - - - - - - - - - - - - ");
+				error_log("no last fetch time for $uri  key: " . $key);
+				error_log("- - - - - - - - - - - - - - - - - ");
 				return false;
-			} 
-		} else { 
-
-			error_log("- - - - - - - - - - - - - - - - - ");
-			error_log("no last fetch time for $uri  key: " . $key);
-			error_log("- - - - - - - - - - - - - - - - - ");
-			return false;
-
+			}
 		}
-
 		$this->verbose and error_log("fetched $key from MongoDB");	
 		$this->verbose and error_log("got $data");	
 		return $data;
-	
-
 	}
 	function storeToCache($token, $uri, $data) {
 		if (empty($data)) { 

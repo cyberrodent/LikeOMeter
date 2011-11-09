@@ -113,7 +113,9 @@ class Homepage_Controller extends Controller {
 			'books' ,
 			'music' ,
 			'movies' ,
-			'television'
+			'television',
+			// 'links'
+
 		);
 
 		$atdata = $this->getgraph(array($me['id']), $attributes, $req->token);
