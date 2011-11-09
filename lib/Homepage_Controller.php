@@ -109,18 +109,11 @@ class Homepage_Controller extends Controller {
 
 		// define which of these attributes to fetch for each friend
 		$attributes = array(
-	 //		'friends' ,
 			'likes' ,
 			'books' ,
 			'music' ,
-		//	'posts' ,
 			'movies' ,
-		//	'core' ,
-			'television' ,
-		
-		//	'scores' ,  // score attemprs to reduce the
-			// friends likes to a single number for 
-			// comparison to each other
+			'television'
 		);
 
 		$atdata = $this->getgraph(array($me['id']), $attributes, $req->token);
@@ -146,13 +139,9 @@ class Homepage_Controller extends Controller {
 		}
 
 		foreach ($user_ids as $user_id) {
-			echo "for $user_id ...getting: ";
 			foreach ($attributes as $at) {
-				echo "$at .";
 				$atdata[$at][$user_id] = $this->getAtr($at, $user_id, $token);
-				echo ". ";
 			}
-			echo "<br />";
 
 			// cut it short while were developing to speed up cycles;
 			if (count($atdata[$at]) > 2) break;

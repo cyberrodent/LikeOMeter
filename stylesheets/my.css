@@ -93,6 +93,25 @@ h2 .score {
 	font-size:80%;
 	overflow:auto;
 }
+.television img, 
+.movies img,
+.books img,
+.music img,
+.likes img  {
+	clear: left;
+	float: left;
+	margin-right:10px;
+}
+.television li, 
+.movies li,
+.books li,
+.music li,
+.likes li { 
+	display:block;
+	min-height:50px;
+	padding:5px 0;
+	border-bottom:1px dashed #aaa;
+}
 .category { color:#090; font-size:0.8em; } 
 
 div.friend { 
@@ -112,3 +131,10 @@ div.friend img {
 .CommonI { padding:0 20px; } 
 .CommonI img { float: left; width: 200px; margin-right:20px; } 
 .CommonI h3 { clear:both; float:none; padding-top:15px; } 
+
+
+
+.at {
+	float:left;
+	width:300px;
+}
