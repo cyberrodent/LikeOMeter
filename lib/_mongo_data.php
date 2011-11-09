@@ -4,11 +4,17 @@
  */
 class MongoDataPoint extends DataPoint implements _data_point {
 
-	private $__name__ = "MongoDataPoint";
+	private $__name__ = "";
+
+
+	private $db = 'heroku_app1301727';
+
 	private $m; // mongo
 	private $collection; //
 	private $use_cache = true;
-	private $verbose; // log or not
+	private $verbose = 1; // log or not
+	private $TTLMAXSEC = 600;
+	
 
 	function __construct($name = "MongoDataPoint") {
 		$this->__name__ = $name;
@@ -17,10 +23,9 @@ class MongoDataPoint extends DataPoint implements _data_point {
 	
 		try { 
 			$this->m = new Mongo($dsn);
-			$this->db = $this->m->selectDB('heroku_app1301727');
+			$this->db = $this->m->selectDB($this->db);
 		} catch (Exception $e) {
-			print $e->getMessage();
-			die("cant connect to mongodb");
+			die("<p>". $e->getMessage() . "</p>cant connect to mongodb");
 		}
 	}
 
@@ -30,6 +35,26 @@ class MongoDataPoint extends DataPoint implements _data_point {
 		$collection = "f";
 		$this->verbose and error_log("fetching $uri ($key) from MongoDB");	
 		$data = $this->db->$collection->findOne(  array("key" => $key) );
+
+		if (array_key_exists('last_fetch_time', $data)) {
+
+			if ($data['last_fetch_time'] + $this->TTLMAXSEC < mktime()) {
+				// data is too old
+				// trigger a re-fetch form source
+				error_log("* * * * * * * * * * * * * * * * * ");
+				error_log("Data too old for $uri  key: " . $key);
+				error_log("* * * * * * * * * * * * * * * * * ");
+				return false;
+			} 
+		} else { 
+
+			error_log("- - - - - - - - - - - - - - - - - ");
+			error_log("no last fetch time for $uri  key: " . $key);
+			error_log("- - - - - - - - - - - - - - - - - ");
+			return false;
+
+		}
+
 		$this->verbose and error_log("fetched $key from MongoDB");	
 		$this->verbose and error_log("got $data");	
 		return $data;
@@ -43,18 +68,16 @@ class MongoDataPoint extends DataPoint implements _data_point {
 		} 
 	
 		$key = $this->makeKey($token, $uri);
-
+		$now = mktime();
 		$data['key'] = $key;
 		$data['uri'] = $uri;
+		$data['last_fetch_time'] = $now;
 
 		$collection = "f";
 
 		// $this->db->$collection->ensureIndex(array("key" => 1) , array("unique"=>1));
-		$ok = $this->db->$collection->insert( (object)$data)  ;
-		if ($ok) {
-			$this->verbose and error_log("Insert OK for $uri");
-		} else if ($this->db->$collection->update( array("key" => $key),  (object)$data) ) { 
-			$this->verbose and error_log("Update OK for $uri");
+		if ($this->db->$collection->update( array("key" => $key), $data, true) ) { 
+			$this->verbose and error_log("Upsert OK for $uri");
 		} else { 
 			die("faileds " . __CLASS__ ."::".__FUNCTION__ ." $uri $token");
 		}
