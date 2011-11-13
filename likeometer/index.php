@@ -6,8 +6,12 @@ require "../lib/utils.php";
 
 $FBSECRET = getenv("FACEBOOK_SECRET");
 $YOUR_APP_ID = getenv("FACEBOOK_APP_ID");
-$YOUR_CANVAS_PAGE = "https://apps.facebook.com/ns_enilemit_local/";
 
+if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
+	$YOUR_CANVAS_PAGE = "https://apps.facebook.com/ns_enilemit_local/";
+} else { 
+	$YOUR_CANVAS_PAGE = "https://apps.facebook.com/ns_enilemit/";
+}
 
 if ($_POST) {
 	# dumper($_POST);
@@ -22,8 +26,9 @@ if ($_POST) {
 		die();
 	}	
 
-	dumper($decode);
-	echo "YOu seem ok";
+
+	echo "You seem ok...on with the app!";
+
 
 } else { 
 
