@@ -14,15 +14,15 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 }
 
 if ($_POST) {
-	# dumper($_POST);
+
 	$decode = parse_signed_request($_POST['signed_request'], $FBSECRET);
 
-
+	// if we don't have a token then we need to ask this dude for permission
 	if (!isset($decode['oauth_token'])) {
 		error_log("authenticate with the fb");
 		error_log("Location: https://www.facebook.com/dialog/oauth?client_id=$YOUR_APP_ID&redirect_uri=$YOUR_CANVAS_PAGE&scope=user_likes,friends_likes");
-		echo "<script>top.location.href = \"https://www.facebook.com/dialog/oauth?client_id=".  $YOUR_APP_ID."&redirect_uri=".$YOUR_CANVAS_PAGE.  "&scope=user_likes,friends_likes\"; </script> ";
-
+		echo "<script>top.location.href = \"https://www.facebook.com/dialog/oauth?client_id=".  
+			$YOUR_APP_ID."&redirect_uri=".$YOUR_CANVAS_PAGE. "&scope=user_likes,friends_likes\";</script> ";
 		die();
 	}	
 
@@ -35,3 +35,13 @@ if ($_POST) {
 	die("nothing to get here");
 
 }
+
+
+?><h1>Facebook Like-O-Meter</h1>
+<div>
+	About this app: This app will look at the things that all your friends on facebook like.  It will show you what things most of your friends like.
+
+</div>
+
+
+
