@@ -29,6 +29,12 @@ class Urls {
 			'Show',
 			array()	
 		),
+		'/^likeometer\/$/' => array(
+			'Likeometer',
+			'likeometer',
+			array()	
+		),
+
 
 		'/^person\/([0-9]+)\/?$/' => array(
 			'Common_Interest_Controller',

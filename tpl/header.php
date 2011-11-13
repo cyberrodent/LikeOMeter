@@ -13,6 +13,9 @@
 	</h1>
 	<br />
 	<ul>
+	<li>
+		<a href="/">Home</a>
+	</li>
 	<li>&gt;<a href="/?<?php
 e($_SERVER['QUERY_STRING']);
 ?>">You And What You Like</a></li>
