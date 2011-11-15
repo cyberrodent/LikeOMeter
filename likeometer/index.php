@@ -27,7 +27,7 @@ if ($_POST) {
 	}	
 
 
-	echo "You seem ok...on with the app!";
+	# echo "You seem ok...on with the app!";
 
 
 } else { 
@@ -37,11 +37,40 @@ if ($_POST) {
 }
 
 
-?><h1>Facebook Like-O-Meter</h1>
+?><!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset=utf-8>
+	<title>Like-O-Meter</title>
+	<link rel="stylesheet" href="https://enilemit.home/likeometer/lom.css" type="text/css" media="screen,projection" />
+</head>
+<body>
+
+<h1>Facebook Like-O-Meter: Home Page</h1>
 <div>
 	About this app: This app will look at the things that all your friends on facebook like.  It will show you what things most of your friends like.
+</div>
+<div>
+	There are 3 pages to visit as part of using Like-O-Meter.
+	<ol>
+		<li>
+			What you like.
+			This shows all the things that you've liked and also shows you what sorts of things you tend to like by grouping the things you've liked by a categorization proivided by Facebook via its graph API. For instance, you may like more Movies than Music or Television.
+		</li>
+		<li>
+		What your friends all like.
+		This page shows you the 20 things that most of your friends like that you don't already like. This is a great way to discover new things based upon the wisdom of your crowd.  These are also grouped by category.</li>
+		</li>
 
+		<li>What stuff do you and your friend's like in common?
+		This page compares your likes to each of your friends' likes. The results show you which things that you like, how many and which friends like it too.
+		</li>
+	</ol>
 </div>
 
 
-
+<footer>
+&copy;2011 Jeff Kolber
+</footer>
+</body>
+</html>
