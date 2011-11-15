@@ -1,17 +1,19 @@
 <?php
 /**
- * your file
+ * Likeometer index.php
+ * This is for the canvas app version of fblikes
+ *
  */
 
 
 $add_this_path =  dirname(dirname(__FILE__));
 set_include_path( $add_this_path . ":" . get_include_path() );
 require "lib/utils.php";
+require "lib/FBUtils.php";
 require "lib/Model.php";
 
 $FBSECRET = getenv("FACEBOOK_SECRET");
 $YOUR_APP_ID = getenv("FACEBOOK_APP_ID");
-
 if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 	$YOUR_CANVAS_PAGE = "https://apps.facebook.com/ns_enilemit_local/";
 } else { 
@@ -19,7 +21,6 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 }
 
 if ($_POST) {
-
 	$decode = parse_signed_request($_POST['signed_request'], $FBSECRET);
 
 	// if we don't have a token then we need to ask this dude for permission
@@ -33,7 +34,7 @@ if ($_POST) {
 
 
 	# echo "You seem ok...on with the app!";
-
+	$token = $decode['oauth_token'];
 
 } else { 
 
@@ -72,7 +73,13 @@ if ($_POST) {
 		</li>
 	</ol>
 </div>
+<div>
+<?php
+	$me = Model::ize($token, 'me');
+	dumper($me);
 
+?>
+</div>
 
 <footer>
 &copy;2011 Jeff Kolber
