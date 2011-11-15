@@ -2,7 +2,12 @@
 /**
  * your file
  */
-require "../lib/utils.php";
+
+
+$add_this_path =  dirname(dirname(__FILE__));
+set_include_path( $add_this_path . ":" . get_include_path() );
+require "lib/utils.php";
+require "lib/Model.php";
 
 $FBSECRET = getenv("FACEBOOK_SECRET");
 $YOUR_APP_ID = getenv("FACEBOOK_APP_ID");
