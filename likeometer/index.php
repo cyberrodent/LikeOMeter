@@ -4,8 +4,6 @@
  * This is for the canvas app version of fblikes
  *
  */
-
-
 $add_this_path =  dirname(dirname(__FILE__));
 set_include_path( $add_this_path . ":" . get_include_path() );
 require "lib/utils.php";
@@ -51,7 +49,10 @@ if ($_POST) {
 	<link rel="stylesheet" href="https://enilemit.home/likeometer/lom.css" type="text/css" media="screen,projection" />
 </head>
 <body>
-
+<div id="fb-root"></div>
+<script>
+<?php include "./setup.js" ?>
+</script>
 <h1>Facebook Like-O-Meter: Home Page</h1>
 <div>
 	About this app: This app will look at the things that all your friends on facebook like.  It will show you what things most of your friends like.
@@ -72,11 +73,14 @@ if ($_POST) {
 		This page compares your likes to each of your friends' likes. The results show you which things that you like, how many and which friends like it too.
 		</li>
 	</ol>
+
+	<input type="button" value="Log in Now" id="log_in_now" class="login_button" />
+
 </div>
 <div>
 <?php
-	$me = Model::ize($token, 'me');
-	dumper($me);
+
+
 
 ?>
 </div>
@@ -84,5 +88,6 @@ if ($_POST) {
 <footer>
 &copy;2011 Jeff Kolber
 </footer>
+<script type="text/javascript" src="/jquery-1.7.min.js"></script>
 </body>
 </html>
