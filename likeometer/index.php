@@ -47,9 +47,9 @@ if ($_POST) {
 	<meta charset=utf-8>
 	<title>Like-O-Meter</title>
 	<link rel="stylesheet" href="https://enilemit.home/likeometer/lom.css" type="text/css" media="screen,projection" />
+  <script type="text/javascript" src="https://enilemit.home/jquery-1.7.min.js"></script>
 </head>
 <body>
-<div id="fb-root"></div>
 <script>
 <?php include "./setup.js" ?>
 </script>
@@ -88,6 +88,5 @@ if ($_POST) {
 <footer>
 &copy;2011 Jeff Kolber
 </footer>
-<script type="text/javascript" src="/jquery-1.7.min.js"></script>
 </body>
 </html>
