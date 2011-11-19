@@ -3,12 +3,15 @@ Likeometer = function (){
   var self = this;
   this.friends = [];
   var likes = {}; //  fb_uid => likes
+	var things = {}; // id => data
   var collikes = {}; // collate likes in here like_id => [ uids who like this ]  
-  var like_counts = {};
+	var like_counts = {};
   this.token = false;
   this.graph =  false;
   this.user = {};
   var all_friends = [];
+	var like_count_keys = new Array();
+
   var processed = false;
   list = []; //  this tracks how many callbacks have called back
 
@@ -21,23 +24,39 @@ Likeometer = function (){
     return count;
   }
 
-  compare_flikes = function(a, b) {
-    if (a.length > b.length ) {
-        return 1;
-    } else if (a.length === b.length) {
+  var compare_likes = function(a, b) {
+    if (collikes[a].length > collikes[b].length ) {
+        return -1;
+    } else if (collikes[a].length === collikes[b].length) {
       return 0;
     } else { 
-        return -1;
+        return 1;
     }
   }
 
+  var show_top_likes = function() {
+		if (!processed) { return; } 
+
+		var limit = 20;
+		for (var i=0; i < limit; i++) {
+			var d = "<div>" + (i+1) + ") " +
+					things[like_count_keys[i]].name + " (" +
+					things[like_count_keys[i]].category + ")" +
+					" is liked by " + 
+					collikes[like_count_keys[i]].length + " friends.</div>";
+				$("body").append(d);
+		}
+	}
+
   var got_all_likes = function() {
     if (count_likes() > 1) {  // first time through we need to skip; FIXME bad edge case for losers with no friends
-      $("#friends").replaceWith("<div id='friends'>got " + count_likes() +" likes. Processing</div>");
+      $("#friends").replaceWith("<div id='friends'>got " + count_likes() +" friends' likes. Processing...</div>");
+			$("#scroll").hide();
       for (var i in likes) { 
         var flikes = likes[i];
             for (var f in flikes) {
                 var flike = flikes[f];
+								things[flike.id] = flike;
                 if (typeof(collikes[flike.id])=== 'undefined') {
                     collikes[flike.id] = [i];
                 } else { 
@@ -45,22 +64,21 @@ Likeometer = function (){
                 }
             }
       }
-      $("#friends").replaceWith("got " + count_likes() +" likes. Processed");
      
-      collikes.sort(function(a, b) {
-          if (a.length > b.length ) {
-            return 1;
-          } else if (a.length === b.length) {
-            return 0;
-          } else { 
-            return -1;
-          }
-        });
+		  for (var i in collikes) {
+				like_counts[i] = collikes[i].length;
+				like_count_keys.push(i);
+			}
+		  like_count_keys.sort(compare_likes);
 
-
-      console.log(collikes);
+      $("#friends").replaceWith("got " + like_count_keys.length +" likes. Processed.");
+      console.log(like_count_keys[0]);
+			console.log(things[ like_count_keys[0]]);
+			console.log(collikes[ like_count_keys[0]]);
 
       processed = true;
+
+			show_top_likes();
     }
   };
 
