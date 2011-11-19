@@ -6,3 +6,24 @@ footer {
 	margin-top:18px;
 	padding:10px;
 }
+
+
+#scroll {
+	background-color: #000;
+	height:40px;
+	color:white;
+	overflow: hidden;
+	padding:5px 10px;
+	width:300px;	
+
+
+}
+#scroll div {
+	font-size:9px;
+	line-height:10px;
+	margin:0;
+	padding:0;
+
+}
+
+
