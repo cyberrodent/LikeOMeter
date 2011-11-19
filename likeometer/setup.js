@@ -1,100 +1,153 @@
 
 Likeometer = function (){
-
-	var self = this;
-	this.friends = [];
-	this.likes = {}; //  fb_uid => likes 
-	this.token = false;
-	this.graph =  false;
-	this.user =  false;   
-	var all_friends = [];
-
-	var got_likes = function(response, uid) {
-		// console.log("got " + uid + " likes");
-		self.likes[uid] = response.data;
-		console.log(self.likes.length);
-		$("#scroll").append("<div>Friend " + all_friends[uid] + "'s likes "+ response.data.length +" things.<div>");
-	}	
-
-	var get_likes_for_id = function(id) {
-		FB.api("/" + id  + "/likes", function(response) { 
-			// console.log('getting likes for face ' + id);
-			got_likes(response, id) ;
-		});
-	}
-
-	var got_friends = function(response, uid) { 
-		var friends = response.data;
-		self.friends = friends;
-		for (var i=0; i < friends.length; i++) {
-			// $("#friends").append("<div>Fetching " + friends[i].name + "'s likes....</div>");
-			all_friends[friends[i].id] = friends[i].name;
-			get_likes_for_id(friends[i].id);
-			if (i > 10 ) {
-				break;
-			}
-		}
-		$("#friends").append("Friend list loaded. Fetching friends' likes.");
-	}
-
-	var got_me = function(response) {
-		self.user = response;
-	}
-
-	var init = function (token, uid) {
-		console.log("init with " + uid);
-		self.token = token;
-		self.uid = uid;
-
-		
-
-		
-		$('body').append('<input type="button" id="LOM" value="DUMP" />');
-		$('#LOM').click(function() {
-				console.log(self.friends.length);
-				console.log(self.likes.length);
-				var llimit=4;
-				var c= 0;
-				for (var i in self.likes) {
-					console.log(self.likes[i]);
-					if (c++ > llimit) { break; } 
-				}
-				});
+  var self = this;
+  this.friends = [];
+  var likes = {}; //  fb_uid => likes
+  var collikes = {}; // collate likes in here like_id => [ uids who like this ]  
+  var like_counts = {};
+  this.token = false;
+  this.graph =  false;
+  this.user = {};
+  var all_friends = [];
+  var processed = false;
+  list = []; //  this tracks how many callbacks have called back
 
 
+  var count_likes = function() {
+    var count = 0;
+    for (var i in likes) {
+      count++;
+    }
+    return count;
+  }
+
+  compare_flikes = function(a, b) {
+    if (a.length > b.length ) {
+        return 1;
+    } else if (a.length === b.length) {
+      return 0;
+    } else { 
+        return -1;
+    }
+  }
+
+  var got_all_likes = function() {
+    if (count_likes() > 1) {  // first time through we need to skip; FIXME bad edge case for losers with no friends
+      $("#friends").replaceWith("<div id='friends'>got " + count_likes() +" likes. Processing</div>");
+      for (var i in likes) { 
+        var flikes = likes[i];
+            for (var f in flikes) {
+                var flike = flikes[f];
+                if (typeof(collikes[flike.id])=== 'undefined') {
+                    collikes[flike.id] = [i];
+                } else { 
+                  collikes[flike.id].push(i);
+                }
+            }
+      }
+      $("#friends").replaceWith("got " + count_likes() +" likes. Processed");
+     
+      collikes.sort(function(a, b) {
+          if (a.length > b.length ) {
+            return 1;
+          } else if (a.length === b.length) {
+            return 0;
+          } else { 
+            return -1;
+          }
+        });
 
 
+      console.log(collikes);
 
-		FB.api("/me", function(response) { got_me(response)});
-		FB.api("/me/likes", function(response) { got_likes(response, uid)});
-		FB.api("/me/friends", function(response) { got_friends(response, uid)});
+      processed = true;
+    }
+  };
 
+  var got_likes = function(response, uid) {
+    // console.log("got " + uid + " likes");
+    var idx = list.indexOf(uid);
+    if (idx < 0) {
+     console.log("got less than zero for " + uid);
+    }
+    list.splice(idx,1);
+    likes[uid] = response.data;
+    $("#scroll").append("<div>Friend " + all_friends[uid] + "'s likes "+ response.data.length +" things.<div>");
 
+    if (list.length === 0) { 
+        got_all_likes();
+    }
+  }	
 
+  var get_likes_for_id = function(id) {
+    list.push(id);
+    FB.api("/" + id  + "/likes", function(response) { 
+      got_likes(response, id) ;
+    });
+  }
 
-		console.log('inited');
-	}
+  var got_friends = function(response, uid) { 
+    var friends = response.data;
+    self.friends = friends;
+    for (var i=0; i < friends.length; i++) {
+      // $("#friends").append("<div>Fetching " + friends[i].name + "'s likes....</div>");
+      all_friends[friends[i].id] = friends[i].name;
+      get_likes_for_id(friends[i].id);
+      // if (i > 99 ) { break; }
+    }
+    $("#friends").append("Friend list loaded. Fetching friends' likes.");
+  }
 
-	return {
-		init : init
-		//getLikes : getLikes,
-		//graphGet: graphGet ,
-		//graph : this.graph
-	};
+  var got_me = function(response) {
+    self.user = response;
+    get_likes_for_id(self.user.id);
+  }
+
+  var init = function (token, uid) {
+    console.log("init with " + uid);
+    self.token = token;
+    self.uid = uid;
+
+    $('body').append('<input type="button" id="LOM" value="DUMP" />');
+    $('#LOM').click(function() {
+        console.log(self.list.length);
+        console.log(self.friends.length);
+        console.log(likes.length);
+        // var llimit=4;
+        // var c= 0;
+        // for (var i in self.likes) {
+        //   console.log(self.likes[i]);
+        //   if (c++ > llimit) { break; } 
+        // }
+      });
+
+    FB.api("/me", function(response) { got_me(response)});
+    // FB.api("/me/likes", function(response) { got_likes(response, uid)});
+    FB.api("/me/friends", function(response) { got_friends(response, uid)});
+
+    console.log('inited');
+  }
+
+  return {
+    init : init
+    //getLikes : getLikes,
+    //graphGet: graphGet ,
+    //graph : this.graph
+  };
 }
 
 
 FBLogin = function() {
-	FB.login(function(response) {
-		if (response.authResponse) {
-			// console.log('Welcome!  Fetching your information.... ');
-			FB.api('/me', function(response) {
-				console.log('Good to see you, ' + response.name + '.');
-			});
-		} else {
-			console.log('User cancelled login or did not fully authorize.');
-		}
-	}, {scope: 'email, friends_likes, user_likes' });
+  FB.login(function(response) {
+      if (response.authResponse) {
+        // console.log('Welcome!  Fetching your information.... ');
+        FB.api('/me', function(response) {
+            console.log('Good to see you, ' + response.name + '.');
+          });
+      } else {
+        console.log('User cancelled login or did not fully authorize.');
+      }
+    }, {scope: 'email, friends_likes, user_likes' });
 }
 
 
@@ -103,53 +156,53 @@ FBLogin = function() {
 
 $(function(){
 
-	// everything's in here
+    // everything's in here
 
-	window.fbAsyncInit = function() {
-		FB.init({
-			appId      : '<?php echo AppInfo::appID() ?>', // App ID
-		channelURL : '/likeometer/channel.php', // Channel File
-		status     : true, // check login status
-		cookie     : true, // enable cookies to allow the server to access the session
-		oauth      : true, // enable OAuth 2.0
-		xfbml      : true  // parse XFBML
-		});
-		// Additional initialization code here
+    window.fbAsyncInit = function() {
+      FB.init({
+          appId      : '<?php echo AppInfo::appID() ?>', // App ID
+          channelURL : '/likeometer/channel.php', // Channel File
+          status     : true, // check login status
+          cookie     : true, // enable cookies to allow the server to access the session
+          oauth      : true, // enable OAuth 2.0
+          xfbml      : true  // parse XFBML
+        });
+      // Additional initialization code here
 
-		LOM = new Likeometer();
+      LOM = new Likeometer();
 
-		FB.getLoginStatus(function(response) {
-			if (response.authResponse) { // user is logged in
-				LOM.init(response.authResponse.accessToken, 
-					response.authResponse.userID);
-			} else { // User not logged in.
-				$("#log_in_now").show();	
-			}
-		}, {scope: 'email, friend_likes, user_likes'});
+      FB.getLoginStatus(function(response) {
+          if (response.authResponse) { // user is logged in
+            LOM.init(response.authResponse.accessToken, 
+              response.authResponse.userID);
+          } else { // User not logged in.
+            $("#log_in_now").show();	
+          }
+        }, {scope: 'email, friend_likes, user_likes'});
 
-	}; // end fbAsyncInit
+    }; // end fbAsyncInit
 
-	$('body').append('<div id="fb-root"></div>');
-	// Load the SDK 
-	$.getScript(document.location.protocol + '//connect.facebook.net/en_US/all.js');
+    $('body').append('<div id="fb-root"></div>');
+    // Load the SDK 
+    $.getScript(document.location.protocol + '//connect.facebook.net/en_US/all.js');
 
-	// bind our login function to the login button
-	$("#log_in_now").click(FBLogin);
+    // bind our login function to the login button
+    $("#log_in_now").click(FBLogin);
 
 
 
-});
+  });
 
 $('body').append('<div id="friends"></div>');
 $('body').append('<div id="scroll"></div>');
 lASt=-99;
 AS = setInterval(function() {
-		if ( $("#scroll").length) {
-			var ds = $("div", $("#scroll")).length;
-			var spot =  $("#scroll")[0].scrollHeight - $("#scroll").outerHeight() -1;
-			// console.log( spot  +" :: "+  $("#scroll").scrollTop()+ " :: " + $("#scroll")[0].scrollHeight  );
-			$("#scroll").animate({scrollTop:spot}, 900);
-		} else { 
-			clearInterval(AS);
-		}
-	}, 999);
+    if ( $("#scroll").length) {
+      var ds = $("div", $("#scroll")).length;
+      var spot =  $("#scroll")[0].scrollHeight - $("#scroll").outerHeight() -1;
+      // console.log( spot  +" :: "+  $("#scroll").scrollTop()+ " :: " + $("#scroll")[0].scrollHeight  );
+      $("#scroll").animate({scrollTop:spot}, 900);
+    } else { 
+      clearInterval(AS);
+    }
+  }, 999);
