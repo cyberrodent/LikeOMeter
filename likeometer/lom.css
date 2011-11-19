@@ -10,20 +10,51 @@ footer {
 
 #scroll {
 	background-color: #000;
-	height:40px;
+	height:90px;
 	color:white;
 	overflow: hidden;
 	padding:5px 10px;
-	width:300px;	
 
 
 }
 #scroll div {
-	font-size:9px;
+	font-size:10px;
 	line-height:10px;
 	margin:0;
 	padding:0;
 
 }
+#friends {
+	font-size:18px;
+	border:1px solid green;
+	padding:10px;
+	background-color:#ccc;
+}
+#LOM {
+	font-size:23px;
+	background-color:red;
+	color:yellow;
+	border:1px solid black;
+}
+#report { 
+	padding:10px;
+}
+#report div {
+	font-size:24px;
+}
 
+.fimg { 
+	display:inline-block;
+	margin-right:1px;
 
+}
+
+footer { 
+	width:100%;
+	border-top:1px dotted black;
+	position: fixed;
+	bottom:0;
+	left:0;
+	height:20px;
+
+}

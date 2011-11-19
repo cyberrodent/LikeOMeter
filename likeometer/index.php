@@ -54,6 +54,7 @@ if ($_POST) {
 <?php include "./setup.js" ?>
 </script>
 <h1>Facebook Like-O-Meter: Home Page</h1>
+<div class="about">
 <div>
 	About this app: This app will look at the things that all your friends on facebook like.  It will show you what things most of your friends like.
 </div>
@@ -73,7 +74,7 @@ if ($_POST) {
 		This page compares your likes to each of your friends' likes. The results show you which things that you like, how many and which friends like it too.
 		</li>
 	</ol>
-
+	</div>
 	<input type="button" value="Log in Now" id="log_in_now" class="login_button" />
 
 </div>

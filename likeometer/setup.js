@@ -11,7 +11,7 @@ Likeometer = function (){
   this.user = {};
   var all_friends = [];
 	var like_count_keys = new Array();
-
+  var started = false;
   var processed = false;
   list = []; //  this tracks how many callbacks have called back
 
@@ -38,13 +38,26 @@ Likeometer = function (){
 		if (!processed) { return; } 
 
 		var limit = 20;
+		$("body").append("<div id='report'></div>");
 		for (var i=0; i < limit; i++) {
+			var thing_id = like_count_keys[i];
 			var d = "<div>" + (i+1) + ") " +
-					things[like_count_keys[i]].name + " (" +
+					"<a target=_blank href='https://facebook.com/" + thing_id + "'>" +
+					things[like_count_keys[i]].name + "</a> (" +
 					things[like_count_keys[i]].category + ")" +
-					" is liked by " + 
-					collikes[like_count_keys[i]].length + " friends.</div>";
-				$("body").append(d);
+					": Liked by these " + 
+					collikes[like_count_keys[i]].length + " friends:<br />";
+
+				for (var j=0; j < collikes[thing_id].length; j++) {
+					d += "<div class='fimg'><a target='_top' href='https://facebook.com/"+
+						collikes[thing_id][j] + "' title='"+ 
+						all_friends[collikes[thing_id][j]] + "' >" 	
+						+ "<img src='https://graph.facebook.com/" +
+						collikes[thing_id][j] + 
+						"/picture?type=square' height='30' width='30' border='0' /></a></div>";
+				}	
+				d += "</div><br />";
+				$("#report").append(d);
 		}
 	}
 
@@ -71,10 +84,10 @@ Likeometer = function (){
 			}
 		  like_count_keys.sort(compare_likes);
 
-      $("#friends").replaceWith("got " + like_count_keys.length +" likes. Processed.");
-      console.log(like_count_keys[0]);
-			console.log(things[ like_count_keys[0]]);
-			console.log(collikes[ like_count_keys[0]]);
+      $("#friends").replaceWith("<div id='friends'>Collated " + like_count_keys.length +" likes from all of your friends.</div>");
+      // console.log(like_count_keys[0]);
+			// console.log(things[ like_count_keys[0]]);
+			// console.log(collikes[ like_count_keys[0]]);
 
       processed = true;
 
@@ -118,6 +131,7 @@ Likeometer = function (){
 
   var got_me = function(response) {
     self.user = response;
+		all_friends[self.user.id] = self.user.name;
     get_likes_for_id(self.user.id);
   }
 
@@ -126,23 +140,36 @@ Likeometer = function (){
     self.token = token;
     self.uid = uid;
 
-    $('body').append('<input type="button" id="LOM" value="DUMP" />');
+    $('body').append('<input type="button" id="LOM" value="Sounds great. Start the Like-O-Meter" />');
     $('#LOM').click(function() {
-        console.log(self.list.length);
-        console.log(self.friends.length);
-        console.log(likes.length);
-        // var llimit=4;
-        // var c= 0;
-        // for (var i in self.likes) {
-        //   console.log(self.likes[i]);
-        //   if (c++ > llimit) { break; } 
-        // }
+
+        // console.log(self.list.length);
+        // console.log(self.friends.length);
+        // console.log(likes.length);
+				if (!started) { 
+					$(".about").hide();
+					$("#LOM").hide();
+					$('body').append('<div id="friends"></div>');
+					$('body').append('<div id="scroll"></div>');
+
+					AS = setInterval(function() {
+							if ( $("#scroll").length) {
+								var ds = $("div", $("#scroll")).length;
+								var spot =  $("#scroll")[0].scrollHeight - $("#scroll").outerHeight() -1;
+								// console.log( spot  +" :: "+  $("#scroll").scrollTop()+ " :: " + $("#scroll")[0].scrollHeight  );
+								$("#scroll").animate({scrollTop:spot}, 900);
+							} else { 
+								clearInterval(AS);
+							}
+						}, 999);
+					FB.api("/me", function(response) { got_me(response)});
+					// FB.api("/me/likes", function(response) { got_likes(response, uid)});
+					FB.api("/me/friends", function(response) { got_friends(response, uid)});
+					started = true;
+				}
+
+       
       });
-
-    FB.api("/me", function(response) { got_me(response)});
-    // FB.api("/me/likes", function(response) { got_likes(response, uid)});
-    FB.api("/me/friends", function(response) { got_friends(response, uid)});
-
     console.log('inited');
   }
 
@@ -193,7 +220,9 @@ $(function(){
           if (response.authResponse) { // user is logged in
             LOM.init(response.authResponse.accessToken, 
               response.authResponse.userID);
-          } else { // User not logged in.
+
+            $("#log_in_now").hide();	
+					} else { // User not logged in.
             $("#log_in_now").show();	
           }
         }, {scope: 'email, friend_likes, user_likes'});
@@ -211,16 +240,5 @@ $(function(){
 
   });
 
-$('body').append('<div id="friends"></div>');
-$('body').append('<div id="scroll"></div>');
 lASt=-99;
-AS = setInterval(function() {
-    if ( $("#scroll").length) {
-      var ds = $("div", $("#scroll")).length;
-      var spot =  $("#scroll")[0].scrollHeight - $("#scroll").outerHeight() -1;
-      // console.log( spot  +" :: "+  $("#scroll").scrollTop()+ " :: " + $("#scroll")[0].scrollHeight  );
-      $("#scroll").animate({scrollTop:spot}, 900);
-    } else { 
-      clearInterval(AS);
-    }
-  }, 999);
+
