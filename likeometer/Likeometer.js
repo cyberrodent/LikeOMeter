@@ -24,7 +24,7 @@ Likeometer = function (){
     return count;
   }
 
-  var compare_likes = function(a, b) {
+  var compare_collikes = function(a, b) {
     if (collikes[a].length > collikes[b].length ) {
         return -1;
     } else if (collikes[a].length === collikes[b].length) {
@@ -37,6 +37,7 @@ Likeometer = function (){
 	var show_top_likes = function() {
 		if (!processed) { return; } 
 		var limit = 20;
+		// TODO : watch for sets smaller that limit
 		for (var i=0; i < limit; i++) {
 			var thing_id = like_count_keys[i];
 			var d = "<div>" + (i+1) + ") " +
@@ -56,14 +57,73 @@ Likeometer = function (){
 			d += "</div><br />";
 			$("#friendslikes").append(d);
 		}
+
+		$('#flikes').click(flikes_action);
+		$('#home').click(home_action);
+		$('#common').click(common_action);
+		set_status_line("Ready.");
+		switch_page(".about");
+
+
+	}
+	var got_my_likes = function() {
+		set_status_line("Categorizing your likes");
+		
+		var my_likes = likes[self.uid];
+		var my_cats = {};
+		var my_cat_keys = new Array();
+
+		var sort_cat_counts = function(a,b) {
+			if (my_cats[a].length < my_cats[b].length) {
+				return 1;
+			} else if (my_cats[a].length ===  my_cats[b].length) {
+				return 0;
+			} else { 
+				return -1;
+			}
+		};
+
+		for (var like in my_likes) {
+			if (typeof(my_cats[my_likes[like].category]) === 'undefined') {
+				my_cats[my_likes[like].category] = [my_likes[like].id];
+				my_cat_keys.push(my_likes[like].category);
+			} else {
+				my_cats[my_likes[like].category].push( my_likes[like].id);
+			}
+		}
+		
+		my_cat_keys.sort(sort_cat_counts);
+	
+		for (var i in my_cat_keys) {
+			key = my_cat_keys[i];
+			var o = "<div><h3>" + key + "</h3>";
+			var how_many =  my_cats[key].length;
+			o += "You like " + how_many + " " + key ;
+
+			for (var j in my_cats[key]) {
+				var thing_id = my_cats[key][j];
+				o += '<div><a target=_blank href="https://www.facebook.com/'+ thing_id + '">'+
+					'<img src="https://graph.facebook.com/'+ thing_id +'/picture?type=square" border="0" align="absmiddle" />&nbsp;' + things[thing_id].name + "</a></div>";
+			}
+				
+				
+			o += "</div>";
+			$("#yourlikes").append(o);
+
+		}
+
+
+		set_status_line("Your Likes are ready");
+		$('#you').click(you_action);
 	}
 
   var got_all_likes = function() {
+
+		got_my_likes();
+		set_status_line("got "+	count_likes() +" friends' likes. Processing...");
     if (count_likes() > 1) {  // first time through we need to skip; 
 			// FIXME bad edge case for losers with no friends
-
-			set_status_line("got "+	count_likes() +" friends' likes. Processing...");
-
+			//
 			$("#scroll").hide();
       for (var i in likes) { 
         var flikes = likes[i];
@@ -82,7 +142,7 @@ Likeometer = function (){
 				like_counts[i] = collikes[i].length;
 				like_count_keys.push(i);
 			}
-		  like_count_keys.sort(compare_likes);
+		  like_count_keys.sort(compare_collikes);
 			set_status_line("Collated " + like_count_keys.length +
 					" likes from all of your friends. This is your Top 20.");
       // console.log(like_count_keys[0]);
@@ -94,6 +154,11 @@ Likeometer = function (){
 			show_top_likes();
     }
   };
+	var make_things = function(data) {
+		for (var i in data) {
+			things[data[i].id] = data[i];
+		}
+	}
 
   var got_likes = function(response, uid) {
     // console.log("got " + uid + " likes");
@@ -103,9 +168,11 @@ Likeometer = function (){
     }
     list.splice(idx,1);
     likes[uid] = response.data;
+
+		make_things(response.data);
+
     $("#scroll").append("<div>Friend " + all_friends[uid] + "'s likes "+ 
 				response.data.length +" things.<div>");
-
     if (list.length === 0) { 
         got_all_likes();
     }
@@ -121,12 +188,12 @@ Likeometer = function (){
   var got_friends = function(response, uid) { 
     var friends = response.data;
     self.friends = friends;
+		set_status_line("Friend list loaded. Fetching friends' likes.");
     for (var i=0; i < friends.length; i++) {
       all_friends[friends[i].id] = friends[i].name;
       get_likes_for_id(friends[i].id);
       // if (i > 99 ) { break; }
     }
-		set_status_line("Friend list loaded. Fetching friends' likes.");
   }
 
   var got_me = function(response) {
@@ -143,51 +210,11 @@ Likeometer = function (){
 		// console.log(self.friends.length);
 		// console.log(likes.length);
 		
-		switch_page("#friendslikes");	
-
-		if (!started) { 
-			$('body').append('<div id="scroll"></div>');
-			AS = setInterval(function() {
-					if ( $("#scroll").length) {
-						var ds = $("div", $("#scroll")).length;
-						var spot =  $("#scroll")[0].scrollHeight - $("#scroll").outerHeight() -1;
-						// console.log( spot  +" :: "+  $("#scroll").scrollTop()+ " :: " + $("#scroll")[0].scrollHeight  );
-						$("#scroll").animate({scrollTop:spot}, 600);
-					} else { 
-						clearInterval(AS);
-					}
-				}, 599);
-
-			FB.api("/me", function(response) { got_me(response)});
-			FB.api("/me/friends", function(response) { got_friends(response, uid)});
-
-			started = true;
-		} else {
-			console.log('Sorry. Likeometer is already running');
 			set_status_line("What your friend's like");
-		}
-
+		switch_page("#friendslikes");	
 	}
 	var set_status_line = function(message) {
 		$("#statusline").text(message);
-	}
-	var init = function (token, uid) {
-		console.log("init with " + uid);
-		self.token = token;
-		self.uid = uid;
-
-		$("body").append("<div id='friendslikes'></div>");
-		$("body").append("<div id='commonlikes'>C</div>");
-		$("body").append("<div id='yourlikes'>Y</div>");
-
-		switch_page();
-
-		$('#flikes').click(flikes_action);
-		$('#home').click(home_action);
-		$('#you').click(you_action);
-		$('#common').click(common_action);
-
-		console.log('Likeometer init run');
 	}
 
 	var home_action = function() {
@@ -213,6 +240,48 @@ Likeometer = function (){
 			$(to_show).show();
 		}
 	}
+
+	var init = function (token, uid) {
+		console.log("init with " + uid);
+		self.token = token;
+		self.uid = uid;
+
+		if (!started) { 
+			started = true;
+
+			$('body').append('<div id="scroll"></div>');
+			$("body").append("<div id='friendslikes'></div>");
+			$("body").append("<div id='commonlikes'>C</div>");
+			$("body").append("<div id='yourlikes'></div>");
+			switch_page();
+
+
+			AS = setInterval(function() {
+					if ( $("#scroll").length) {
+						var ds = $("div", $("#scroll")).length;
+						var spot =  $("#scroll")[0].scrollHeight - $("#scroll").outerHeight() -1;
+						// console.log( spot  +" :: "+  $("#scroll").scrollTop()+ " :: " + $("#scroll")[0].scrollHeight  );
+						$("#scroll").animate({scrollTop:spot}, 600);
+					} else { 
+						clearInterval(AS);
+					}
+				}, 599);
+
+			FB.api("/me", function(response) { got_me(response)});
+			FB.api("/me/friends", function(response) { got_friends(response, uid)});
+
+
+
+
+			console.log('Likeometer init run');
+
+		} else {
+			console.log('Sorry. Likeometer is already running');
+		}
+
+
+	}
+
 
   return {
     init : init

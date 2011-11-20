@@ -28,7 +28,7 @@ nav a:hover {
 
 #scroll {
 	background-color: #000;
-	height:90px;
+	height:290px;
 	color:white;
 	overflow: hidden;
 	padding:5px 10px;
@@ -76,3 +76,4 @@ footer {
 	height:20px;
 
 }
+.about { display: hidden; } 
