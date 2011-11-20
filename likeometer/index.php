@@ -51,9 +51,25 @@ if ($_POST) {
 </head>
 <body>
 <script>
+<?php include "./Likeometer.js" ?>
 <?php include "./setup.js" ?>
 </script>
-<h1>Facebook Like-O-Meter: Home Page</h1>
+
+<h1>Facebook Like-O-Meter</h1>
+
+<nav>
+
+<a id="home">Home Page</a>
+<a id="you">Your Likes</a>
+<a id="common">Common Likes</a>
+<a id="flikes">Friends' Likes</a>
+
+</nav>
+
+<div id="statusline">
+	Initializing the Like-O-Meter.
+</div>
+
 <div class="about">
 <div>
 	About this app: This app will look at the things that all your friends on facebook like.  It will show you what things most of your friends like.
@@ -65,13 +81,15 @@ if ($_POST) {
 			What you like.
 			This shows all the things that you've liked and also shows you what sorts of things you tend to like by grouping the things you've liked by a categorization proivided by Facebook via its graph API. For instance, you may like more Movies than Music or Television.
 		</li>
+		<li>What stuff do you and your friend's like in common?
+		This page compares your likes to each of your friends' likes. The results show you which things that you like, how many and which friends like it too.
+
+
 		<li>
 		What your friends all like.
 		This page shows you the 20 things that most of your friends like that you don't already like. This is a great way to discover new things based upon the wisdom of your crowd.  These are also grouped by category.</li>
 		</li>
 
-		<li>What stuff do you and your friend's like in common?
-		This page compares your likes to each of your friends' likes. The results show you which things that you like, how many and which friends like it too.
 		</li>
 	</ol>
 	</div>

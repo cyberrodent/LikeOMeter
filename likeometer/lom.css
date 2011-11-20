@@ -1,12 +1,30 @@
 /* css file for like-o-meter */
 
-body { font-family:arial, helvetica; }
+body { 
+	font-family:arial, helvetica; 
+}
 footer { 
 	font-size:8px;
 	margin-top:18px;
 	padding:10px;
 }
-
+nav {
+	padding:8px;
+	border:1px solid gray;
+	background-color:#ccc;
+	color:#000;
+}
+nav a {
+	display:inline-block;
+	padding:4px 8px;
+	color:#00c;
+	background-color: white;
+	margin-right:15px;
+}
+nav a:hover {
+	background-color: #ffff99;
+	text-decoration: underline;
+}
 
 #scroll {
 	background-color: #000;
@@ -24,7 +42,7 @@ footer {
 	padding:0;
 
 }
-#friends {
+#statusline {
 	font-size:18px;
 	border:1px solid green;
 	padding:10px;
@@ -36,10 +54,10 @@ footer {
 	color:yellow;
 	border:1px solid black;
 }
-#report { 
+#friendslikes { 
 	padding:10px;
 }
-#report div {
+#friendslikes div {
 	font-size:24px;
 }
 
