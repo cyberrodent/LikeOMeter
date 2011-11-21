@@ -46,8 +46,8 @@ if ($_POST) {
 <head>
 	<meta charset=utf-8>
 	<title>Like-O-Meter</title>
-	<link rel="stylesheet" href="https://enilemit.home/likeometer/lom.css" type="text/css" media="screen,projection" />
-  <script type="text/javascript" src="https://enilemit.home/jquery-1.7.min.js"></script>
+	<link rel="stylesheet" href="https://<?php echo $_SERVER['HTTP_HOST'] ?>/likeometer/lom.css" type="text/css" media="screen,projection" />
+<script type="text/javascript" src="https://<?php echo $_SERVER['HTTP_HOST'] ?>/jquery-1.7.min.js"></script>
 </head>
 <body>
 <script>
