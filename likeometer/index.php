@@ -59,11 +59,10 @@ if ($_POST) {
 
 <nav>
 
-<a id="home">Home Page</a>
+<a id="flikes">Friends' Likes</a>
 <a id="you">Your Likes</a>
 <a id="common">Common Likes</a>
-<a id="flikes">Friends' Likes</a>
-
+<a id="home">About this</a>
 </nav>
 
 <div id="statusline">

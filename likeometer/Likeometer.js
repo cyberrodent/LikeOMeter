@@ -10,7 +10,7 @@ Likeometer = function (){
   this.token = false;
   this.graph =  false;
   this.user = {};
-  var all_friends = [];
+  var all_friends = []; // keyed by id, the name of each friend
 	var like_count_keys = new Array();
   var started = false;
   var processed = false;
@@ -36,36 +36,40 @@ Likeometer = function (){
 
 	var show_top_likes = function() {
 		if (!processed) { return; } 
-		var limit = 20;
+		set_status_line("Preparing Like-O-Meter Report");
+		var limit = 1000;
 		// TODO : watch for sets smaller that limit
 		for (var i=0; i < limit; i++) {
-			var thing_id = like_count_keys[i];
-			var d = "<div>" + (i+1) + ") " +
-				"<a target=_blank href='https://facebook.com/" + thing_id + "'>" +
-				things[like_count_keys[i]].name + "</a> (" +
-				things[like_count_keys[i]].category + ")" +
-				": Liked by these " + 
-				collikes[like_count_keys[i]].length + " friends:<br />";
-			for (var j=0; j < collikes[thing_id].length; j++) {
-				d += "<div class='fimg'><a target='_blank' href='https://facebook.com/"+
-					collikes[thing_id][j] + "' title='"+ 
-					all_friends[collikes[thing_id][j]] + "' >" +
-				 	"<img src='https://graph.facebook.com/" +
-					collikes[thing_id][j] + 
-					"/picture?type=square' height='30' width='30' border='0' /></a></div>";
-			}	
-			d += "</div><br />";
-			$("#friendslikes").append(d);
+
+			if (collikes[like_count_keys[i]].length > 1) { 
+				var thing_id = like_count_keys[i];
+				var d = "<div><div class='h2'><img src='http://graph.facebook.com/" +  thing_id + "/picture?type=square' height='50' border='0' class='thing' />"
+				+ "<span class='bigger'>" +  collikes[like_count_keys[i]].length + "</span> friends like " + 
+					"<a target=_blank href='https://facebook.com/" + thing_id + "'>" +
+					things[like_count_keys[i]].name + "</a> <span class='category'>(" +
+					things[like_count_keys[i]].category + ")</span>" +
+					"</div><div class='h3'>";
+				for (var j=0; j < collikes[thing_id].length; j++) {
+					d += "<div class='fimg'><a target='_blank' href='https://facebook.com/"+
+						collikes[thing_id][j] + "' title='"+ 
+						all_friends[collikes[thing_id][j]] + "' >" +
+						"<img src='https://graph.facebook.com/" +
+						collikes[thing_id][j] + 
+						"/picture?type=square' height='50' width='50' border='0' /></a></div>";
+				}	
+				d += "</div></div>";
+				$("#friendslikes").append(d);
+			}
 		}
 
 		$('#flikes').click(flikes_action);
 		$('#home').click(home_action);
 		$('#common').click(common_action);
+		$("nav").show();
+		switch_page("#friendslikes");
 		set_status_line("Ready.");
-		switch_page(".about");
-
-
 	}
+
 	var got_my_likes = function() {
 		set_status_line("Categorizing your likes");
 		
@@ -98,12 +102,12 @@ Likeometer = function (){
 			key = my_cat_keys[i];
 			var o = "<div><h3>" + key + "</h3>";
 			var how_many =  my_cats[key].length;
-			o += "You like " + how_many + " " + key ;
+			o += "You like " + how_many + " " + key + "<br />";
 
 			for (var j in my_cats[key]) {
 				var thing_id = my_cats[key][j];
-				o += '<div><a target=_blank href="https://www.facebook.com/'+ thing_id + '">'+
-					'<img src="https://graph.facebook.com/'+ thing_id +'/picture?type=square" border="0" align="absmiddle" />&nbsp;' + things[thing_id].name + "</a></div>";
+				o += '<div style="display:inline-block;"><a title=' + things[thing_id].name +' target=_blank href="https://www.facebook.com/'+ thing_id + '">'+
+					'<img src="https://graph.facebook.com/'+ thing_id +'/picture?type=square" border="0" align="absmiddle" />&nbsp;' + "</a></div>";
 			}
 				
 				
@@ -120,7 +124,7 @@ Likeometer = function (){
   var got_all_likes = function() {
 
 		got_my_likes();
-		set_status_line("got "+	count_likes() +" friends' likes. Processing...");
+		set_status_line("Initializing: Got "+	count_likes() +" friends' likes. Processing...");
     if (count_likes() > 1) {  // first time through we need to skip; 
 			// FIXME bad edge case for losers with no friends
 			//
@@ -137,7 +141,7 @@ Likeometer = function (){
 					}
 				}
 			}
-     
+			set_status_line("Initializing: Collating everybody's likes.");
 		  for (var i in collikes) {
 				like_counts[i] = collikes[i].length;
 				like_count_keys.push(i);
@@ -152,8 +156,49 @@ Likeometer = function (){
       processed = true;
 
 			show_top_likes();
+
+			do_common();
     }
   };
+
+
+	var do_common = function() {
+		console.log("do common");
+		var my_likes = likes[self.uid];
+		var my_like_ids = [];
+		var commons = {};
+		for (var i=0; i < my_likes.length; i++) {
+			my_like_ids.push(my_likes[i].id);
+		}
+		set_status_line("Initializing: Finding common interests");
+		// console.log(all_friends);
+		for (var n in all_friends) {
+			if (n === self.uid) {
+				continue;
+			}
+			// console.log("n is " + n);
+			var friend_likes = likes[n];
+			// console.log("friend " + n + " likes " + friend_likes.length);
+			for(var i=0; i < friend_likes.length; i++) {
+				if (my_like_ids.indexOf(friend_likes[i].id) > 0) {
+					console.log(all_friends[n] + " also likes " + things[friend_likes[i].id].name);
+					if (typeof(commons[friend_likes[i].id]) === "undefined") {
+						commons[friend_likes[i].id] = [n];
+					} else { 
+						commons[friend_likes[i].id].push(n);
+					}
+				}
+			}
+		}
+
+		for (var t in commons) { 
+			$("#commonlikes").append("<div>"+ things[ t ].name + " Liked by you and these "+
+					commons[t].length + " friends.</div>");
+
+		}
+		set_status_line("Ready.");
+	}
+
 	var make_things = function(data) {
 		for (var i in data) {
 			things[data[i].id] = data[i];
@@ -188,7 +233,7 @@ Likeometer = function (){
   var got_friends = function(response, uid) { 
     var friends = response.data;
     self.friends = friends;
-		set_status_line("Friend list loaded. Fetching friends' likes.");
+		set_status_line("Initializing: Fetching friends' likes.");
     for (var i=0; i < friends.length; i++) {
       all_friends[friends[i].id] = friends[i].name;
       get_likes_for_id(friends[i].id);
@@ -251,7 +296,7 @@ Likeometer = function (){
 
 			$('body').append('<div id="scroll"></div>');
 			$("body").append("<div id='friendslikes'></div>");
-			$("body").append("<div id='commonlikes'>C</div>");
+			$("body").append("<div id='commonlikes'></div>");
 			$("body").append("<div id='yourlikes'></div>");
 			switch_page();
 

@@ -9,6 +9,7 @@ footer {
 	padding:10px;
 }
 nav {
+	display:none;
 	padding:8px;
 	border:1px solid gray;
 	background-color:#ccc;
@@ -36,8 +37,8 @@ nav a:hover {
 
 }
 #scroll div {
-	font-size:10px;
-	line-height:10px;
+	font-size:12px;
+	line-height:12px;
 	margin:0;
 	padding:0;
 
@@ -64,16 +65,32 @@ nav a:hover {
 .fimg { 
 	display:inline-block;
 	margin-right:1px;
+}
+
+img.thing {
+	display:inline-block;
+	margin-right:11px;
 
 }
 
 footer { 
 	width:100%;
 	border-top:1px dotted black;
-	position: fixed;
-	bottom:0;
-	left:0;
 	height:20px;
+	display:none;
 
 }
-.about { display: hidden; } 
+.about { display: none; } 
+
+.bigger { font-size:60px; line-height:50px; } 
+.category { font-size:11px; } 
+#friendslikes div.h2 {
+	border-bottom:0px solid gray;
+	margin-bottom:2px;
+
+}
+#friendslikes div.h3 {
+	margin-left:60px;
+	margin-bottom:18px;
+
+}
