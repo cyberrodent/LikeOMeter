@@ -129,6 +129,7 @@ Likeometer = function (){
 			// FIXME bad edge case for losers with no friends
 			//
 			$("#scroll").hide();
+			$("#statusline").hide();
       for (var i in likes) { 
         var flikes = likes[i];
 				for (var f in flikes) {
@@ -261,6 +262,7 @@ Likeometer = function (){
 	var set_status_line = function(message) {
 		$("#statusline").text(message);
 	}
+	
 
 	var home_action = function() {
 		switch_page(".about");

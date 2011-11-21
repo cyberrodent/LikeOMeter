@@ -55,7 +55,10 @@ if ($_POST) {
 <?php include "./setup.js" ?>
 </script>
 
-<h1>Facebook Like-O-Meter</h1>
+
+
+
+<h1><img src="/images/lom.png" height="75" width="75">Facebook Like-O-Meter</h1>
 
 <nav>
 
