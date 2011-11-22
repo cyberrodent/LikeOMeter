@@ -15,7 +15,7 @@ $YOUR_APP_ID = getenv("FACEBOOK_APP_ID");
 if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 	$YOUR_CANVAS_PAGE = "https://apps.facebook.com/ns_enilemit_local/";
 } else { 
-	$YOUR_CANVAS_PAGE = "https://apps.facebook.com/ns_like_o_meter/";
+	$YOUR_CANVAS_PAGE = "https://apps.facebook.com/like_o_meter/";
 }
 
 if ($_POST) {
