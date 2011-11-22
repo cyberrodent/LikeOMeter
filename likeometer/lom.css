@@ -88,7 +88,20 @@ footer {
 	display:none;
 
 }
-.about { display: none; } 
+.about { 
+	display: none; 
+
+	padding-top:18px;
+	font-size:120%;
+
+} 
+.about div {
+	margin-bottom:12px;
+}
+.about ul { 
+	font-size:18px;
+	font-weight:bold;
+}
 
 .bigger { font-size:60px; line-height:50px; } 
 .category { font-size:11px; } 

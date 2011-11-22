@@ -63,9 +63,12 @@ if ($_POST) {
 <nav>
 
 <a id="flikes">Friends' Likes</a>
+<!-- 
 <a id="you">Your Likes</a>
 <a id="common">Common Likes</a>
-<a id="home">About this</a>
+-->
+<a id="home">About the Like-O-Meter</a>
+
 </nav>
 
 <div id="statusline">
@@ -73,30 +76,44 @@ if ($_POST) {
 </div>
 
 <div class="about">
-<div>
-	About this app: This app will look at the things that all your friends on facebook like.  It will show you what things most of your friends like.
-</div>
-<div>
-	There are 3 pages to visit as part of using Like-O-Meter.
-	<ol>
-		<li>
-			What you like.
-			This shows all the things that you've liked and also shows you what sorts of things you tend to like by grouping the things you've liked by a categorization proivided by Facebook via its graph API. For instance, you may like more Movies than Music or Television.
-		</li>
-		<li>What stuff do you and your friend's like in common?
-		This page compares your likes to each of your friends' likes. The results show you which things that you like, how many and which friends like it too.
-
-
-		<li>
-		What your friends all like.
-		This page shows you the 20 things that most of your friends like that you don't already like. This is a great way to discover new things based upon the wisdom of your crowd.  These are also grouped by category.</li>
-		</li>
-
-		</li>
-	</ol>
+	<div>
+	<ul>
+	<li>	The Like-O-Meter will let you see what your Facebook friends like. </li>
+	<li>	It will rank them based on how many friends like the thing.  </li>
+	<li>	It will show you up to 1000 things that at least 2 of your friends like. In other words, you can keep scrolling down for a long long time.</li>
+	</ul>
+	Here's a picture:
+	 </div>
+	
+	<div>
+		<img src="/images/lom-explained.jpg" height="343" width="722" />
 	</div>
-	<input type="button" value="Log in Now" id="log_in_now" class="login_button" />
 
+	<div>
+		Here is the <a href="https://www.facebook.com/apps/application.php?id=251829454859769">Like-O-Meter's page on Facebook</a>
+	</div>
+	<div class="fb-like-box" data-href="https://www.facebook.com/apps/application.php?id=251829454859769" data-width="292" data-show-faces="false" data-stream="false" data-header="true"></div>
+	<!-- 
+	<div>
+		So far there are 3 pages to visit as part of using Like-O-Meter.  
+		<ol>
+			<li>
+				<strong>Your Likes</strong> is the simplest of these pages. It shows the things you like, grouped into the categories that Facebook assigns each thing.  Things can be assigned more than one category.
+			</li>
+			<li><strong>Common Likes</strong>Of all the things you like on Facebook, which of your friends also liked it? Find out on this page.
+
+	
+	
+			<li>
+			<strong>Friend Likes</strong>
+			This page shows you up to 1000 things that your friends on Facebook "liked" on Facebook. These things are ranked based upon how many friends liked it. This is the default page and it's a great way to discover new things. 
+			</li>
+	
+			</li>
+		</ol>
+	</div>
+	-->	
+	<input type="button" value="Log in Now" id="log_in_now" class="login_button" />
 </div>
 <div>
 <?php
@@ -105,7 +122,6 @@ if ($_POST) {
 
 ?>
 </div>
-
 <footer>
 &copy;2011 Jeff Kolber
 </footer>
