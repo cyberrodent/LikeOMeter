@@ -9,6 +9,7 @@ footer {
 	padding:10px;
 }
 nav {
+	display:none;
 	padding:1px;
 	background-color:#41a0ea;
 	color:#000;
@@ -37,7 +38,7 @@ h1 img {
 }
 #scroll {
 	background-color: #000;
-	height:290px;
+	height:42px;
 	color:green;
 	overflow: hidden;
 	padding:5px 10px;
@@ -88,7 +89,6 @@ footer {
 
 }
 .about { 
-	display: none; 
 
 	padding-top:18px;
 	font-size:120%;

@@ -217,7 +217,7 @@ Likeometer = function (){
 
 		make_things(response.data);
 
-    $("#scroll").append("<div>Friend " + all_friends[uid] + "'s likes "+ 
+    $("#scroll").append("<div>" + all_friends[uid] + "'s likes "+ 
 				response.data.length +" things.<div>");
     if (list.length === 0) { 
         got_all_likes();
@@ -296,13 +296,12 @@ Likeometer = function (){
 		if (!started) { 
 			started = true;
 
-			$('body').append('<div id="scroll"></div>');
+			// $('body').append('<div id="scroll"></div>');
 			$("body").append("<div id='friendslikes'></div>");
 			$("body").append("<div id='commonlikes'></div>");
 			$("body").append("<div id='yourlikes'></div>");
-			switch_page();
+			switch_page(".about");
 
-			$('#home').click(home_action);
 
 			AS = setInterval(function() {
 					if ( $("#scroll").length) {
