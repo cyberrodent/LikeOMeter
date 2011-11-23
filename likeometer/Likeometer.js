@@ -48,7 +48,8 @@ Likeometer = function (){
           "<a target=_blank href='https://facebook.com/" + thing_id + "'>" +
           things[like_count_keys[i]].name + "</a> <span class='category'>(" +
           things[like_count_keys[i]].category + ")</span>" +
-          "</div><div class='h3'>";
+					// '<fb:like href="https://www.facebook.com/'+ like_count_keys[i]  +'"></fb:like>' +
+					'</div><div class="h3">';
         for (var j=0; j < collikes[thing_id].length; j++) {
           d += "<div class='fimg'><a target='_blank' href='https://facebook.com/"+
             collikes[thing_id][j] + "' title='"+ 
@@ -61,6 +62,8 @@ Likeometer = function (){
         $("#friendslikes").append(d);
       }
     }
+
+		// FB.XFBML.parse();
 
     $('#flikes').click(flikes_action);
     $('#home').click(home_action);
