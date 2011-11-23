@@ -43,7 +43,7 @@ Likeometer = function (){
 
 			if (collikes[like_count_keys[i]].length > 1) { 
 				var thing_id = like_count_keys[i];
-				var d = "<div><div class='h2'><img src='http://graph.facebook.com/" +  thing_id + "/picture?type=square' height='50' border='0' class='thing' />"
+				var d = "<div><div class='h2'><img src='https://graph.facebook.com/" +  thing_id + "/picture?type=square' width='50' height='50' border='0' class='thing' />"
 				+ "<span class='bigger'>" +  collikes[like_count_keys[i]].length + "</span> friends like " + 
 					"<a target=_blank href='https://facebook.com/" + thing_id + "'>" +
 					things[like_count_keys[i]].name + "</a> <span class='category'>(" +
