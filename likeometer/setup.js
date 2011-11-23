@@ -18,41 +18,39 @@ FBLogin = function() {
 
 $(function(){
 
-	// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  
-	window.fbAsyncInit = function() {
-		FB.init({
-				appId      : '<?php echo $YOUR_APP_ID ?>', // App ID
-				channelURL : '/likeometer/channel.php', // Channel File
-				status     : true, // check login status
-				cookie     : true, // enable cookies to allow the server to access the session
-				oauth      : true, // enable OAuth 2.0
-				xfbml      : true  // parse XFBML
-			});
-		// Additional initialization code here
+    // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  
+    window.fbAsyncInit = function() {
+      FB.init({
+          appId      : '<?php echo $YOUR_APP_ID ?>', // App ID
+          channelURL : '/likeometer/channel.php', // Channel File
+          status     : true, // check login status
+          cookie     : true, // enable cookies to allow the server to access the session
+          oauth      : true, // enable OAuth 2.0
+          xfbml      : true  // parse XFBML
+        });
+      // Additional initialization code here
 
-		LOM = new Likeometer();
+      LOM = new Likeometer();
 
-		FB.getLoginStatus(function(response) {
-				if (response.authResponse) { // user is logged in
-					LOM.init(response.authResponse.accessToken, 
-						response.authResponse.userID);
+      FB.getLoginStatus(function(response) {
+          if (response.authResponse) { // user is logged in
+            LOM.init(response.authResponse.accessToken, 
+              response.authResponse.userID);
 
-					$("#log_in_now").hide();	
-				} else { // User not logged in.
-					$("#log_in_now").show();	
-				}
-			}, {scope: 'email, friend_likes, user_likes'});
+            $("#log_in_now").hide();	
+          } else { // User not logged in.
+            $("#log_in_now").show();	
+          }
+        }, {scope: 'email, friend_likes, user_likes'});
 
-	}; // end fbAsyncInit
-	// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  
+    }; // end fbAsyncInit
+    // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  
 
-	$('body').append('<div id="fb-root"></div>');
-	// Load the SDK 
-	$.getScript(document.location.protocol + 
-			'//connect.facebook.net/en_US/all.js');
+    $('body').append('<div id="fb-root"></div>');
+    // Load the SDK 
+    $.getScript(document.location.protocol + 
+        '//connect.facebook.net/en_US/all.js');
 
-	// bind our login function to the login button
-	$("#log_in_now").click(FBLogin);
-});
-
-
+      // bind our login function to the login button
+      $("#log_in_now").click(FBLogin);
+    });
