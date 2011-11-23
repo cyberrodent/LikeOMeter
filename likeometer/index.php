@@ -4,11 +4,30 @@
  * This is for the canvas app version of fblikes
  *
  */
-$add_this_path =  dirname(dirname(__FILE__));
-set_include_path( $add_this_path . ":" . get_include_path() );
-require "lib/utils.php";
-require "lib/FBUtils.php";
-require "lib/Model.php";
+/**
+ * parse_signed_request
+ * deal with facebook login, oauth2
+ */
+function parse_signed_request($signed_request, $secret) {
+  list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
+  // decode the data
+  $sig = base64_url_decode($encoded_sig);
+  $data = json_decode(base64_url_decode($payload), true);
+  if (strtoupper($data['algorithm']) !== 'HMAC-SHA256') {
+    error_log('Unknown algorithm. Expected HMAC-SHA256');
+    return null;
+  }
+  // check sig
+  $expected_sig = hash_hmac('sha256', $payload, $secret, $raw = true);
+  if ($sig !== $expected_sig) {
+    error_log('Bad Signed JSON signature!');
+    return null;
+  }
+  return $data;
+}
+function base64_url_decode($input) {
+  return base64_decode(strtr($input, '-_', '+/'));
+}
 
 $FBSECRET = getenv("FACEBOOK_SECRET");
 $YOUR_APP_ID = getenv("FACEBOOK_APP_ID");
@@ -54,14 +73,8 @@ if ($_POST) {
 <?php include "./Likeometer.js" ?>
 <?php include "./setup.js" ?>
 </script>
-
-
-
-
 <h1><img src="/images/lom.png" height="75" width="75">Facebook Like-O-Meter</h1>
-
 <nav>
-
 <a id="flikes">Friends' Likes</a>
 <!-- 
 <a id="you">Your Likes</a>
@@ -92,10 +105,10 @@ if ($_POST) {
 	</div>
 
 	<div>
-	Here is the <a target="_top" href="https://www.facebook.com/apps/application.php?id=<?php echo getenv("FACEBOOK_APP_ID") ?>">Like-O-Meter's page on Facebook</a>
+	Here is the <a target="_top" href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID ?>">Like-O-Meter's page on Facebook</a>
 	</div>
-	<div class="fb-like-box" data-href="https://www.facebook.com/apps/application.php?id=<?php echo getenv("FACEBOOK_APP_ID")  ?>" data-width="292" data-show-faces="false" data-stream="false" data-header="true"></div>
-	<!-- 
+	<div class="fb-like-box" data-href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID  ?>" data-width="292" data-show-faces="false" data-stream="false" data-header="true"></div>
+<?php /*
 	<div>
 		So far there are 3 pages to visit as part of using Like-O-Meter.  
 		<ol>
@@ -114,7 +127,7 @@ if ($_POST) {
 			</li>
 		</ol>
 	</div>
-	-->	
+ */ ?>
 	<input type="button" value="Log in Now" id="log_in_now" class="login_button" />
 </div>
 <div>

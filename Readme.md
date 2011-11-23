@@ -1,3 +1,11 @@
+Like-O-Meter
+============
+
+This is a Facebook Canvas App that uses the Facebook Javascript SDK
+
+The app is in the likeometer directory. It assumes a php enabled server as it uses php to grab facebook app id from the apache environment, as described in the heroku VirtualHost below. 
+
+
 Facebook/Heroku sample app -- PHP
 =================================
 

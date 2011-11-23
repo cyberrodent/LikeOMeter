@@ -21,7 +21,7 @@ $(function(){
 	// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  
 	window.fbAsyncInit = function() {
 		FB.init({
-				appId      : '<?php echo AppInfo::appID() ?>', // App ID
+				appId      : '<?php echo $YOUR_APP_ID ?>', // App ID
 				channelURL : '/likeometer/channel.php', // Channel File
 				status     : true, // check login status
 				cookie     : true, // enable cookies to allow the server to access the session
