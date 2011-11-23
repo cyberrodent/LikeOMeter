@@ -158,7 +158,7 @@ Likeometer = function (){
 
 			show_top_likes();
 
-			do_common();
+			// do_common();
     }
   };
 
@@ -302,6 +302,7 @@ Likeometer = function (){
 			$("body").append("<div id='yourlikes'></div>");
 			switch_page();
 
+			$('#home').click(home_action);
 
 			AS = setInterval(function() {
 					if ( $("#scroll").length) {

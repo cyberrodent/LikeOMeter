@@ -90,9 +90,9 @@ if ($_POST) {
 	</div>
 
 	<div>
-		Here is the <a target="_top" href="https://www.facebook.com/apps/application.php?id=251829454859769">Like-O-Meter's page on Facebook</a>
+	Here is the <a target="_top" href="https://www.facebook.com/apps/application.php?id=<?php echo getenv("FACEBOOK_APP_ID") ?>">Like-O-Meter's page on Facebook</a>
 	</div>
-	<div class="fb-like-box" data-href="https://www.facebook.com/apps/application.php?id=251829454859769" data-width="292" data-show-faces="false" data-stream="false" data-header="true"></div>
+	<div class="fb-like-box" data-href="https://www.facebook.com/apps/application.php?id=<?php echo getenv("FACEBOOK_APP_ID")  ?>" data-width="292" data-show-faces="false" data-stream="false" data-header="true"></div>
 	<!-- 
 	<div>
 		So far there are 3 pages to visit as part of using Like-O-Meter.  
