@@ -164,7 +164,7 @@ Likeometer = function (){
 
 
 	var do_common = function() {
-		console.log("do common");
+		// console.log("do common");
 		var my_likes = likes[self.uid];
 		var my_like_ids = [];
 		var commons = {};
@@ -182,7 +182,7 @@ Likeometer = function (){
 			// console.log("friend " + n + " likes " + friend_likes.length);
 			for(var i=0; i < friend_likes.length; i++) {
 				if (my_like_ids.indexOf(friend_likes[i].id) > 0) {
-					console.log(all_friends[n] + " also likes " + things[friend_likes[i].id].name);
+					// console.log(all_friends[n] + " also likes " + things[friend_likes[i].id].name);
 					if (typeof(commons[friend_likes[i].id]) === "undefined") {
 						commons[friend_likes[i].id] = [n];
 					} else { 
@@ -210,7 +210,7 @@ Likeometer = function (){
     // console.log("got " + uid + " likes");
     var idx = list.indexOf(uid);
     if (idx < 0) {
-     console.log("got less than zero for " + uid);
+     // console.log("got less than zero for " + uid);
     }
     list.splice(idx,1);
     likes[uid] = response.data;
@@ -289,7 +289,7 @@ Likeometer = function (){
 	}
 
 	var init = function (token, uid) {
-		console.log("init with " + uid);
+		// console.log("init with " + uid);
 		self.token = token;
 		self.uid = uid;
 
@@ -320,10 +320,10 @@ Likeometer = function (){
 
 
 
-			console.log('Likeometer init run');
+			// console.log('Likeometer init run');
 
 		} else {
-			console.log('Sorry. Likeometer is already running');
+			// console.log('Sorry. Likeometer is already running');
 		}
 
 
