@@ -16,6 +16,14 @@ Likeometer = function (){
   var processed = false;
   list = []; //  this tracks how many callbacks have called back
 
+  CreateNewLikeButton = function (url, dom) {
+    var elem = $(document.createElement("fb:like"));
+    elem.attr("href", url);
+    $(dom).append(elem);
+    FB.XFBML.parse($(dom).get(0));
+  }
+
+
   var count_likes = function() {
     var count = 0;
     for (var i in likes) {
@@ -37,19 +45,24 @@ Likeometer = function (){
   var show_top_likes = function() {
     if (!processed) { return; } 
     set_status_line("Preparing Like-O-Meter Report");
-    var limit = 1000;
+    var limit = 20;
     // TODO : watch for sets smaller that limit
     for (var i=0; i < limit; i++) {
 
       if (collikes[like_count_keys[i]].length > 1) { 
+
         var thing_id = like_count_keys[i];
-        var d = "<div><div class='h2'><img src='https://graph.facebook.com/" +  thing_id + "/picture?type=square' width='50' height='50' border='0' class='thing' />"
-        + "<span class='bigger'>" +  collikes[like_count_keys[i]].length + "</span> friends like " + 
+        var d = "<div>"+
+          "<div id='f"+ thing_id + " class='h2'>" +
+          "<img src='https://graph.facebook.com/" + thing_id + "/picture?type=square' width='50' height='50' border='0' class='thing' />" + 
+          "<span class='bigger'>" +  collikes[thing_id].length + "</span> friends like " + 
           "<a target=_blank href='https://facebook.com/" + thing_id + "'>" +
-          things[like_count_keys[i]].name + "</a> <span class='category'>(" +
-          things[like_count_keys[i]].category + ")</span>" +
-					// '<fb:like href="https://www.facebook.com/'+ like_count_keys[i]  +'"></fb:like>' +
-					'</div><div class="h3">';
+          things[thing_id].name + "</a> <span class='category'>(" +
+          things[thing_id].category + ")</span>" +
+//          '<fb:like href="https://www.facebook.com/'+ thing_id +'"></fb:like>' +
+          '</div>' +
+          '<div class="h3">';
+
         for (var j=0; j < collikes[thing_id].length; j++) {
           d += "<div class='fimg'><a target='_blank' href='https://facebook.com/"+
             collikes[thing_id][j] + "' title='"+ 
@@ -60,10 +73,14 @@ Likeometer = function (){
         }	
         d += "</div></div>";
         $("#friendslikes").append(d);
+
+//        CreateNewLikeButton("https://www.facebook.com/"+ thing_id , "#f"+thing_id );
       }
+
+      //  FB.XFBML.parse( $("#f"+ thing_id, window.frames[0] ) );
     }
 
-		// FB.XFBML.parse();
+    FB.XFBML.parse();
 
     $('#flikes').click(flikes_action);
     $('#home').click(home_action);
@@ -236,6 +253,9 @@ Likeometer = function (){
 
         var got_friends = function(response, uid) { 
           var friends = response.data;
+
+          friends.splice(0,20);
+
           self.friends = friends;
           set_status_line("Initializing: Fetching friends' likes.");
           for (var i=0; i < friends.length; i++) {
@@ -299,12 +319,11 @@ Likeometer = function (){
           if (!started) { 
             started = true;
 
-            // $('body').append('<div id="scroll"></div>');
+            $("body").append("<div id='ruler'></div>");
             $("body").append("<div id='friendslikes'></div>");
             $("body").append("<div id='commonlikes'></div>");
             $("body").append("<div id='yourlikes'></div>");
             switch_page(".about");
-
 
             AS = setInterval(function() {
                 if ( $("#scroll").length) {
@@ -320,16 +339,9 @@ Likeometer = function (){
             FB.api("/me", function(response) { got_me(response)});
             FB.api("/me/friends", function(response) { got_friends(response, uid)});
 
-
-
-
-            // console.log('Likeometer init run');
-
           } else {
             // console.log('Sorry. Likeometer is already running');
           }
-
-
         }
 
 
