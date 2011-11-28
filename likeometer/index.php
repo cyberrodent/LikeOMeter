@@ -89,6 +89,10 @@ if ($_POST) {
 </div>
 <div id="scroll"></div>
 
+<div id="friendslikes"></div>
+<div id="commnlikes"></div>
+<div id="yourlikes"></div>
+
 
 <div class="about">
 	<div>
