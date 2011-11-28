@@ -147,19 +147,20 @@ Likeometer = function () {
 	}
 
 	var got_all_likes = function() {
-
-		got_my_likes();
+		// Create the "what you like page"... or not
+		// got_my_likes();
 		set_status_line("Initializing: Got "+	count_likes() +" friends' likes. Processing...");
 		if (count_likes() > 1) {  // first time through we need to skip; 
 			// FIXME bad edge case for losers with no friends
 			//
 			$("#scroll").hide();
 			$("#statusline").hide();
-			for (var i in likes) { 
-				var flikes = likes[i];
-				for (var f in flikes) {
+			for (var i in likes) {  // i is the user id 
+				var flikes = likes[i]; // flikes are what that friend likes 
+				for (var f in flikes) { 
 					var flike = flikes[f];
-					things[flike.id] = flike;
+					
+					// collate likes by which friends like that thing
 					if (typeof(collikes[flike.id])=== 'undefined') {
 						collikes[flike.id] = [i];
 					} else { 
