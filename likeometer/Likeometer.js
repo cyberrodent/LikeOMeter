@@ -33,7 +33,40 @@ Likeometer = function () {
 			return 1;
 		}
 	}
+	var do_common = function() {
+		// console.log("do common");
+		var my_likes = likes[self.uid];
+		var my_like_ids = [];
+		var commons = {};
+		for (var i=0; i < my_likes.length; i++) {
+			my_like_ids.push(my_likes[i].id);
+		}
+		set_status_line("Initializing: Finding common interests");
+		// console.log(all_friends);
+		for (var n in all_friends) {
+			if (n === self.uid) {
+				continue;
+			}
+			// console.log("n is " + n);
+			var friend_likes = likes[n];
+			// console.log("friend " + n + " likes " + friend_likes.length);
+			for(var i=0; i < friend_likes.length; i++) {
+				if (my_like_ids.indexOf(friend_likes[i].id) > 0) {
+					// console.log(all_friends[n] + " also likes " + things[friend_likes[i].id].name);
+					if (typeof(commons[friend_likes[i].id]) === "undefined") {
+						commons[friend_likes[i].id] = [n];
+					} else { 
+						commons[friend_likes[i].id].push(n);
+					}
+				}
+			}
+		}
 
+		for (var t in commons) { 
+			$("#commonlikes").append("<div>"+ things[ t ].name + " Liked by you and these "+ commons[t].length + " friends.</div>");
+		}
+		set_status_line("Ready.");
+	}
 	var show_top_likes = function () {
 		if (!processed) { return; } 
 		set_status_line("Preparing Like-O-Meter Report");
@@ -154,40 +187,7 @@ Likeometer = function () {
 	}
 
 
-	var do_common = function() {
-		// console.log("do common");
-		var my_likes = likes[self.uid];
-		var my_like_ids = [];
-		var commons = {};
-		for (var i=0; i < my_likes.length; i++) {
-			my_like_ids.push(my_likes[i].id);
-		}
-		set_status_line("Initializing: Finding common interests");
-		// console.log(all_friends);
-		for (var n in all_friends) {
-			if (n === self.uid) {
-				continue;
-			}
-			// console.log("n is " + n);
-			var friend_likes = likes[n];
-			// console.log("friend " + n + " likes " + friend_likes.length);
-			for(var i=0; i < friend_likes.length; i++) {
-				if (my_like_ids.indexOf(friend_likes[i].id) > 0) {
-					// console.log(all_friends[n] + " also likes " + things[friend_likes[i].id].name);
-					if (typeof(commons[friend_likes[i].id]) === "undefined") {
-						commons[friend_likes[i].id] = [n];
-					} else { 
-						commons[friend_likes[i].id].push(n);
-					}
-				}
-			}
-		}
 
-		for (var t in commons) { 
-			$("#commonlikes").append("<div>"+ things[ t ].name + " Liked by you and these "+ commons[t].length + " friends.</div>");
-		}
-		set_status_line("Ready.");
-	}
 
 	var make_things = function(data) {
 		for (var i in data) {
@@ -196,17 +196,19 @@ Likeometer = function () {
 	}
 
 	var got_likes = function(response, uid) {
-		// console.log("got " + uid + " likes");
+		// pop the uid from the global list	
 		var idx = list.indexOf(uid);
 		if (idx < 0) {
 			// console.log("got less than zero for " + uid);
 		}
 		list.splice(idx,1);
+		// stash the response in the likes array keyed by this uid
 		likes[uid] = response.data;
-
+		// add the things liked by this person to our global things array
 		make_things(response.data);
-
+		// scroll the output
 		$("#scroll").append("<div>" + all_friends[uid] + "'s likes "+ response.data.length +" things.<div>");
+		// if there is nothing left to get then call got_all_likes
 		if (list.length === 0) { 
 			got_all_likes();
 		}
@@ -240,9 +242,6 @@ Likeometer = function () {
 
 	var flikes_action = function() {
 		var uid = self.uid;
-		// console.log(self.list.length);
-		// console.log(self.friends.length);
-		// console.log(likes.length);
 		set_status_line("What your friend's like");
 		switch_page("#friendslikes");	
 	}
@@ -294,8 +293,6 @@ Likeometer = function () {
 						clearInterval(AS);
 					}
 				}, 599);
-
-
 			// get data
 			FB.api("/me", function(response) { got_me(response)});
 			FB.api("/me/friends", function(response) { got_friends(response, uid)});
