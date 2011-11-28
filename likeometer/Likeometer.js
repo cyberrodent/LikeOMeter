@@ -75,7 +75,7 @@ Likeometer = function () {
 		for (var i=0; i < limit; i++) {
 			if (collikes[like_count_keys[i]].length > 1) { 
 				var thing_id = like_count_keys[i];
-				var d = "<div><div class='h2'><img src='https://graph.facebook.com/" +  thing_id + "/picture?type=square&auth_token="+ self.token +"' width='50' height='50' border='0' class='thing' />" + "<span class='bigger'>" +  collikes[like_count_keys[i]].length + "</span> friends like " + "<a target=_blank href='https://facebook.com/" + thing_id + "'>" + things[like_count_keys[i]].name + "</a> <span class='category'>(" + things[like_count_keys[i]].category + ")</span>" + '</div><div class="h3">';
+				var d = "<div><div class='h2'><img src='http://graph.facebook.com/" +  thing_id + "/picture?type=square&auth_token="+ self.token +"' width='50' height='50' border='0' class='thing' />" + "<span class='bigger'>" +  collikes[like_count_keys[i]].length + "</span> friends like " + "<a target=_blank href='https://facebook.com/" + thing_id + "'>" + things[like_count_keys[i]].name + "</a> <span class='category'>(" + things[like_count_keys[i]].category + ")</span>" + '</div><div class="h3">';
 
 				// '<fb:like href="https://www.facebook.com/'+ like_count_keys[i]  +'"></fb:like>' +
 				for (var j=0; j < collikes[thing_id].length; j++) {
