@@ -75,7 +75,7 @@ Likeometer = function () {
 		for (var i=0; i < limit; i++) {
 			if (collikes[like_count_keys[i]].length > 1) { 
 				var thing_id = like_count_keys[i];
-				var d = "<div><div class='h2'><img src='https://graph.facebook.com/" +  thing_id + "/picture?type=square' width='50' height='50' border='0' class='thing' />" + "<span class='bigger'>" +  collikes[like_count_keys[i]].length + "</span> friends like " + "<a target=_blank href='https://facebook.com/" + thing_id + "'>" + things[like_count_keys[i]].name + "</a> <span class='category'>(" + things[like_count_keys[i]].category + ")</span>" + '</div><div class="h3">';
+				var d = "<div><div class='h2'><img src='https://graph.facebook.com/" +  thing_id + "/picture?type=square&auth_token="+ self.token +"' width='50' height='50' border='0' class='thing' />" + "<span class='bigger'>" +  collikes[like_count_keys[i]].length + "</span> friends like " + "<a target=_blank href='https://facebook.com/" + thing_id + "'>" + things[like_count_keys[i]].name + "</a> <span class='category'>(" + things[like_count_keys[i]].category + ")</span>" + '</div><div class="h3">';
 
 				// '<fb:like href="https://www.facebook.com/'+ like_count_keys[i]  +'"></fb:like>' +
 				for (var j=0; j < collikes[thing_id].length; j++) {
@@ -99,6 +99,7 @@ Likeometer = function () {
 		$("nav").show();
 		switch_page("#friendslikes");
 		set_status_line("Ready.");
+		$("#statusline").hide();
 	}
 
 	var got_my_likes = function() {
@@ -137,7 +138,7 @@ Likeometer = function () {
 
 			for (var j in my_cats[key]) {
 				var thing_id = my_cats[key][j];
-				o += '<div style="display:inline-block;"><a title=' + things[thing_id].name +' target=_blank href="https://www.facebook.com/'+ thing_id + '">'+ '<img src="https://graph.facebook.com/'+ thing_id +'/picture?type=square" border="0" align="absmiddle" />&nbsp;' + "</a></div>";
+				o += '<div style="display:inline-block;"><a title=' + things[thing_id].name +' target=_blank href="https://www.facebook.com/'+ thing_id + '">'+ '<img src="https://graph.facebook.com/'+ thing_id +'/picture?type=square&auth_token='+ self.token  +'" border="0" align="absmiddle" />&nbsp;' + "</a></div>";
 			}
 			o += "</div>";
 			$("#yourlikes").append(o);
@@ -154,7 +155,7 @@ Likeometer = function () {
 			// FIXME bad edge case for losers with no friends
 			//
 			$("#scroll").hide();
-			$("#statusline").hide();
+			set_status_line("Initializing: Collating likes.");
 			for (var i in likes) {  // i is the user id 
 				var flikes = likes[i]; // flikes are what that friend likes 
 				for (var f in flikes) { 
@@ -168,6 +169,7 @@ Likeometer = function () {
 					}
 				}
 			}
+
 			set_status_line("Initializing: Collating everybody's likes.");
 			for (var i in collikes) {
 				like_counts[i] = collikes[i].length;
