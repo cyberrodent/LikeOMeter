@@ -2,19 +2,22 @@
 Likeometer = function () {
 
 	var self = this;
-	this.friends = [];
 	var likes = {}; //  fb_uid => likes
 	var things = {}; // id => data
 	var collikes = {}; // collate likes in here like_id => [ uids who like this ]  
 	var like_counts = {};
-	this.token = false;
-	this.graph =  false;
-	this.user = {};
 	var all_friends = []; // keyed by id, the name of each friend
 	var like_count_keys = new Array();
 	var started = false;
 	var processed = false;
-	list = []; //  this tracks how many callbacks have called back
+
+	this.friends = [];
+	this.token = false;
+	this.graph = false;
+	this.user = {};
+
+	// Why is this global?
+	list = []; //  this tracks how many callbacks have called back 
 
 	var count_likes = function() {
 		var count = 0;
@@ -23,7 +26,6 @@ Likeometer = function () {
 		}
 		return count;
 	}
-
 	var compare_collikes = function(a, b) {
 		if (collikes[a].length > collikes[b].length ) {
 			return -1;
@@ -61,7 +63,6 @@ Likeometer = function () {
 				}
 			}
 		}
-
 		for (var t in commons) { 
 			$("#commonlikes").append("<div>"+ things[ t ].name + " Liked by you and these "+ commons[t].length + " friends.</div>");
 		}
@@ -147,48 +148,6 @@ Likeometer = function () {
 		$('#you').click(you_action);
 	}
 
-	var got_all_likes = function() {
-		// Create the "what you like page"... or not
-		// got_my_likes();
-		set_status_line("Initializing: Got "+	count_likes() +" friends' likes. Processing...");
-		if (count_likes() > 1) {  // first time through we need to skip; 
-			// FIXME bad edge case for losers with no friends
-			//
-			$("#scroll").hide();
-			set_status_line("Initializing: Collating likes.");
-			for (var i in likes) {  // i is the user id 
-				var flikes = likes[i]; // flikes are what that friend likes 
-				for (var f in flikes) { 
-					var flike = flikes[f];
-					
-					// collate likes by which friends like that thing
-					if (typeof(collikes[flike.id])=== 'undefined') {
-						collikes[flike.id] = [i];
-					} else { 
-						collikes[flike.id].push(i);
-					}
-				}
-			}
-
-			set_status_line("Initializing: Collating everybody's likes.");
-			for (var i in collikes) {
-				like_counts[i] = collikes[i].length;
-				like_count_keys.push(i);
-			}
-			like_count_keys.sort(compare_collikes);
-			set_status_line("Collated " + like_count_keys.length + " likes from all of your friends. This is your Top 20.");
-			// console.log(like_count_keys[0]);
-			// console.log(things[ like_count_keys[0]]);
-			// console.log(collikes[ like_count_keys[0]]);
-
-			processed = true;
-
-			show_top_likes();
-
-			// do_common();
-		}
-	}
-
 
 
 
@@ -197,51 +156,6 @@ Likeometer = function () {
 			things[data[i].id] = data[i];
 		}
 	}
-
-	var got_likes = function(response, uid) {
-		// pop the uid from the global list	
-		var idx = list.indexOf(uid);
-		if (idx < 0) {
-			// console.log("got less than zero for " + uid);
-		}
-		list.splice(idx,1);
-		// stash the response in the likes array keyed by this uid
-		likes[uid] = response.data;
-		// add the things liked by this person to our global things array
-		make_things(response.data);
-		// scroll the output
-		$("#scroll").append("<div>" + all_friends[uid] + "'s likes "+ response.data.length +" things.<div>");
-		// if there is nothing left to get then call got_all_likes
-		if (list.length === 0) { 
-			got_all_likes();
-		}
-	}	
-
-	var get_likes_for_id = function(id) {
-		list.push(id);
-		FB.api("/" + id  + "/likes", function(response) { 
-				got_likes(response, id) ;
-			});
-	}
-
-	var got_friends = function(response, uid) { 
-		var friends = response.data;
-		self.friends = friends;
-		set_status_line("Initializing: Fetching friends' likes.");
-		for (var i=0; i < friends.length; i++) {
-			all_friends[friends[i].id] = friends[i].name;
-			get_likes_for_id(friends[i].id);
-			// if (i > 99 ) { break; }
-		}
-	}
-
-	var got_me = function(response) {
-		self.user = response;
-		all_friends[self.user.id] = self.user.name;
-		get_likes_for_id(self.user.id);
-	}
-
-
 
 	var flikes_action = function() {
 		var uid = self.uid;
@@ -273,6 +187,70 @@ Likeometer = function () {
 			$(to_show).show();
 		}
 	}
+	var _collate = function(res) {
+		set_status_line("Collating friends likes");
+		if (typeof(res.error) !== 'undefined') {
+			set_status_line(res.error.type + " Error: " + res.error.message);
+			return;
+		}
+
+		for(var friend_id in res) {
+			var flikes = res[friend_id].data;
+			for (var j = 0; j < flikes.length; j++) {
+				var thing_id = flikes[j].id;
+				things[thing_id] = flikes[j];
+				if (typeof(collikes[thing_id]) !== 'undefined') {
+					collikes[thing_id].push(friend_id);
+				} else { 
+					collikes[thing_id] = [friend_id];
+				}
+
+				$("#scroll").append("<div>" + all_friends[friend_id] + "'s likes "+ flikes.length +" things.<div>");
+			}
+		}
+
+		set_status_line("Collated friends likes");
+			set_status_line("Initializing: Collating everybody's likes.");
+			for (var i in collikes) {
+				like_counts[i] = collikes[i].length;
+				like_count_keys.push(i);
+			}
+			like_count_keys.sort(compare_collikes);
+			set_status_line("Collated " + like_count_keys.length + " likes from all of your friends. This is your Top 20.");
+
+			processed = true;
+
+			$("#scroll").hide();
+			show_top_likes();
+
+
+
+
+
+	};
+	var _build = function(res) {
+		console.log("_build");
+		if (typeof(res.error) !== 'undefined') {
+			set_status_line(res.error.type + " Error: " + res.error.message);
+			return;
+		}
+		set_status_line("Building query");
+		friends = res;
+		var fids = ''; // string of comma separated friend ids
+		var f = [];
+		for (var i=0; i < friends.length; i++) {
+			f.push(friends[i].uid)
+		}
+		f.push(self.user.id);
+		fids = f.join(',');
+		set_status_line("Issuing query");
+		FB.api("/likes?ids="+fids, function(res) {
+						console.log(res);
+						_collate(res);
+				});	
+		console.log("_built");
+	}
+
 
 	var init = function (token, uid) {
 		self.token = token;
@@ -289,16 +267,42 @@ Likeometer = function () {
 					if ($("#scroll").length) {
 						var ds = $("div", $("#scroll")).length;
 						var spot = $("#scroll")[0].scrollHeight - $("#scroll").outerHeight() - 1;
-						// console.log( spot  +" :: "+  $("#scroll").scrollTop() + 
-						// " :: " + $("#scroll")[0].scrollHeight  );
 						$("#scroll").animate({scrollTop:spot}, 600);
 					} else { 
 						clearInterval(AS);
 					}
 				}, 599);
+
 			// get data
-			FB.api("/me", function(response) { got_me(response)});
-			FB.api("/me/friends", function(response) { got_friends(response, uid)});
+	
+
+
+			var me = FB.Data.query('select name, uid from user where uid={0}', uid);
+			me.wait(function(rows) {
+					console.log("wait came back");
+					self.user = rows[0];
+					self.user.id = self.user.uid;
+				});	
+
+			var friends_id = FB.Data.query(
+				'select uid, name from user where uid in (' +
+					'select uid2 from friend ' + 
+					'where uid1=me() limit 1000' +
+					')');
+
+			friends_id.wait(function(rows){
+				 console.log("friends_ids came back");
+					_build(rows);
+				});
+
+
+//		 	var likes = FB.Data.query('select object_id FROM like WHERE user_id=me()');
+	//  likes.wait(function(rows){ console.log(rows); });
+
+			set_status_line("Hello.  We're just starting");
+			
+			// FB.api("/me", function(response) { got_me(response)});
+			// FB.api("/me/friends", function(response) { got_friends(response, uid)});
 
 			// console.log('Likeometer init run');
 		} else {
