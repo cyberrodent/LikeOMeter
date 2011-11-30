@@ -229,7 +229,7 @@ Likeometer = function () {
 
 	};
 	var _build = function(res) {
-		console.log("_build");
+		// console.log("_build");
 		if (typeof(res.error) !== 'undefined') {
 			set_status_line(res.error.type + " Error: " + res.error.message);
 			return;
@@ -245,10 +245,10 @@ Likeometer = function () {
 		fids = f.join(',');
 		set_status_line("Issuing query");
 		FB.api("/likes?ids="+fids, function(res) {
-						console.log(res);
+						// console.log(res);
 						_collate(res);
 				});	
-		console.log("_built");
+		// console.log("_built");
 	}
 
 
@@ -279,7 +279,7 @@ Likeometer = function () {
 
 			var me = FB.Data.query('select name, uid from user where uid={0}', uid);
 			me.wait(function(rows) {
-					console.log("wait came back");
+					// console.log("wait came back");
 					self.user = rows[0];
 					self.user.id = self.user.uid;
 				});	
@@ -291,7 +291,7 @@ Likeometer = function () {
 					')');
 
 			friends_id.wait(function(rows){
-				 console.log("friends_ids came back");
+				 //console.log("friends_ids came back");
 					_build(rows);
 				});
 
