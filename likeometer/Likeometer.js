@@ -71,12 +71,19 @@ Likeometer = function () {
 	var show_top_likes = function () {
 		if (!processed) { return; } 
 		set_status_line("Preparing Like-O-Meter Report");
-		var limit = 1000;
-		// TODO : watch for sets smaller that limit
+		var limit = 250;
+
 		for (var i=0; i < limit; i++) {
 			if (collikes[like_count_keys[i]].length > 1) { 
 				var thing_id = like_count_keys[i];
-				var d = "<div><div class='h2'><img src='http://graph.facebook.com/" +  thing_id + "/picture?type=square&auth_token="+ self.token +"' width='50' height='50' border='0' class='thing' />" + "<span class='bigger'>" +  collikes[like_count_keys[i]].length + "</span> friends like " + "<a target=_blank href='https://facebook.com/" + thing_id + "'>" + things[like_count_keys[i]].name + "</a> <span class='category'>(" + things[like_count_keys[i]].category + ")</span>" + '</div><div class="h3">';
+				var d = "<div><div class='h2'><img src='http://graph.facebook.com/" +  
+					thing_id + "/picture?type=large&auth_token="+ 
+					self.token +"' align='top'  border='0' class='thing' />" + 
+					"<span class='bigger'>" +  collikes[like_count_keys[i]].length + 
+					"</span> friends like <br />" + 
+					"<a target=_blank href='https://facebook.com/" + thing_id + "'>" + 
+					things[like_count_keys[i]].name + "</a> <span class='category'>(" + 
+					things[like_count_keys[i]].category + ")</span>" + '</div><div class="h3">';
 
 				// '<fb:like href="https://www.facebook.com/'+ like_count_keys[i]  +'"></fb:like>' +
 				for (var j=0; j < collikes[thing_id].length; j++) {
@@ -239,11 +246,12 @@ Likeometer = function () {
 		var fids = ''; // string of comma separated friend ids
 		var f = [];
 		for (var i=0; i < friends.length; i++) {
-			f.push(friends[i].uid)
+			f.push(friends[i].uid);
+			all_friends[ friends[i].uid] = friends[i].name;
 		}
 		f.push(self.user.id);
 		fids = f.join(',');
-		set_status_line("Issuing query");
+		set_status_line("Issuing query. Please wait.");
 		FB.api("/likes?ids="+fids, function(res) {
 						// console.log(res);
 						_collate(res);
@@ -287,7 +295,7 @@ Likeometer = function () {
 			var friends_id = FB.Data.query(
 				'select uid, name from user where uid in (' +
 					'select uid2 from friend ' + 
-					'where uid1=me() limit 1000' +
+					'where uid1=me() order by rand() ' +
 					')');
 
 			friends_id.wait(function(rows){

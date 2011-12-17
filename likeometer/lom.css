@@ -101,15 +101,35 @@ footer {
   font-weight:bold;
 }
 
-.bigger { font-size:60px; line-height:50px; } 
-.category { font-size:11px; } 
-#friendslikes div.h2 {
-  border-bottom:0px solid gray;
-  margin-bottom:2px;
+span.bigger {
+ display:inline-block;
+  font-size:60px; 
+	line-height:50px; 
+	float:left;
+	margin-right:8px;
+} 
+.category { font-size:12px; } 
 
+#friendslikes div.h2 {
+  border-top:1px solid #fff;
+  margin-bottom:5px;
+	padding-top:8px;
+	height:50px;
+	float:none;
+	clear:left;
+	font-size:14px;
 }
+
+#friendslikes div.h2 a:visited ,
+#friendslikes div.h2 a {
+	font-size:28px;
+	color:#00c;
+}
+#friendslikes div.h2 img { float:left; width:160px; margin-top:-5px; } 
+
+
 #friendslikes div.h3 {
-  margin-left:60px;
+  margin-left:170px;
   margin-bottom:18px;
 
 }
