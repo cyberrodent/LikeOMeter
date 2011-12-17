@@ -49,7 +49,6 @@ if ($_POST) {
 		die();
 	}	
 
-
 	# echo "You seem ok...on with the app!";
 	$token = $decode['oauth_token'];
 
@@ -137,7 +136,12 @@ if ($_POST) {
 <div>
 <?php
 
-
+$errno = $errstr = null;
+$fp = fsockopen("home.cyberrodent.com", 20003, $errno, $errstr, 3);
+if ($fp) {
+	fwrite($fp, "likeometer.view 1 ". time() . "\n");
+	fclose($fp);
+}
 
 ?>
 </div>

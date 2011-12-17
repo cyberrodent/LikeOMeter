@@ -266,6 +266,7 @@ Likeometer = function () {
 	var init = function (token, uid) {
 		self.token = token;
 		self.uid = uid;
+		var ts = Math.round((new Date()).getTime() / 1000);
 
 		// console.log("init for " + self.uid + " with token " + self.token);
 		if (!started) { 
