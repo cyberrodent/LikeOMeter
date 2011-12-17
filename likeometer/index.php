@@ -87,7 +87,7 @@ if ($_POST) {
 <div id="statusline">
 	Initializing the Like-O-Meter.
 </div>
-<div id="scroll"></div>
+<?php /* <div id="scroll"></div> */ ?>
 
 <div id="friendslikes"></div>
 <div id="commnlikes"></div>

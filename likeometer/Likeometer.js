@@ -76,16 +76,19 @@ Likeometer = function () {
 		for (var i=0; i < limit; i++) {
 			if (collikes[like_count_keys[i]].length > 1) { 
 				var thing_id = like_count_keys[i];
-				var d = "<div><div class='h2'><img src='http://graph.facebook.com/" +  
-					thing_id + "/picture?type=large&auth_token="+ 
-					self.token +"' align='top'  border='0' class='thing' />" + 
-					"<span class='bigger'>" +  collikes[like_count_keys[i]].length + 
+				var d = "<div><div class='h2'><a href='https://facebook.com/" + thing_id + 
+					"' target=_blank><img src='http://graph.facebook.com/" +  
+					thing_id + "/picture?type=large&auth_token=" + 
+					self.token + "' align='top'  border='0' class='thing' border='0' /></a>" + 
+					"<span class='bigger'>" + collikes[like_count_keys[i]].length + 
 					"</span> friends like <br />" + 
 					"<a target=_blank href='https://facebook.com/" + thing_id + "'>" + 
 					things[like_count_keys[i]].name + "</a> <span class='category'>(" + 
 					things[like_count_keys[i]].category + ")</span>" + '</div><div class="h3">';
 
-				// '<fb:like href="https://www.facebook.com/'+ like_count_keys[i]  +'"></fb:like>' +
+				d += '<fb:like href="https://www.facebook.com/'+ like_count_keys[i]  +'"></fb:like>'; 
+
+				// draw a friend icon for each friend who likes this
 				for (var j=0; j < collikes[thing_id].length; j++) {
 					d += "<div class='fimg'><a target='_blank' href='https://facebook.com/"+
 						collikes[thing_id][j] + "' title='"+ 
@@ -212,7 +215,7 @@ Likeometer = function () {
 					collikes[thing_id] = [friend_id];
 				}
 
-				$("#scroll").append("<div>" + all_friends[friend_id] + "'s likes "+ flikes.length +" things.<div>");
+				// $("#scroll").append("<div>" + all_friends[friend_id] + "'s likes "+ flikes.length +" things.<div>");
 			}
 		}
 
@@ -227,7 +230,7 @@ Likeometer = function () {
 
 			processed = true;
 
-			$("#scroll").hide();
+			// $("#scroll").hide();
 			show_top_likes();
 
 
@@ -270,18 +273,18 @@ Likeometer = function () {
 
 			switch_page(".about");
 
-			// Auto scroll while loading and collating
-			AS = setInterval(function() {
-					if ($("#scroll").length) {
-						var ds = $("div", $("#scroll")).length;
-						var spot = $("#scroll")[0].scrollHeight - $("#scroll").outerHeight() - 1;
-						$("#scroll").animate({scrollTop:spot}, 600);
-					} else { 
-						clearInterval(AS);
-					}
-				}, 599);
-
-			// get data
+//			// Auto scroll while loading and collating
+//			AS = setInterval(function() {
+//					if ($("#scroll").length) {
+//						var ds = $("div", $("#scroll")).length;
+//						var spot = $("#scroll")[0].scrollHeight - $("#scroll").outerHeight() - 1;
+//						$("#scroll").animate({scrollTop:spot}, 600);
+//					} else { 
+//						clearInterval(AS);
+//					}
+//				}, 599);
+//
+//			// get data
 	
 
 
