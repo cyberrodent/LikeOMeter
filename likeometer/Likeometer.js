@@ -158,9 +158,6 @@ Likeometer = function () {
 		$('#you').click(you_action);
 	}
 
-
-
-
 	var make_things = function(data) {
 		for (var i in data) {
 			things[data[i].id] = data[i];
@@ -172,14 +169,17 @@ Likeometer = function () {
 		set_status_line("What your friend's like");
 		switch_page("#friendslikes");	
 	}
+
 	var home_action = function() {
 		switch_page(".about");
 		set_status_line("Welcome");
 	}
+
 	var you_action = function() {
 		set_status_line("Here's what you like");
 		switch_page("#yourlikes");
 	}
+
 	var common_action = function() {
 		set_status_line("What you and your friends have in common");
 		switch_page("#commonlikes");
@@ -188,6 +188,7 @@ Likeometer = function () {
 	var set_status_line = function(message) {
 		$("#statusline").text(message);
 	}
+
 	var switch_page = function(to_show){
 		$(".about").hide();
 		$("#friendslikes").hide();
@@ -197,6 +198,7 @@ Likeometer = function () {
 			$(to_show).show();
 		}
 	}
+
 	var _collate = function(res) {
 		set_status_line("Collating friends likes");
 		if (typeof(res.error) !== 'undefined') {
@@ -232,12 +234,8 @@ Likeometer = function () {
 
 			// $("#scroll").hide();
 			show_top_likes();
-
-
-
-
-
 	};
+
 	var _build = function(res) {
 		// console.log("_build");
 		if (typeof(res.error) !== 'undefined') {
@@ -261,7 +259,6 @@ Likeometer = function () {
 				});	
 		// console.log("_built");
 	}
-
 
 	var init = function (token, uid) {
 		self.token = token;
