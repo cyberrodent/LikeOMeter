@@ -210,6 +210,7 @@ Likeometer = function () {
 		}
 
 		for(var friend_id in res) {
+			console.log('--friend : ' + friend_id);
 			var flikes = res[friend_id].data;
 
 			set_status_line("Collating: " + all_friends[friend_id]  );
