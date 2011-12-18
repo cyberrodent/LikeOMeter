@@ -281,15 +281,48 @@ Likeometer = function () {
 	}
 
 	var init = function (token, uid) {
+
+		set_status_line("Hello.  We're just starting");
+
 		self.token = token;
 		self.uid = uid;
 		var ts = Math.round((new Date()).getTime() / 1000);
 
 		if (!started) { 
 			started = true;
-
 			switch_page(".about");
 
+			var me = FB.Data.query('select name, uid from user where uid={0}', uid);
+			me.wait(function(rows) {
+					// console.log("wait came back");
+					self.user = rows[0];
+					self.user.id = self.user.uid;
+				});	
+
+FB.api({ method: 'fql.query', 
+		query: 'SELECT friends_likes,user_likes FROM permissions WHERE uid=me()' }, 
+	function(resp) {
+    for(var key in resp[0]) {
+        if(resp[0][key] === "1")
+            console.log(key+' is granted')
+        else
+            console.log(key+' is not granted')
+    }
+		_init(token, uid);
+});
+
+
+
+
+
+
+
+
+		}
+	}
+	var _init = function (token, uid) {
+		self.token = token;
+		self.uid = uid;
 			//			// Auto scroll while loading and collating
 			//			AS = setInterval(function() {
 			//					if ($("#scroll").length) {
@@ -302,19 +335,11 @@ Likeometer = function () {
 			//				}, 599);
 		
 			// get data
-			var me = FB.Data.query('select name, uid from user where uid={0}', uid);
-			me.wait(function(rows) {
-					// console.log("wait came back");
-					self.user = rows[0];
-					self.user.id = self.user.uid;
-				});	
-
 			var friends_id = FB.Data.query(
 				'select uid, name from user where uid in (' +
 					'select uid2 from friend ' + 
 					'where uid1=me() order by rand() ' +
 					')');
-
 			friends_id.wait(function(rows){
 				 //console.log("friends_ids came back");
 					_build(rows);
@@ -323,15 +348,11 @@ Likeometer = function () {
 			//	var likes = FB.Data.query('select object_id FROM like WHERE user_id=me()');
 			//  likes.wait(function(rows){ console.log(rows); });
 
-			set_status_line("Hello.  We're just starting");
 			
 			// FB.api("/me", function(response) { got_me(response)});
 			// FB.api("/me/friends", function(response) { got_friends(response, uid)});
 
-		} else {
-			// 
-		}
-	}
+			}
 
 	return {
 		init : init
