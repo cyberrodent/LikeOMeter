@@ -202,15 +202,17 @@ Likeometer = function () {
 
 	var _collate = function(res) {
 		set_status_line("Collating");
-		console.log('res'); 
-		console.log(res); 
+		if (!res || res.error) {
+			set_status_line("Something went wrong " + res.error.message);
+		}
+		// console.log('res'); 
+		// console.log(res); 
 		if (typeof(res.error) !== 'undefined') {
 			set_status_line(res.error.type + " Error: " + res.error.message);
 			return;
 		}
 
 		for(var friend_id in res) {
-			console.log('--friend : ' + friend_id);
 			var flikes = res[friend_id].data;
 
 			set_status_line("Collating: " + all_friends[friend_id]  );
