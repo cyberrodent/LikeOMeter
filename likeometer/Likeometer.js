@@ -308,6 +308,17 @@ FB.api({ method: 'fql.query',
         else
             console.log(key+' is not granted')
     }
+
+		if (resp[0]['friends_likes'] != 1) {
+			set_status_line("Permission Error 1");				
+		return;
+		}
+		if (resp[0]['user_likes'] != 1) {
+			set_status_line("Permission Error 2");				
+			return;
+		}
+
+
 		_init(token, uid);
 });
 

@@ -9,7 +9,7 @@ FBLogin = function() {
       } else {
         // console.log('User cancelled login or did not fully authorize.');
       }
-    }, {scope: 'email, friends_likes, user_likes' });
+    }, {scope: 'email,friends_likes,user_likes' });
 }
 
 
@@ -41,6 +41,8 @@ $(function(){
             $("#log_in_now").show();	
           }
         }, {scope: 'friends_likes, user_likes'});
+
+
 
     }; // end fbAsyncInit
     // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  
