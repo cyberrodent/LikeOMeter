@@ -87,7 +87,7 @@ Likeometer = function () {
 					things[like_count_keys[i]].name + "</a> <span class='category'>(" + 
 					things[like_count_keys[i]].category + ")</span>" + '</div><div class="h3">';
 
-				d += '<fb:like href="https://www.facebook.com/'+ like_count_keys[i]  +'"></fb:like>'; 
+				// d += '<fb:like href="https://www.facebook.com/' + like_count_keys[i] +'"></fb:like>';
 
 				// draw a friend icon for each friend who likes this
 				for (var j=0; j < collikes[thing_id].length; j++) {
@@ -201,7 +201,9 @@ Likeometer = function () {
 	}
 
 	var _collate = function(res) {
-		set_status_line("Collating " + res.length + " friends likes");
+		set_status_line("Collating");
+		console.log('res'); 
+		console.log(res); 
 		if (typeof(res.error) !== 'undefined') {
 			set_status_line(res.error.type + " Error: " + res.error.message);
 			return;
