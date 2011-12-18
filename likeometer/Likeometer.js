@@ -209,6 +209,12 @@ Likeometer = function () {
 		if (res.error_code) {
 
 			set_status_line("Something went wrong. Error code: " + res.error_code);
+			for (m in res) {
+				console.log(m);
+				console.log(res.m);
+				console.log(eval('res.'+m));
+
+			}
 			return;
 		}
 
