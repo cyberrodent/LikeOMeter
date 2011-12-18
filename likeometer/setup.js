@@ -40,8 +40,7 @@ $(function(){
           } else { // User not logged in.
             $("#log_in_now").show();	
           }
-        }, {scope: 'friends_likes,user_likes'});
-
+        }, {perms: 'friends_likes,user_likes'});
 
 
     }; // end fbAsyncInit

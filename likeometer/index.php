@@ -52,6 +52,9 @@ if (1) {
 			error_log("authenticate with the fb");
 			error_log("Location: https://www.facebook.com/dialog/oauth?client_id=$YOUR_APP_ID".
 				"&redirect_uri=$YOUR_CANVAS_PAGE&scope=user_likes,friends_likes");
+
+
+
 			echo "<script>top.location.href = \"https://www.facebook.com/dialog/oauth?scope=user_likes,friends_likes&client_id=".  
 				$YOUR_APP_ID."&redirect_uri=".$YOUR_CANVAS_PAGE. "\";</script> ";
 			die();
