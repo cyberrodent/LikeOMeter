@@ -204,7 +204,14 @@ Likeometer = function () {
 		set_status_line("Collating");
 		if (!res || res.error) {
 			set_status_line("Something went wrong " + res.error.message);
+			return;
 		}
+		if (res.error_code) {
+
+			set_status_line("Something went wrong. Error code: " + res.error_code);
+			return;
+		}
+
 		// console.log('res'); 
 		// console.log(res); 
 		if (typeof(res.error) !== 'undefined') {
