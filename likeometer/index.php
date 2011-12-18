@@ -55,7 +55,7 @@ if (1) {
 
 
 
-			echo "<script>top.location.href = \"https://www.facebook.com/dialog/oauth?perms=user_likes,friends_likes&client_id=".  
+			echo "<script>top.location.href = \"https://www.facebook.com/dialog/oauth?scope=email,user_birthday,user_likes,friends_likes&client_id=".  
 				$YOUR_APP_ID."&redirect_uri=".$YOUR_CANVAS_PAGE. "\";</script> ";
 			die();
 		}	
