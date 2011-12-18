@@ -215,7 +215,7 @@ Likeometer = function () {
 		for(var friend_id in res) {
 			var flikes = res[friend_id].data;
 
-			set_status_line("Collating: " + all_friends[friend_id]  );
+			set_status_line("Collating: " + friend_id  );
 
 			for (var j = 0; j < flikes.length; j++) {
 				var thing_id = flikes[j].id;
