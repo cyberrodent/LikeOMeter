@@ -64,7 +64,7 @@ h1 img {
   border:1px solid black;
 }
 #friendslikes { 
-  padding:10px;
+  padding:10px 0;
 }
 #friendslikes div {
   font-size:24px;
@@ -97,14 +97,21 @@ footer {
   margin-bottom:12px;
 }
 .about ul { 
-  font-size:18px;
+	margin-top:0;
+  font-size:24px;
   font-weight:bold;
+	line-height:32px;
+	width:660px;
+}
+.about ul li { 
+	color:#336;
+	margin:0 20px 0 20px;
 }
 
 span.bigger {
  display:inline-block;
-  font-size:60px; 
-	line-height:50px; 
+  font-size:72px; 
+	line-height:60px; 
 	float:left;
 	margin-right:8px;
 } 
@@ -114,7 +121,7 @@ span.bigger {
   border-top:1px solid #fff;
   margin-bottom:5px;
 	padding-top:8px;
-	min-height:50px;
+	min-height:60px;
 	float:none;
 	clear:left;
 	font-size:14px;
@@ -131,5 +138,11 @@ span.bigger {
 #friendslikes div.h3 {
   margin-left:170px;
   margin-bottom:18px;
+}
 
+.ltr {
+	/* liked thing row */
+	background-color:#fff;
+	padding:0;
+	margin:0;
 }

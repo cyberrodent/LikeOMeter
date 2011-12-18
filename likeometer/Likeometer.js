@@ -77,7 +77,7 @@ Likeometer = function () {
 		for (var i=0; i < limit; i++) {
 			if (collikes[like_count_keys[i]].length > 1) { 
 				var thing_id = like_count_keys[i];
-				var d = "<div><div class='h2'><a href='https://facebook.com/" + thing_id + 
+				var d = "<div class='ltr'><div class='h2'><a href='https://facebook.com/" + thing_id + 
 					"' target=_blank><img src='http://graph.facebook.com/" +  
 					thing_id + "/picture?type=large&auth_token=" + 
 					self.token + "' align='top'  border='0' class='thing' border='0' /></a>" + 
@@ -256,7 +256,7 @@ Likeometer = function () {
 		}
 		f.push(self.user.id);
 		fids = f.join(',');
-		set_status_line("Issuing query. Please wait.");
+		set_status_line("Asking Facebook what your friends like. Hang on.");
 		FB.api("/likes?ids="+fids, function(res) {
 						_collate(res);
 				});	

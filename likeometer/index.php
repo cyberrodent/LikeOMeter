@@ -29,6 +29,8 @@ function base64_url_decode($input) {
   return base64_decode(strtr($input, '-_', '+/'));
 }
 
+
+
 $FBSECRET = getenv("FACEBOOK_SECRET");
 $YOUR_APP_ID = getenv("FACEBOOK_APP_ID");
 if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
@@ -39,7 +41,6 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 
 if ($_POST) {
 	$decode = parse_signed_request($_POST['signed_request'], $FBSECRET);
-
 	// if we don't have a token then we need to ask this dude for permission
 	if (!isset($decode['oauth_token'])) {
 		error_log("authenticate with the fb");
@@ -48,15 +49,15 @@ if ($_POST) {
 			$YOUR_APP_ID."&redirect_uri=".$YOUR_CANVAS_PAGE. "&scope=user_likes,friends_likes\";</script> ";
 		die();
 	}	
-
-	# echo "You seem ok...on with the app!";
+	# You seem ok...on with the app!
 	$token = $decode['oauth_token'];
-
 } else { 
-
 	die("nothing to get here");
-
 }
+
+
+
+
 
 
 ?><!DOCTYPE html>
@@ -95,46 +96,26 @@ if ($_POST) {
 
 <div class="about">
 	<div>
-	<ul>
-	<li>	The Like-O-Meter will let you see what your Facebook friends like. </li>
-	<li>	It will rank them based on how many friends like the thing.  </li>
-	<li>	It will show you up to 1000 things that at least 2 of your friends like. In other words, you can keep scrolling down for a long long time.</li>
-	</ul>
-	Here's a picture:
-	 </div>
-	
-	<div>
-		<img src="/images/lom-explained.jpg" height="343" width="722" />
-	</div>
+		<ul>
+		<li>	See what your Facebook friends like. </li>
+		<li>	See 100's of things that 2 or more of your friends like.</li>
+		<li>	Ranks liked-things based on how many friends like it.  </li>
+		<li>	A great way to discover new things.</li>
+		</ul>
+		Here's a picture:
+		 </div>
+		
+		<div>
+			<img src="/images/lom-explained.jpg" height="343" width="722" />
+		</div>
 
-	<div>
-	Here is the <a target="_top" href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID ?>">Like-O-Meter's page on Facebook</a>
-	</div>
-	<div class="fb-like-box" data-href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID  ?>" data-width="292" data-show-faces="false" data-stream="false" data-header="true"></div>
-<?php /*
-	<div>
-		So far there are 3 pages to visit as part of using Like-O-Meter.  
-		<ol>
-			<li>
-				<strong>Your Likes</strong> is the simplest of these pages. It shows the things you like, grouped into the categories that Facebook assigns each thing.  Things can be assigned more than one category.
-			</li>
-			<li><strong>Common Likes</strong>Of all the things you like on Facebook, which of your friends also liked it? Find out on this page.
-
-	
-	
-			<li>
-			<strong>Friend Likes</strong>
-			This page shows you up to 1000 things that your friends on Facebook "liked" on Facebook. These things are ranked based upon how many friends liked it. This is the default page and it's a great way to discover new things. 
-			</li>
-	
-			</li>
-		</ol>
-	</div>
- */ ?>
-	<input type="button" value="Log in Now" id="log_in_now" class="login_button" />
+		<div>
+		Here is the <a target="_top" href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID ?>">Like-O-Meter's page on Facebook</a>
+		</div>
+		<div class="fb-like-box" data-href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID  ?>" data-width="292" data-show-faces="false" data-stream="false" data-header="true"></div>
+		<input type="button" value="Log in Now" id="log_in_now" class="login_button" />
 </div>
-<div>
-<?php
+<div><?php
 
 $errno = $errstr = null;
 $fp = fsockopen("home.cyberrodent.com", 20003, $errno, $errstr, 3);
@@ -143,8 +124,7 @@ if ($fp) {
 	fclose($fp);
 }
 
-?>
-</div>
+?></div>
 <footer>
 &copy;2011 Jeff Kolber
 </footer>
