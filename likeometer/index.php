@@ -41,7 +41,9 @@ function base64_url_decode($input) {
   return base64_decode(strtr($input, '-_', '+/'));
 }
 
-if (0) { 
+if (1) { 
+
+
 	if ($_POST) {
 		$decode = parse_signed_request($_POST['signed_request'], $FBSECRET);
 
