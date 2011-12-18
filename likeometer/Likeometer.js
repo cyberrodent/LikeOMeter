@@ -201,7 +201,7 @@ Likeometer = function () {
 	}
 
 	var _collate = function(res) {
-		set_status_line("Collating friends likes");
+		set_status_line("Collating " + res.length + " friends likes");
 		if (typeof(res.error) !== 'undefined') {
 			set_status_line(res.error.type + " Error: " + res.error.message);
 			return;
@@ -210,7 +210,7 @@ Likeometer = function () {
 		for(var friend_id in res) {
 			var flikes = res[friend_id].data;
 
-			set_status_line("Collating: " + friends[friend_id] );
+			set_status_line("Collating: " + all_friends[friend_id]  );
 
 			for (var j = 0; j < flikes.length; j++) {
 				var thing_id = flikes[j].id;
