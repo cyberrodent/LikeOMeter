@@ -68,6 +68,7 @@ Likeometer = function () {
 		}
 		set_status_line("Ready.");
 	}
+
 	var show_top_likes = function () {
 		if (!processed) { return; } 
 		set_status_line("Preparing Like-O-Meter Report");
@@ -208,6 +209,9 @@ Likeometer = function () {
 
 		for(var friend_id in res) {
 			var flikes = res[friend_id].data;
+
+			set_status_line("Collating: " + friends[friend_id] );
+
 			for (var j = 0; j < flikes.length; j++) {
 				var thing_id = flikes[j].id;
 				things[thing_id] = flikes[j];
@@ -254,10 +258,8 @@ Likeometer = function () {
 		fids = f.join(',');
 		set_status_line("Issuing query. Please wait.");
 		FB.api("/likes?ids="+fids, function(res) {
-						// console.log(res);
 						_collate(res);
 				});	
-		// console.log("_built");
 	}
 
 	var init = function (token, uid) {
@@ -265,27 +267,23 @@ Likeometer = function () {
 		self.uid = uid;
 		var ts = Math.round((new Date()).getTime() / 1000);
 
-		// console.log("init for " + self.uid + " with token " + self.token);
 		if (!started) { 
 			started = true;
 
 			switch_page(".about");
 
-//			// Auto scroll while loading and collating
-//			AS = setInterval(function() {
-//					if ($("#scroll").length) {
-//						var ds = $("div", $("#scroll")).length;
-//						var spot = $("#scroll")[0].scrollHeight - $("#scroll").outerHeight() - 1;
-//						$("#scroll").animate({scrollTop:spot}, 600);
-//					} else { 
-//						clearInterval(AS);
-//					}
-//				}, 599);
-//
-//			// get data
-	
-
-
+			//			// Auto scroll while loading and collating
+			//			AS = setInterval(function() {
+			//					if ($("#scroll").length) {
+			//						var ds = $("div", $("#scroll")).length;
+			//						var spot = $("#scroll")[0].scrollHeight - $("#scroll").outerHeight() - 1;
+			//						$("#scroll").animate({scrollTop:spot}, 600);
+			//					} else { 
+			//						clearInterval(AS);
+			//					}
+			//				}, 599);
+		
+			// get data
 			var me = FB.Data.query('select name, uid from user where uid={0}', uid);
 			me.wait(function(rows) {
 					// console.log("wait came back");
@@ -304,18 +302,16 @@ Likeometer = function () {
 					_build(rows);
 				});
 
-
-//		 	var likes = FB.Data.query('select object_id FROM like WHERE user_id=me()');
-	//  likes.wait(function(rows){ console.log(rows); });
+			//	var likes = FB.Data.query('select object_id FROM like WHERE user_id=me()');
+			//  likes.wait(function(rows){ console.log(rows); });
 
 			set_status_line("Hello.  We're just starting");
 			
 			// FB.api("/me", function(response) { got_me(response)});
 			// FB.api("/me/friends", function(response) { got_friends(response, uid)});
 
-			// console.log('Likeometer init run');
 		} else {
-			// console.log('Sorry. Likeometer is already running');
+			// 
 		}
 	}
 
