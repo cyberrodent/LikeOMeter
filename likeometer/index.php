@@ -41,29 +41,29 @@ function base64_url_decode($input) {
   return base64_decode(strtr($input, '-_', '+/'));
 }
 
+if (0) { 
+	if ($_POST) {
+		$decode = parse_signed_request($_POST['signed_request'], $FBSECRET);
 
-if ($_POST) {
-	$decode = parse_signed_request($_POST['signed_request'], $FBSECRET);
+		// if we don't have a token then we need to ask this dude for permission
+		if (!isset($decode['oauth_token'])) {
+			error_log("authenticate with the fb");
+			error_log("Location: https://www.facebook.com/dialog/oauth?client_id=$YOUR_APP_ID".
+				"&redirect_uri=$YOUR_CANVAS_PAGE&scope=user_likes,friends_likes");
+			echo "<script>top.location.href = \"https://www.facebook.com/dialog/oauth?client_id=".  
+				$YOUR_APP_ID."&redirect_uri=".$YOUR_CANVAS_PAGE. "&scope=user_likes,friends_likes\";</script> ";
+			die();
+		}	
 
-	// if we don't have a token then we need to ask this dude for permission
-	if (!isset($decode['oauth_token'])) {
-		error_log("authenticate with the fb");
-		error_log("Location: https://www.facebook.com/dialog/oauth?client_id=$YOUR_APP_ID".
-			"&redirect_uri=$YOUR_CANVAS_PAGE&scope=user_likes,friends_likes");
-		echo "<script>top.location.href = \"https://www.facebook.com/dialog/oauth?client_id=".  
-			$YOUR_APP_ID."&redirect_uri=".$YOUR_CANVAS_PAGE. "&scope=user_likes,friends_likes\";</script> ";
-		die();
-	}	
+		# You seem ok...on with the app!
+		$token = $decode['oauth_token'];
 
-	# You seem ok...on with the app!
-	$token = $decode['oauth_token'];
+	} else { 
+		die("nothing to get here");
+	}
 
-} else { 
-	die("nothing to get here");
+
 }
-
-
-
 
 
 
