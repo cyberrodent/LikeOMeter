@@ -54,9 +54,7 @@ if (1) {
 				"&redirect_uri=$YOUR_CANVAS_PAGE&scope=user_likes,friends_likes");
 
 
-
-			echo "<script>top.location.href = \"https://www.facebook.com/dialog/oauth?scope=email,user_birthday,user_likes,friends_likes&client_id=".  
-				$YOUR_APP_ID."&redirect_uri=".$YOUR_CANVAS_PAGE. "\";</script> ";
+			echo "<script>top.location.href = \"https://www.facebook.com/dialog/oauth?scope=email,user_birthday,user_likes,friends_likes&perms=email,user_birthday,user_likes,friends_likes&client_id=". $YOUR_APP_ID."&redirect_uri=".$YOUR_CANVAS_PAGE. "\";</script> ";
 			die();
 		}	
 
@@ -138,6 +136,7 @@ if ($fp) {
 &copy;2011 Jeff Kolber
 </footer>
 <script>
+
 <?php include "./Likeometer.js" ?>
 <?php include "./setup.js" ?>
 </script>
