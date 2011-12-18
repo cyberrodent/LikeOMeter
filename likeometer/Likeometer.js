@@ -299,25 +299,6 @@ Likeometer = function () {
 					self.user.id = self.user.uid;
 				});	
 
-FB.api({ method: 'fql.query', 
-		query: 'SELECT friends_likes,user_likes FROM permissions WHERE uid=me()' }, 
-	function(resp) {
-    for(var key in resp[0]) {
-        if(resp[0][key] === "1")
-            console.log(key+' is granted')
-        else
-            console.log(key+' is not granted')
-    }
-
-		if (resp[0]['friends_likes'] != 1) {
-			set_status_line("Permission Error 1");				
-		return;
-		}
-		if (resp[0]['user_likes'] != 1) {
-			set_status_line("Permission Error 2");				
-			return;
-		}
-
 
 		_init(token, uid);
 });

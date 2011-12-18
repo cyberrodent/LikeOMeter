@@ -41,6 +41,31 @@ $(function(){
             $("#log_in_now").show();	
           }
         }, {perms: 'friends_likes,user_likes'});
+// https://www.facebook.com/dialog/oauth?scope=email,user_birthday,user_likes,friends_likes&perms=email,user_birthday,user_likes,friends_likes&client_id=251829454859769&redirect_uri=https://apps.facebook.com/like_o_meter/
+
+			FB.api({ method: 'fql.query', 
+					query: 'SELECT friends_likes,user_likes FROM permissions WHERE uid=me()' }, 
+				function(resp) {
+					for(var key in resp[0]) {
+						if(resp[0][key] === "1")
+							console.log(key+' is granted')
+						else
+							console.log(key+' is not granted')
+					}
+
+					if (resp[0]['friends_likes'] != 1) {
+						top.location.href="https://www.facebook.com/dialog/oauth?scope=email,user_birthday,user_likes,friends_likes&perms=email,user_birthday,user_likes,friends_likes&client_id=251829454859769&redirect_uri=https://apps.facebook.com/like_o_meter/";
+						return;
+					}
+					if (resp[0]['user_likes'] != 1) {
+
+						top.location.href="https://www.facebook.com/dialog/oauth?scope=email,user_birthday,user_likes,friends_likes&perms=email,user_birthday,user_likes,friends_likes&client_id=251829454859769&redirect_uri=https://apps.facebook.com/like_o_meter/";
+						return;
+					}
+
+
+
+
 
 
     }; // end fbAsyncInit
