@@ -17,7 +17,6 @@ FBLogin = function() {
 
 
 $(function(){
-
     // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  
     window.fbAsyncInit = function() {
       FB.init({
@@ -41,7 +40,7 @@ $(function(){
           } else { // User not logged in.
             $("#log_in_now").show();	
           }
-        }, {scope: 'email, friend_likes, user_likes'});
+        }, {scope: 'friends_likes, user_likes'});
 
     }; // end fbAsyncInit
     // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  
@@ -50,7 +49,6 @@ $(function(){
     // Load the SDK 
     $.getScript(document.location.protocol + 
         '//connect.facebook.net/en_US/all.js');
-
       // bind our login function to the login button
       $("#log_in_now").click(FBLogin);
     });

@@ -4,6 +4,18 @@
  * This is for the canvas app version of fblikes
  *
  */
+
+$FBSECRET = getenv("FACEBOOK_SECRET");
+
+$YOUR_APP_ID = getenv("FACEBOOK_APP_ID");
+
+if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
+	$YOUR_CANVAS_PAGE = "https://apps.facebook.com/ns_enilemit_local/";
+} else { 
+	$YOUR_CANVAS_PAGE = "https://apps.facebook.com/like_o_meter/";
+}
+
+
 /**
  * parse_signed_request
  * deal with facebook login, oauth2
@@ -30,27 +42,22 @@ function base64_url_decode($input) {
 }
 
 
-
-$FBSECRET = getenv("FACEBOOK_SECRET");
-$YOUR_APP_ID = getenv("FACEBOOK_APP_ID");
-if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
-	$YOUR_CANVAS_PAGE = "https://apps.facebook.com/ns_enilemit_local/";
-} else { 
-	$YOUR_CANVAS_PAGE = "https://apps.facebook.com/like_o_meter/";
-}
-
 if ($_POST) {
 	$decode = parse_signed_request($_POST['signed_request'], $FBSECRET);
+
 	// if we don't have a token then we need to ask this dude for permission
 	if (!isset($decode['oauth_token'])) {
 		error_log("authenticate with the fb");
-		error_log("Location: https://www.facebook.com/dialog/oauth?client_id=$YOUR_APP_ID&redirect_uri=$YOUR_CANVAS_PAGE&scope=user_likes,friends_likes");
+		error_log("Location: https://www.facebook.com/dialog/oauth?client_id=$YOUR_APP_ID".
+			"&redirect_uri=$YOUR_CANVAS_PAGE&scope=user_likes,friends_likes");
 		echo "<script>top.location.href = \"https://www.facebook.com/dialog/oauth?client_id=".  
 			$YOUR_APP_ID."&redirect_uri=".$YOUR_CANVAS_PAGE. "&scope=user_likes,friends_likes\";</script> ";
 		die();
 	}	
+
 	# You seem ok...on with the app!
 	$token = $decode['oauth_token'];
+
 } else { 
 	die("nothing to get here");
 }
@@ -69,10 +76,7 @@ if ($_POST) {
 <script type="text/javascript" src="https://<?php echo $_SERVER['HTTP_HOST'] ?>/jquery-1.7.min.js"></script>
 </head>
 <body>
-<script>
-<?php include "./Likeometer.js" ?>
-<?php include "./setup.js" ?>
-</script>
+
 <h1><img src="/images/lom.png" height="75" width="75">Facebook Like-O-Meter</h1>
 <nav>
 <a id="flikes">Friends' Likes</a>
@@ -128,5 +132,9 @@ if ($fp) {
 <footer>
 &copy;2011 Jeff Kolber
 </footer>
+<script>
+<?php include "./Likeometer.js" ?>
+<?php include "./setup.js" ?>
+</script>
 </body>
 </html>
