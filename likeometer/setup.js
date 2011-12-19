@@ -27,33 +27,48 @@ $(function(){
           oauth      : true, // enable OAuth 2.0
           xfbml      : false // parse XFBML
         });
+
       // Additional initialization code here
 
       LOM = new Likeometer();
 
-      FB.getLoginStatus(function(response) {
-          if (response.authResponse) { // user is logged in
-            LOM.init(response.authResponse.accessToken, 
-              response.authResponse.userID);
+			client_id = '251829454859769';
+			perms_needed = 'email,user_birthday,user_likes,friends_likes';
 
-            $("#log_in_now").hide();	
+			oauth_url = "https://www.facebook.com/dialog/oauth?scope=" + 
+				perms_needed + "&perms=" + perms_needed + "&client_id=" + 
+				client_id + "&redirect_uri=https://apps.facebook.com/like_o_meter/";
+
+			fql_confirm_perms = 'SELECT friends_likes,user_likes FROM permissions WHERE uid=me()';
+
+			_to_login = function() {
+					top.location.href=oauth_url;
+			};
+
+			_check_perms = function(resp) {
+
+				if (resp[0]['friends_likes'] != 1){_to_login();}
+				if (resp[0]['user_likes'] != 1){_to_login();}
+
+				LOM.init(response.authResponse.accessToken, 
+					response.authResponse.userID);
+			};
+
+			// Check if we have enough permission to do this
+			FB.getLoginStatus(function(response) {
+					if (response.authResponse) { // user is logged in
+						FB.api({ method: 'fql.query', query: fql_confirm_perms }, _check_perms);
           } else { // User not logged in.
-            $("#log_in_now").show();	
-          }
-        }, {perms: 'friends_likes,user_likes'});
-// https://www.facebook.com/dialog/oauth?scope=email,user_birthday,user_likes,friends_likes&perms=email,user_birthday,user_likes,friends_likes&client_id=251829454859769&redirect_uri=https://apps.facebook.com/like_o_meter/
+						_to_login();		
+					}
+				}, {perms: 'friends_likes,user_likes'});
+    }; 
+		// end fbAsyncInit 
 
-
-
-
-
-    }; // end fbAsyncInit
     // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  
 
+		// Load the SDK 
     $('body').append('<div id="fb-root"></div>');
-    // Load the SDK 
     $.getScript(document.location.protocol + 
         '//connect.facebook.net/en_US/all.js');
-      // bind our login function to the login button
-      $("#log_in_now").click(FBLogin);
     });

@@ -281,56 +281,20 @@ Likeometer = function () {
 	}
 
 	var init = function (token, uid) {
-
 		set_status_line("Hello.  We're just starting");
-
 		self.token = token;
 		self.uid = uid;
 		var ts = Math.round((new Date()).getTime() / 1000);
-
 		if (!started) { 
 			started = true;
 			switch_page(".about");
-
 			var me = FB.Data.query('select name, uid from user where uid={0}', uid);
 			me.wait(function(rows) {
 					// console.log("wait came back");
 					self.user = rows[0];
 					self.user.id = self.user.uid;
+					_init(token, uid);
 				});	
-
-
-			FB.api({ method: 'fql.query', 
-					query: 'SELECT friends_likes,user_likes FROM permissions WHERE uid=me()' }, 
-				function(resp) {
-					for(var key in resp[0]) {
-						if(resp[0][key] === "1")
-							console.log(key+' is granted')
-						else
-							console.log(key+' is not granted')
-					}
-
-					if (resp[0]['friends_likes'] != 1) {
-						top.location.href="https://www.facebook.com/dialog/oauth?scope=email,user_birthday,user_likes,friends_likes&perms=email,user_birthday,user_likes,friends_likes&client_id=251829454859769&redirect_uri=https://apps.facebook.com/like_o_meter/";
-						return;
-					}
-					if (resp[0]['user_likes'] != 1) {
-
-						top.location.href="https://www.facebook.com/dialog/oauth?scope=email,user_birthday,user_likes,friends_likes&perms=email,user_birthday,user_likes,friends_likes&client_id=251829454859769&redirect_uri=https://apps.facebook.com/like_o_meter/";
-						return;
-					}
-
-
-		_init(token, uid);
-});
-
-
-
-
-
-
-
-
 		}
 	}
 	var _init = function (token, uid) {
