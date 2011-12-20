@@ -82,22 +82,25 @@ Likeometer = function () {
   var show_top_likes = function () {
     if (!processed) { return; } 
     set_status_line("Preparing Like-O-Meter Report");
-    var limit = 250;
+    var limit = 300;
 
     for (var i=0; i < limit; i++) {
       if (collikes[like_count_keys[i]].length > 1) { 
         var thing_id = like_count_keys[i];
-        var d = "<div class='ltr'><div class='h2'><a href='https://facebook.com/" + thing_id + 
+
+
+				// console.log(things[thing_id]);
+        var d = "<div class='ltr'><div class='h2' id='h2"+ thing_id  +"'><a href='https://facebook.com/" + thing_id + 
           "' target=_blank><img src='http://graph.facebook.com/" +  
           thing_id + "/picture?type=large&auth_token=" + 
           self.token + "' align='top'  border='0' class='thing' border='0' /></a>" + 
-          "<span class='bigger'>" + collikes[like_count_keys[i]].length + 
+          "<span class='bigger'>" + collikes[thing_id].length + 
           "</span> friends like <br />" + 
           "<a target=_blank href='https://facebook.com/" + thing_id + "'>" + 
-          things[like_count_keys[i]].name + "</a> <span class='category'>(" + 
-          things[like_count_keys[i]].category + ")</span>" + '</div><div class="h3">';
-
-        // d += '<fb:like href="https://www.facebook.com/' + like_count_keys[i] +'"></fb:like>';
+          things[thing_id].name + "</a> <span class='category'>(" + 
+          things[thing_id].category + ")</span>" + '</div><div class="h3">';
+		
+//        d += '<fb:like href="https://www.facebook.com/barackobama"></fb:like>';
 
         // draw a friend icon for each friend who likes this
         for (var j=0; j < collikes[thing_id].length; j++) {
@@ -106,14 +109,20 @@ Likeometer = function () {
             all_friends[collikes[thing_id][j]] + "' >" +
             "<img src='https://graph.facebook.com/" +
             collikes[thing_id][j] + 
-            "/picture?type=square' height='50' width='50' border='0' /></a></div>";
+            "/picture?type=square' height='32' width='32' border='0' /></a></div>";
         }	
         d += "</div></div>";
         $("#friendslikes").append(d);
+
+				FB.api('/' + thing_id +"?fields=link,username,id" , function(res) {
+						// console.log("called back thing " + res.id);
+						var d = '<fb:like show_faces="false" href="'+ res.link +'"></fb:like>';
+						$("#h2"+res.id).append(d);
+						FB.XFBML.parse( document.getElementById("h2"+res.id ));
+					});
       }
     }
 
-    // FB.XFBML.parse();
 
     $('#flikes').click(flikes_action);
     $('#home').click(home_action);
@@ -218,14 +227,8 @@ Likeometer = function () {
     }
     if (res.error_code) {
       set_status_line("Something went wrong. Error code: " + res.error_code);
-      for (m in res) {
-        // console.log(m);
-        // console.log(eval('res["'+m+'"]'));
-      }
       return;
     }
-
-    // console.log('res'); console.log(res); 
     if (typeof(res.error) !== 'undefined') {
       set_status_line(res.error.type + " Error: " + res.error.message);
       return;
@@ -234,33 +237,35 @@ Likeometer = function () {
     for(var friend_id in res) {
       arrived.push(friend_id); 
       var flikes = res[friend_id].data;
-      // set_status_line("Collating: " + friend_id  );
       set_status_line("Collated " + Object.size(collikes) + " things from " + arrived.length + " friends.");
       for (var j = 0; j < flikes.length; j++) {
         var thing_id = flikes[j].id;
         things[thing_id] = flikes[j];
+
+			
         if (typeof(collikes[thing_id]) !== 'undefined') {
           collikes[thing_id].push(friend_id);
         } else { 
           collikes[thing_id] = [friend_id];
         }
-        // $("#scroll").append("<div>" + all_friends[friend_id] + "'s likes "+ flikes.length +" things.<div>");
       }
     }
 
-    // set_status_line("Collated " + like_count_keys.length + " likes from all of your friends.");
-
-    // if we are last then we do this
     // console.log("arrived length: "+arrived.length);
     // console.log("all_friends length: " + Object.size(all_friends));
-    //
+    
+    // if we are last then we do this
     if (arrived.length >= how_many_friends_i_have) {
       set_status_line("Sorting.....");
+
+
+
       for (var i in collikes) {
         like_counts[i] = collikes[i].length;
         like_count_keys.push(i);
       }
       like_count_keys.sort(compare_collikes);
+
       processed = true;
       show_top_likes();
     }
