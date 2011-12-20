@@ -235,7 +235,7 @@ Likeometer = function () {
 			arrived.push(friend_id); 
 			var flikes = res[friend_id].data;
 			// set_status_line("Collating: " + friend_id  );
-			set_status_line("Collated " + arrived.length + " friends likes");
+			set_status_line("Collated " + Object.size(collikes) + " things from " + arrived.length + " friends.");
 			for (var j = 0; j < flikes.length; j++) {
 				var thing_id = flikes[j].id;
 				things[thing_id] = flikes[j];
@@ -255,7 +255,7 @@ Likeometer = function () {
 		// console.log("all_friends length: " + Object.size(all_friends));
 		//
 		if (arrived.length >= how_many_friends_i_have) {
-			set_status_line("This is your Top 20.");
+			set_status_line("Sorting.....");
 			for (var i in collikes) {
 				like_counts[i] = collikes[i].length;
 				like_count_keys.push(i);
@@ -290,7 +290,7 @@ Likeometer = function () {
 		var message = "Asking Facebook what your friends like. "
 		set_status_line(message);
 
-		var chunk_size = 30;
+		var chunk_size = 8;
 		var c = 0;
 		while (f.length) {
 			var chunk = f.splice(0,chunk_size);
