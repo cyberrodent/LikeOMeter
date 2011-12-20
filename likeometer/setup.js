@@ -34,7 +34,7 @@ $(function(){
       LOM = new Likeometer();
 
       var client_id = '251829454859769';
-      client_id = '260337734005390'; // local
+      // client_id = '260337734005390'; // local
       var perms_needed = 'email,user_likes,friends_likes';
 
       var oauth_url = "https://www.facebook.com/dialog/oauth?scope=" + 
