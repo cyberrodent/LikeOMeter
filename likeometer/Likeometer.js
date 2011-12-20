@@ -1,3 +1,12 @@
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+
+
 
 Likeometer = function () {
 
@@ -7,6 +16,7 @@ Likeometer = function () {
 	var collikes = {}; // collate likes in here like_id => [ uids who like this ]  
 	var like_counts = {};
 	var all_friends = []; // keyed by id, the name of each friend
+	var arrived = []; // track which users like data has arrived
 	var like_count_keys = new Array();
 	var started = false;
 	var processed = false;
@@ -207,29 +217,25 @@ Likeometer = function () {
 			return;
 		}
 		if (res.error_code) {
-
 			set_status_line("Something went wrong. Error code: " + res.error_code);
 			for (m in res) {
 				console.log(m);
 				console.log(eval('res["'+m+'"]'));
-			
-
 			}
 			return;
 		}
 
-		// console.log('res'); 
-		// console.log(res); 
+		// console.log('res'); console.log(res); 
 		if (typeof(res.error) !== 'undefined') {
 			set_status_line(res.error.type + " Error: " + res.error.message);
 			return;
 		}
 
 		for(var friend_id in res) {
+			arrived.push(friend_id); 
 			var flikes = res[friend_id].data;
-
-			set_status_line("Collating: " + friend_id  );
-
+			// set_status_line("Collating: " + friend_id  );
+			set_status_line("Collated " + arrived.length + " friends likes");
 			for (var j = 0; j < flikes.length; j++) {
 				var thing_id = flikes[j].id;
 				things[thing_id] = flikes[j];
@@ -238,24 +244,26 @@ Likeometer = function () {
 				} else { 
 					collikes[thing_id] = [friend_id];
 				}
-
 				// $("#scroll").append("<div>" + all_friends[friend_id] + "'s likes "+ flikes.length +" things.<div>");
 			}
 		}
 
-		set_status_line("Collated friends likes");
-			set_status_line("Initializing: Collating everybody's likes.");
+		// set_status_line("Collated " + like_count_keys.length + " likes from all of your friends.");
+
+		// if we are last then we do this
+		// console.log("arrived length: "+arrived.length);
+		// console.log("all_friends length: " + Object.size(all_friends));
+		//
+		if (arrived.length >= how_many_friends_i_have) {
+			set_status_line("This is your Top 20.");
 			for (var i in collikes) {
 				like_counts[i] = collikes[i].length;
 				like_count_keys.push(i);
 			}
 			like_count_keys.sort(compare_collikes);
-			set_status_line("Collated " + like_count_keys.length + " likes from all of your friends. This is your Top 20.");
-
 			processed = true;
-
-			// $("#scroll").hide();
 			show_top_likes();
+		}
 	};
 
 	var _build = function(res) {
@@ -273,11 +281,27 @@ Likeometer = function () {
 			all_friends[ friends[i].uid] = friends[i].name;
 		}
 		f.push(self.user.id);
-		fids = f.join(',');
-		set_status_line("Asking Facebook what your friends like. Hang on.");
-		FB.api("/likes?ids="+fids, function(res) {
-						_collate(res);
+
+		how_many_friends_i_have = Object.size(all_friends) ;
+		// really this can't work for largis result sets
+		// you get a network error.  So we need to chunk
+		// DON'T DO THIS ->  fids = f.join(',');
+
+		var message = "Asking Facebook what your friends like. "
+		set_status_line(message);
+
+		var chunk_size = 30;
+		var c = 0;
+		while (f.length) {
+			var chunk = f.splice(0,chunk_size);
+			c++;
+		  var fids = chunk.join(',');
+			// console.log("fetching " + fids);
+			FB.api("/likes?ids="+fids, function(res) {
+					_collate(res);
 				});	
+			if (c>9999) { break; }  // stop runaway
+		}
 	}
 
 	var init = function (token, uid) {

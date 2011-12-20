@@ -33,24 +33,24 @@ $(function(){
 
       LOM = new Likeometer();
 
-			client_id = '251829454859769';
-			perms_needed = 'email,user_birthday,user_likes,friends_likes,read_stream';
+			var client_id = '251829454859769';
+			client_id = '260337734005390'; // local
+			var perms_needed = 'email,user_likes,friends_likes';
 
-			oauth_url = "https://www.facebook.com/dialog/oauth?scope=" + 
+			var oauth_url = "https://www.facebook.com/dialog/oauth?scope=" + 
 				perms_needed + "&perms=" + perms_needed + "&client_id=" + 
 				client_id + "&redirect_uri=https://apps.facebook.com/like_o_meter/";
 
-			fql_confirm_perms = 'SELECT read_stream,friends_likes,user_likes FROM permissions WHERE uid=me()';
+			var fql_confirm_perms = 'SELECT friends_likes,user_likes FROM permissions WHERE uid=me()';
 
-			_to_login = function() {
+			var _to_login = function() {
 					top.location.href=oauth_url;
 			};
 
-			_check_perms = function(resp) {
+			var _check_perms = function(resp) {
 
-				if (resp[0]['friends_likes'] != 1){_to_login();}
-				if (resp[0]['user_likes'] != 1){_to_login();}
-				if (resp[0]['read_stream'] != 1){_to_login();}
+				// if (resp[0]['friends_likes'] != 1){_to_login();}
+				// if (resp[0]['user_likes'] != 1){_to_login();}
 
 				LOM.init(response.authResponse.accessToken, 
 					response.authResponse.userID);
