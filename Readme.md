@@ -6,17 +6,10 @@ This is a Facebook Canvas App that uses the Facebook Javascript SDK
 The app is in the likeometer directory. It assumes a php enabled server as it uses php to grab facebook app id from the apache environment, as described in the heroku VirtualHost below. 
 
 
-Facebook/Heroku sample app -- PHP
-=================================
-
-This is a sample app showing use of the Facebook Graph API, written in PHP, designed for deployment to [Heroku](http://www.heroku.com/).
-
 Run locally
 -----------
 
 Configure Apache with a `VirtualHost` that points to the location of this code checkout on your system.
-
-[Create an app on Facebook](https://developers.facebook.com/apps) and set the Website URL to your local VirtualHost.
 
 Copy the App ID and Secret from the Facebook app settings page into your `VirtualHost` config, something like:
 

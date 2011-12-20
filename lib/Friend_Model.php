@@ -1,5 +1,0 @@
-<?php
-/**
- * Friend_Model
- */
-
