@@ -10,7 +10,7 @@ FBLogin = function() {
         // console.log('User cancelled login or did not fully authorize.');
       }
     }, {scope: 'email,friends_likes,user_likes, read_stream',
-	 perms: 'email,friends_likes,user_likes, read_stream' });
+      perms: 'email,friends_likes,user_likes, read_stream' });
 }
 
 
@@ -33,43 +33,43 @@ $(function(){
 
       LOM = new Likeometer();
 
-			var client_id = '251829454859769';
-			client_id = '260337734005390'; // local
-			var perms_needed = 'email,user_likes,friends_likes';
+      var client_id = '251829454859769';
+      client_id = '260337734005390'; // local
+      var perms_needed = 'email,user_likes,friends_likes';
 
-			var oauth_url = "https://www.facebook.com/dialog/oauth?scope=" + 
-				perms_needed + "&perms=" + perms_needed + "&client_id=" + 
-				client_id + "&redirect_uri=https://apps.facebook.com/like_o_meter/";
+      var oauth_url = "https://www.facebook.com/dialog/oauth?scope=" + 
+        perms_needed + "&perms=" + perms_needed + "&client_id=" + 
+        client_id + "&redirect_uri=https://apps.facebook.com/like_o_meter/";
 
-			var fql_confirm_perms = 'SELECT friends_likes,user_likes FROM permissions WHERE uid=me()';
+      var fql_confirm_perms = 'SELECT friends_likes,user_likes FROM permissions WHERE uid=me()';
 
-			var _to_login = function() {
-					top.location.href=oauth_url;
-			};
+      var _to_login = function() {
+        top.location.href=oauth_url;
+      };
 
-			var _check_perms = function(resp) {
+      var _check_perms = function(resp) {
 
-				// if (resp[0]['friends_likes'] != 1){_to_login();}
-				// if (resp[0]['user_likes'] != 1){_to_login();}
+        if (resp[0]['friends_likes'] != 1){_to_login();}
+        if (resp[0]['user_likes'] != 1){_to_login();}
 
-				LOM.init(response.authResponse.accessToken, 
-					response.authResponse.userID);
-			};
+        LOM.init(response.authResponse.accessToken, 
+          response.authResponse.userID);
+      };
 
-			// Check if we have enough permission to do this
-			FB.getLoginStatus(function(response) {
-					if (response.authResponse) { // user is logged in
-						FB.api({ method: 'fql.query', query: fql_confirm_perms }, _check_perms);
+      // Check if we have enough permission to do this
+      FB.getLoginStatus(function(response) {
+          if (response.authResponse) { // user is logged in
+            FB.api({ method: 'fql.query', query: fql_confirm_perms }, _check_perms);
           } else { // User not logged in.
-						_to_login();		
-					}
-				}, {perms: 'friends_likes,user_likes'});
+            _to_login();		
+          }
+        }, {perms: 'friends_likes,user_likes'});
     }; 
-		// end fbAsyncInit 
-		$("#log_in_now").click(FBLogin);
+    // end fbAsyncInit 
+    $("#log_in_now").click(FBLogin);
     // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  
 
-		// Load the SDK 
+    // Load the SDK 
     $('body').append('<div id="fb-root"></div>');
     $.getScript(document.location.protocol + 
         '//connect.facebook.net/en_US/all.js');
