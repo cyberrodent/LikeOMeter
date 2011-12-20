@@ -118,7 +118,7 @@ if (1) {
 		Here is the <a target="_top" href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID ?>">Like-O-Meter's page on Facebook</a>
 		</div>
 		<div class="fb-like-box" data-href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID  ?>" data-width="292" data-show-faces="false" data-stream="false" data-header="true"></div>
-		<input type="button" value="Log in Now" id="log_in_now" class="login_button" />
+		<input type="button" value="Click To Fix Permission Errors" id="log_in_now" class="login_button" />
 </div>
 <div><?php
 

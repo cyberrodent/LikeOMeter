@@ -64,7 +64,7 @@ $(function(){
 				}, {perms: 'friends_likes,user_likes'});
     }; 
 		// end fbAsyncInit 
-
+		$("#log_in_now").click(FBLogin);
     // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  
 
 		// Load the SDK 
