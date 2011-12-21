@@ -96,7 +96,8 @@ Likeometer = function () {
       if (collikes[like_count_keys[i]].length > 1) { 
 
 				var dataObject = {};
-				dataObject['thing_id'] = like_count_keys[i];
+				var thing_id = like_count_keys[i];
+				dataObject['thing_id'] = thing_id;
 				dataObject['token'] = self.token;
 				dataObject['how_many_friends'] = collikes[thing_id].length;
 				dataObject['things_name'] = things[thing_id].name;
