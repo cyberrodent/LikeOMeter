@@ -1,3 +1,7 @@
+
+
+
+// Likeometer depends on being able to call size like this:
 Object.size = function(obj) {
   var size = 0, key;
   for (key in obj) {
@@ -8,9 +12,17 @@ Object.size = function(obj) {
 
 
 
+
+
+
 Likeometer = function () {
 
   var self = this;
+  this.friends = [];
+  this.token = false;
+  this.graph = false;
+  this.user = {};
+
   var likes = {}; //  fb_uid => likes
   var things = {}; // id => data
   var collikes = {}; // collate likes in here like_id => [ uids who like this ]  
@@ -21,10 +33,6 @@ Likeometer = function () {
   var started = false;
   var processed = false;
 
-  this.friends = [];
-  this.token = false;
-  this.graph = false;
-  this.user = {};
 
   // Why is this global?
   list = []; //  this tracks how many callbacks have called back 
@@ -86,39 +94,23 @@ Likeometer = function () {
 
     for (var i=0; i < limit; i++) {
       if (collikes[like_count_keys[i]].length > 1) { 
-        var thing_id = like_count_keys[i];
 
+				var dataObject = {};
+				dataObject['thing_id'] = like_count_keys[i];
+				dataObject['token'] = self.token;
+				dataObject['how_many_friends'] = collikes[thing_id].length;
+				dataObject['things_name'] = things[thing_id].name;
+				dataObject['things_category'] = things[thing_id].category;
+				dataObject['aLikers'] = collikes[thing_id];
+				dataObject['friend_name'] = all_friends;
+				var d = tmpl("ltr_tpl", dataObject);
 
-				// console.log(things[thing_id]);
-        var d = "<div class='ltr'><div class='h2' id='h2"+ thing_id  +"'><a href='https://facebook.com/" + thing_id + 
-          "' target=_blank><img src='http://graph.facebook.com/" +  
-          thing_id + "/picture?type=large&auth_token=" + 
-          self.token + "' align='top'  border='0' class='thing' border='0' /></a>" + 
-          "<span class='bigger'>" + collikes[thing_id].length + 
-          "</span> friends like <br />" + 
-          "<a target=_blank href='https://facebook.com/" + thing_id + "'>" + 
-          things[thing_id].name + "</a> <span class='category'>(" + 
-          things[thing_id].category + ")</span>" + '</div><div class="h3">';
-		
-//        d += '<fb:like href="https://www.facebook.com/barackobama"></fb:like>';
-
-        // draw a friend icon for each friend who likes this
-        for (var j=0; j < collikes[thing_id].length; j++) {
-          d += "<div class='fimg'><a target='_blank' href='https://facebook.com/"+
-            collikes[thing_id][j] + "' title='"+ 
-            all_friends[collikes[thing_id][j]] + "' >" +
-            "<img src='https://graph.facebook.com/" +
-            collikes[thing_id][j] + 
-            "/picture?type=square' height='32' width='32' border='0' /></a></div>";
-        }	
-        d += "</div></div>";
         $("#friendslikes").append(d);
 
 				FB.api('/' + thing_id +"?fields=link,username,id" , function(res) {
-						// console.log("called back thing " + res.id);
-						var d = '<fb:like show_faces="false" href="'+ res.link +'"></fb:like>';
-						$("#h2"+res.id).append(d);
-						FB.XFBML.parse( document.getElementById("h2"+res.id ));
+						var d = '<fb:like send="false" show_faces="false" href="'+ res.link +'"></fb:like>';
+						$("#h2"+res.id).after(d);
+					 	FB.XFBML.parse(document.getElementById("h2"+res.id ));
 					});
       }
     }

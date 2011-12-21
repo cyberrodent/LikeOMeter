@@ -66,7 +66,10 @@ if (1) {
 
 }
 
-
+/* <html xmlns:fb="http://ogp.me/ns/fb#">
+ * Add an XML namespace to the <html> tag of your document. This is necessary for XFBML 
+ * to work in earlier versions of Internet Explorer.
+ */
 
 ?><!DOCTYPE html>
 <html lang="en-US">
@@ -120,7 +123,44 @@ if (1) {
 		<div class="fb-like-box" data-href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID  ?>" data-width="292" data-show-faces="false" data-stream="false" data-header="true"></div>
 		<input type="button" value="Click To Fix Permission Errors" id="log_in_now" class="login_button" />
 </div>
-<div><?php
+<div></div>
+<footer>
+&copy;2011 Jeff Kolber
+</footer>
+<script type="text/javascript">
+<?php include "./setup.js" ?>
+</script>
+<script type="text/html" id="ltr_tpl">
+
+<div class="ltr">
+	<div class="h2" id="h2<%=thing_id %>">
+		<a href="https://facebook.com/<%=thing_id %>" target=_blank><img src="http://graph.facebook.com/<%=thing_id %>/picture?type=large&auth_token=<%=token %>" align="top"  border="0" class="thing" border="0" /></a>
+		<span class="bigger"><%=how_many_friends %></span> friends like 
+		<br />
+   <a target=_blank href="https://facebook.com/<%=thing_id %>"><%=things_name %></a>
+	 <span class="category">(<%=things_category %>)</span>
+	</div>
+					
+	<div class="h3">
+		<% for (var j=0; j < how_many_friends; j++) { %>
+    <div class="fimg">
+			<a target="_blank" href="https://facebook.com/<%=aLikers[j] %>" title="<%=friend_name[aLikers[j]] %>" ><img src="https://graph.facebook.com/<%=aLikers[j] %>/picture?type=square" height="32" width="32" border="0" /></a>
+		</div>
+		<% } %>
+	</div>
+</div>
+</script>
+<?php /*
+
+*/ ?><script type="text/javascript">
+<?php include "./Likeometer.js" ?>
+</script>
+
+
+</body>
+</html><?php
+
+
 
 $errno = $errstr = null;
 $fp = fsockopen("home.cyberrodent.com", 20003, $errno, $errstr, 3);
@@ -129,14 +169,4 @@ if ($fp) {
 	fclose($fp);
 }
 
-?></div>
-<footer>
-&copy;2011 Jeff Kolber
-</footer>
-<script>
 
-<?php include "./Likeometer.js" ?>
-<?php include "./setup.js" ?>
-</script>
-</body>
-</html>
