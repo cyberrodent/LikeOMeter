@@ -90,7 +90,7 @@ Likeometer = function () {
   var show_top_likes = function () {
     if (!processed) { return; } 
     set_status_line("Preparing Like-O-Meter Report");
-    var limit = 300;
+    var limit = 500;
 
     for (var i=0; i < limit; i++) {
       if (collikes[like_count_keys[i]].length > 1) { 
