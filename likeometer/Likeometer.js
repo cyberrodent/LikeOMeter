@@ -111,9 +111,9 @@ Likeometer = function () {
 				$("#friendslikes").append(d);
 
 				FB.api('/' + thing_id +"?fields=link,username,id" , function(res) {
-						console.log(res);
+						//console.log(res);
 						var data = rThings[res.id];
-						console.log(data);
+						//console.log(data);
 						if (res.link) { 
 							data.link = res.link;
 						} 
