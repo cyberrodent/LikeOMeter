@@ -32,7 +32,7 @@ Likeometer = function () {
   var like_count_keys = new Array();
   var started = false;
   var processed = false;
-
+	var rThings = {};
 
   // Why is this global?
   list = []; //  this tracks how many callbacks have called back 
@@ -103,19 +103,27 @@ Likeometer = function () {
 				dataObject['things_name'] = things[thing_id].name;
 				dataObject['things_category'] = things[thing_id].category;
 				dataObject['aLikers'] = collikes[thing_id];
-				dataObject['friend_name'] = all_friends;
-				var d = tmpl("ltr_tpl", dataObject);
+				dataObject['friend_name'] = null;
+				dataObject['link'] = '';
 
-        $("#friendslikes").append(d);
+				rThings[thing_id] = dataObject;
+				var d = tmpl("ltrph_tpl", dataObject);
+				$("#friendslikes").append(d);
 
 				FB.api('/' + thing_id +"?fields=link,username,id" , function(res) {
-						var d = '<fb:like send="false" show_faces="false" href="'+ res.link +'"></fb:like>';
-						$("#h2"+res.id).after(d);
+						console.log(res);
+						var data = rThings[res.id];
+						console.log(data);
+						if (res.link) { 
+							data.link = res.link;
+						} 
+						data.friend_name = all_friends;
+						var d = tmpl("ltr_tpl", data);
+						$("#ltr"+res.id).replaceWith(d);
 					 	FB.XFBML.parse(document.getElementById("h2"+res.id ));
 					});
       }
     }
-
 
     $('#flikes').click(flikes_action);
     $('#home').click(home_action);

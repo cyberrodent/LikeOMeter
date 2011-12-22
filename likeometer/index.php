@@ -130,17 +130,23 @@ if (1) {
 <script type="text/javascript">
 <?php include "./setup.js" ?>
 </script>
-<script type="text/html" id="ltr_tpl">
 
-<div class="ltr">
+<script type="text/html" id="ltrph_tpl">
+<div class="ltr" id="ltr<%=thing_id %>">
+
+</div>
+</script>
+
+<script type="text/html" id="ltr_tpl">
+<div class="ltr" id="ltr<%=thing_id %>">
 	<div class="h2" id="h2<%=thing_id %>">
-		<a href="https://facebook.com/<%=thing_id %>" target=_blank><img src="http://graph.facebook.com/<%=thing_id %>/picture?type=large&auth_token=<%=token %>" align="top"  border="0" class="thing" border="0" /></a>
+		<a href="<%=link %>" target=_blank><img src="http://graph.facebook.com/<%=thing_id %>/picture?type=large&auth_token=<%=token %>" align="top" border="0" width="200" alt="x" class="thing" border="0" /></a>
 		<span class="bigger"><%=how_many_friends %></span> friends like 
 		<br />
-   <a target=_blank href="https://facebook.com/<%=thing_id %>"><%=things_name %></a>
-	 <span class="category">(<%=things_category %>)</span>
+   <a target=_blank href="<%=link %>"><%=things_name %></a>
+	 <span class="category">(<%=things_category %>)</span><br />
+	  <fb:like send="false" show_faces="false" href="<%=link %>"></fb:like>
 	</div>
-					
 	<div class="h3">
 		<% for (var j=0; j < how_many_friends; j++) { %>
     <div class="fimg">
@@ -150,9 +156,9 @@ if (1) {
 	</div>
 </div>
 </script>
-<?php /*
 
-*/ ?><script type="text/javascript">
+
+<script type="text/javascript">
 <?php include "./Likeometer.js" ?>
 </script>
 

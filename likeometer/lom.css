@@ -78,7 +78,7 @@ h1 img {
 img.thing {
   display:inline-block;
   margin-right:11px;
-
+	width:200px;
 }
 
 footer { 
