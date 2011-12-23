@@ -90,7 +90,12 @@ Likeometer = function () {
 
   var show_top_likes = function () {
     if (!processed) { return; } 
+
+
     var limit = scroll_point + page_size;
+		// track how far down someone scrolls
+		$.get('/likeometer/graphit.php', { 'page' : scroll_point / page_size } );
+
 
 		for (var i=scroll_point;  i < limit; i++) {
       if (collikes[like_count_keys[i]].length > 1) { 
