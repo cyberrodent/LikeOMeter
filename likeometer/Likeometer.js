@@ -163,7 +163,7 @@ Likeometer = function () {
 		
 		// $("#friendslikes").append("<div>"+ limit + " ??? " + Object.size(collikes) + " </div>");
 		if (limit < Object.size(collikes)) { 
-			$("#friendslikes").append("<div id='more'>MORE</div>");
+			$("#friendslikes").append("<div id='more'>Click to see more.</div>");
 			$("#more").click(show_top_likes);
 		}
 		scroll_point = limit; // ready for more ...

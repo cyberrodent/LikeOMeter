@@ -152,6 +152,8 @@ span.bigger {
 	background-color:yellow;
 	color:red;
 	cursor:pointer;
+	text-align:center;
+	padding:6px 0;
 }
 
 #debug {
@@ -163,6 +165,7 @@ span.bigger {
 	background-color:black;
 	padding:1px;
 	color:white;
+	display:none;
 }
 #debug div { 
 	display:inline;
