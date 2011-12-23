@@ -32,8 +32,9 @@ Likeometer = function () {
   var like_count_keys = new Array();
   var started = false;
   var processed = false;
-	var rThings = {};
-
+	var rThings = {}; // thing data needed to render a row of liked thing
+	var scroll_point = 0; // tracking how far down we've infinite scrolled
+	var page_size = 5; // how many items to load on each call - attach to infinite scroll
   // Why is this global?
   list = []; //  this tracks how many callbacks have called back 
 
@@ -89,14 +90,14 @@ Likeometer = function () {
 
   var show_top_likes = function () {
     if (!processed) { return; } 
-    set_status_line("Preparing Like-O-Meter Report");
-    var limit = 500;
+    var limit = scroll_point + page_size;
 
-    for (var i=0; i < limit; i++) {
+		for (var i=scroll_point;  i < limit; i++) {
       if (collikes[like_count_keys[i]].length > 1) { 
 
 				var dataObject = {};
 				var thing_id = like_count_keys[i];
+
 				dataObject['thing_id'] = thing_id;
 				dataObject['token'] = self.token;
 				dataObject['how_many_friends'] = collikes[thing_id].length;
@@ -105,14 +106,16 @@ Likeometer = function () {
 				dataObject['aLikers'] = collikes[thing_id];
 				dataObject['friend_name'] = null;
 				dataObject['link'] = '';
+				dataObject['link'] = '';
 
-				rThings[thing_id] = dataObject;
+				rThings[thing_id] = dataObject; // stash it where a callback can access it
+
 				var d = tmpl("ltrph_tpl", dataObject);
 				$("#friendslikes").append(d);
 
 				FB.api('/' + thing_id +"?fields=link,username,id" , function(res) {
 						//console.log(res);
-						var data = rThings[res.id];
+						var data = rThings[res.id]; 
 						//console.log(data);
 						if (res.link) { 
 							data.link = res.link;
@@ -125,13 +128,47 @@ Likeometer = function () {
       }
     }
 
-    $('#flikes').click(flikes_action);
-    $('#home').click(home_action);
-    $('#common').click(common_action);
-    $("nav").show();
-    switch_page("#friendslikes");
-    set_status_line("Ready.");
-    $("#statusline").hide();
+		if (scroll_point === 0) {  // first time only
+			$('#flikes').click(flikes_action);
+			$('#home').click(home_action);
+			$('#common').click(common_action);
+			$("nav").show();
+			switch_page("#friendslikes");
+			set_status_line("Ready.");
+			$("#statusline").hide();
+
+			$(document).scroll(function() {
+				var doc_h = $(document).height();
+				var win_h = $(window).height();
+				var st = $(window).scrollTop();
+				
+				if (st + win_h + win_h > doc_h) {
+					show_top_likes();		
+				}
+
+					var data = {
+						'doc_height' : doc_h,
+						'scrolltop' : $(window).scrollTop() + $(window).height() ,
+						'scroll_bar_height' :  (st + win_h + win_h > doc_h) ? 'LOAD DATA NOW!' : '',
+						'crap' : " DocH: " + $(document).height()  + 
+							" WinH:" + $(window).height() + " ~~~>> " + 
+							( $(window).height() / $(document).height() )  * $(window).height()
+					};
+					var d = tmpl("debug_tpl", data);
+					$("#debug").replaceWith(d);
+				});
+		}
+
+		$("#more").remove();
+		
+		// $("#friendslikes").append("<div>"+ limit + " ??? " + Object.size(collikes) + " </div>");
+		if (limit < Object.size(collikes)) { 
+			$("#friendslikes").append("<div id='more'>MORE</div>");
+			$("#more").click(show_top_likes);
+		}
+		scroll_point = limit; // ready for more ...
+		$("#debug").append("<p>H" + $(document).height() + "</p>");
+		$("#debug").append("<p>S" + $(window).scrollTop() + "</p>");
   }
 
   var got_my_likes = function() {

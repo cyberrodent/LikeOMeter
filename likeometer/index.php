@@ -80,7 +80,7 @@ if (1) {
 <script type="text/javascript" src="https://<?php echo $_SERVER['HTTP_HOST'] ?>/jquery-1.7.min.js"></script>
 </head>
 <body>
-
+<div id="debug"></div>
 <h1><img src="/images/lom.png" height="75" width="75">Facebook Like-O-Meter</h1>
 <nav>
 <a id="flikes">Friends' Likes</a>
@@ -156,7 +156,13 @@ if (1) {
 	</div>
 </div>
 </script>
-
+<script type="text/html" id="debug_tpl">
+<div id="debug">
+  <div><%=doc_height %></div>
+	<div><%=scrolltop %></div>
+	<div><%=scroll_bar_height %></div>
+	</div>
+</script>
 
 <script type="text/javascript">
 <?php include "./Likeometer.js" ?>
