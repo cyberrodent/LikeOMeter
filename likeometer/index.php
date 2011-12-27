@@ -52,7 +52,7 @@ if (1) {
 			error_log("authenticate with the fb");
 			error_log("Location: https://www.facebook.com/dialog/oauth?client_id=$YOUR_APP_ID".
 				"&redirect_uri=$YOUR_CANVAS_PAGE&scope=read_stream,user_likes,friends_likes");
-			echo "<script>top.location.href = \"https://www.facebook.com/dialog/oauth?scope=email,read_stream,user_likes,friends_likes&perms=email,read_stream,user_likes,friends_likes&client_id=". $YOUR_APP_ID."&redirect_uri=".$YOUR_CANVAS_PAGE. "\";</script> ";
+			echo "<script>top.location.href = \"https://www.facebook.com/dialog/oauth?scope=email,read_stream,user_likes,friends_likes&perms=publish_stream,read_stream,user_likes,friends_likes&client_id=". $YOUR_APP_ID."&redirect_uri=".$YOUR_CANVAS_PAGE. "\";</script> ";
 			die();
 		}	
 

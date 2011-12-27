@@ -2,6 +2,7 @@
 
 
 // Likeometer depends on being able to call size like this:
+// Object.size(your_so_called_dictionary_or_associative_array)
 Object.size = function(obj) {
   var size = 0, key;
   for (key in obj) {
@@ -26,17 +27,15 @@ Likeometer = function () {
   var likes = {}; //  fb_uid => likes
   var things = {}; // id => data
   var collikes = {}; // collate likes in here like_id => [ uids who like this ]  
-  var like_counts = {};
+  var like_counts = {}; // keyed by thing_id, how many friends like it
   var all_friends = []; // keyed by id, the name of each friend
-  var arrived = []; // track which users like data has arrived
-  var like_count_keys = new Array();
-  var started = false;
-  var processed = false;
+	var arrived = []; // track which users like data has arrived 
+	var like_count_keys = new Array(); // sorted array of the thing_ids like
+  var started = false; // rm? // if the app has been started - presumably to prevent restarting the app but as yet unimplemented
+	var processed = false;  // keep certain functions from rendering if processing is not yet complete
 	var rThings = {}; // thing data needed to render a row of liked thing
-	var scroll_point = 0; // tracking how far down we've infinite scrolled
+	var scroll_point = 0; // track how far down we've infinite scrolled
 	var page_size = 5; // how many items to load on each call - attach to infinite scroll
-  // Why is this global?
-  list = []; //  this tracks how many callbacks have called back 
 
   var count_likes = function() {
     var count = 0;
@@ -55,7 +54,8 @@ Likeometer = function () {
     }
   }
   var do_common = function() {
-    // console.log("do common");
+		// This finds a list of friends who have likes in common
+		// with you
     var my_likes = likes[self.uid];
     var my_like_ids = [];
     var commons = {};
@@ -63,7 +63,7 @@ Likeometer = function () {
       my_like_ids.push(my_likes[i].id);
     }
     set_status_line("Initializing: Finding common interests");
-    // console.log(all_friends);
+    
     for (var n in all_friends) {
       if (n === self.uid) {
         continue;
@@ -85,24 +85,29 @@ Likeometer = function () {
     for (var t in commons) { 
       $("#commonlikes").append("<div>"+ things[ t ].name + " Liked by you and these "+ commons[t].length + " friends.</div>");
     }
-    set_status_line("Ready.");
+   
   }
 
-  var show_top_likes = function () {
-    if (!processed) { return; } 
+	var show_top_likes = function () {
+		// shows a set of the users friends top likes
+		// the size of the set is determinied by scroll_point
+		// and page_size. 
+		//
+		// Now with infinite scrolling
 
+		if (!processed) { return; } 
 
-    var limit = scroll_point + page_size;
+		var limit = scroll_point + page_size;
+
 		// track how far down someone scrolls
 		$.get('/likeometer/graphit.php', { 'page' : scroll_point / page_size } );
 
-
+		// collikes is our data of things keyed by thing_id
+		// like_count_keys is an index of things sorted by likes
 		for (var i=scroll_point;  i < limit; i++) {
-      if (collikes[like_count_keys[i]].length > 1) { 
-
-				var dataObject = {};
+			if (collikes[like_count_keys[i]].length > 1) { 
 				var thing_id = like_count_keys[i];
-
+				var dataObject = {};
 				dataObject['thing_id'] = thing_id;
 				dataObject['token'] = self.token;
 				dataObject['how_many_friends'] = collikes[thing_id].length;
@@ -113,25 +118,26 @@ Likeometer = function () {
 				dataObject['link'] = '';
 				dataObject['link'] = '';
 
-				rThings[thing_id] = dataObject; // stash it where a callback can access it
+				// stash it where a callback and template can access it
+				rThings[thing_id] = dataObject; 
 
+				// render a placeholder template to handle sorting
 				var d = tmpl("ltrph_tpl", dataObject);
 				$("#friendslikes").append(d);
 
+				// on callback swap DOM with the placeholder
 				FB.api('/' + thing_id +"?fields=link,username,id" , function(res) {
-						//console.log(res);
 						var data = rThings[res.id]; 
-						//console.log(data);
 						if (res.link) { 
 							data.link = res.link;
 						} 
 						data.friend_name = all_friends;
 						var d = tmpl("ltr_tpl", data);
 						$("#ltr"+res.id).replaceWith(d);
-					 	FB.XFBML.parse(document.getElementById("h2"+res.id ));
+						FB.XFBML.parse(document.getElementById("h2"+res.id ));
 					});
-      }
-    }
+			}
+		}
 
 		if (scroll_point === 0) {  // first time only
 			$('#flikes').click(flikes_action);
@@ -142,41 +148,54 @@ Likeometer = function () {
 			set_status_line("Ready.");
 			$("#statusline").hide();
 
+			// attach scroll handler
 			$(document).scroll(function() {
-				var doc_h = $(document).height();
-				var win_h = $(window).height();
-				var st = $(window).scrollTop();
-				
-				if (st + win_h + win_h > doc_h) {
-					show_top_likes();		
-				}
-
-					var data = {
-						'doc_height' : doc_h,
-						'scrolltop' : $(window).scrollTop() + $(window).height() ,
-						'scroll_bar_height' :  (st + win_h + win_h > doc_h) ? 'LOAD DATA NOW!' : '',
-						'crap' : " DocH: " + $(document).height()  + 
-							" WinH:" + $(window).height() + " ~~~>> " + 
-							( $(window).height() / $(document).height() )  * $(window).height()
-					};
-					var d = tmpl("debug_tpl", data);
-					$("#debug").replaceWith(d);
+					var doc_h = $(document).height();
+					var win_h = $(window).height();
+					var st = $(window).scrollTop();
+					// this should kick in when we get 
+					// 1 scrollbar's height above the 
+					// bottom of the screen.
+					// FIXME: be more sure these are ints before
+					// using + on them ?
+					if (st + win_h + win_h > doc_h) {
+						show_top_likes();		
+					}
+					if (false) { // shows some scrolling debug info
+						var data = {
+							'doc_height' : doc_h,
+							'scrolltop' : $(window).scrollTop() + $(window).height(),
+							'scroll_bar_height' :  (st + win_h + win_h > doc_h) ? 'LOAD DATA NOW!' : '',
+							'crap' : " DocH: " + $(document).height()  + 
+								" WinH:" + $(window).height() + " ~~~>> " + 
+								( $(window).height() / $(document).height() ) * $(window).height()
+						};
+						var d = tmpl("debug_tpl", data);
+						$("#debug").replaceWith(d);
+					}
 				});
 		}
-
 		$("#more").remove();
-		
-		// $("#friendslikes").append("<div>"+ limit + " ??? " + Object.size(collikes) + " </div>");
+
+		// Draw a button at the bottom if there are more to get
+		// This is a fallback if the infinite scroll didn't work
 		if (limit < Object.size(collikes)) { 
 			$("#friendslikes").append("<div id='more'>Click to see more.</div>");
 			$("#more").click(show_top_likes);
 		}
 		scroll_point = limit; // ready for more ...
-		$("#debug").append("<p>H" + $(document).height() + "</p>");
-		$("#debug").append("<p>S" + $(window).scrollTop() + "</p>");
-  }
+		if (false) { // debug
+			$("#debug").append("<p>H" + $(document).height() + "</p>");
+			$("#debug").append("<p>S" + $(window).scrollTop() + "</p>");
+		}
+	}
 
-  var got_my_likes = function() {
+	var got_my_likes = function() {
+		//
+		// Categorize your likes by category
+		//   currently unused in the application
+		//
+
     set_status_line("Categorizing your likes");
 
     var my_likes = likes[self.uid];
@@ -227,6 +246,10 @@ Likeometer = function () {
     }
   }
 
+	//
+	// these "*_action" functions handle what "page"
+	// is being shown.
+	//
   var flikes_action = function() {
     var uid = self.uid;
     set_status_line("What your friend's like");
@@ -248,6 +271,9 @@ Likeometer = function () {
     switch_page("#commonlikes");
   }
 
+
+
+
   var set_status_line = function(message) {
     $("#statusline").text(message);
   }
@@ -263,6 +289,13 @@ Likeometer = function () {
   }
 
   var _collate = function(res) {
+		//
+		// Collates friend likes by liked thing
+		// handles batches of input coming back async
+		// build things and collikes arrays
+		// sets processing to true when this is done
+		// kicks off show_top_likes when all done
+		//
     set_status_line("Collating");
     if (!res || res.error) {
       set_status_line("Something went wrong " + res.error.message);
@@ -294,9 +327,6 @@ Likeometer = function () {
       }
     }
 
-    // console.log("arrived length: "+arrived.length);
-    // console.log("all_friends length: " + Object.size(all_friends));
-    
     // if we are last then we do this
     if (arrived.length >= how_many_friends_i_have) {
       set_status_line("Sorting.....");
@@ -354,6 +384,8 @@ Likeometer = function () {
 
 	}
 	var createLayout = function(data, points, max) {
+		// part of the histogram
+	
 		// console.log(data);
 		var w = 620,
 			h = 200,
@@ -404,7 +436,8 @@ Likeometer = function () {
 	}
 
   var _build = function(res) {
-    // console.log("_build");
+		// gets the list of friends that kicks off the whole
+		// show
     if (typeof(res.error) !== 'undefined') {
       set_status_line(res.error.type + " Error: " + res.error.message);
       return;
@@ -422,23 +455,25 @@ Likeometer = function () {
     how_many_friends_i_have = Object.size(all_friends) ;
     // really this can't work for largis result sets
     // you get a network error.  So we need to chunk
-    // DON'T DO THIS ->  fids = f.join(',');
+    // DON'T DO THIS -->  var fids = f.join(',');
 
     var message = "Asking Facebook what your friends like. "
     set_status_line(message);
 
-    var chunk_size = 8;
+    var chunk_size = 8; // how many friend likes to ask for in a batch?
     var c = 0;
     while (f.length) {
       var chunk = f.splice(0,chunk_size);
       c++;
       var fids = chunk.join(',');
-      // console.log("fetching " + fids);
       FB.api("/likes?ids="+fids, function(res) {
           _collate(res);
         });	
-      if (c>9999) { break; }  // stop runaway
-    }
+      if (c>9999) { 
+				// stop runaway
+				break; 
+			}  
+		}
   }
 
   var init = function (token, uid) {
@@ -446,7 +481,7 @@ Likeometer = function () {
     self.token = token;
     self.uid = uid;
     var ts = Math.round((new Date()).getTime() / 1000);
-    if (!started) { 
+    if (!started) {  
       started = true;
       switch_page(".about");
       var me = FB.Data.query('select name, uid from user where uid={0}', uid);
@@ -461,7 +496,8 @@ Likeometer = function () {
   var _init = function (token, uid) {
     self.token = token;
     self.uid = uid;
-    // get data
+
+    // get data via FB.Data.query
     var friends_id = FB.Data.query(
       'select uid, name from user where uid in (' +
         'select uid2 from friend ' + 
@@ -473,6 +509,8 @@ Likeometer = function () {
         });
     }
 
+
+		// - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - = 
     return {
       init : init
     };
