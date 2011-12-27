@@ -78,6 +78,7 @@ if (1) {
 	<title>Like-O-Meter</title>
 	<link rel="stylesheet" href="https://<?php echo $_SERVER['HTTP_HOST'] ?>/likeometer/lom.css" type="text/css" media="screen,projection" />
 <script type="text/javascript" src="https://<?php echo $_SERVER['HTTP_HOST'] ?>/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="https://<?php echo $_SERVER['HTTP_HOST'] ?>/likeometer/protovis.min.js"></script>
 </head>
 <body>
 <div id="debug"></div>
@@ -97,12 +98,23 @@ if (1) {
 </div>
 <?php /* <div id="scroll"></div> */ ?>
 
-<div id="friendslikes"></div>
+<div id="friendslikes">
+<div id="fig">
+
+</div>
+
+
+
+
+</div>
 <div id="commnlikes"></div>
 <div id="yourlikes"></div>
 
 
 <div class="about">
+
+
+
 	<div>
 		<ul>
 		<li>	See what your Facebook friends like. </li>
@@ -136,7 +148,16 @@ if (1) {
 
 </div>
 </script>
+<script type="text/html" id="histogram">
+<h3>Distribution of likes</h3>
+	<ol class="histogram">
+	<% for (var i=0; i<like_count_lengths.length; i++) { %>
+		<li> <%=like_count_lengths[i] %> 
+		</li>
+	<% } %>
+	</ol>
 
+</script>
 <script type="text/html" id="ltr_tpl">
 <div class="ltr" id="ltr<%=thing_id %>">
 	<div class="h2" id="h2<%=thing_id %>">

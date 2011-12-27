@@ -301,8 +301,6 @@ Likeometer = function () {
     if (arrived.length >= how_many_friends_i_have) {
       set_status_line("Sorting.....");
 
-
-
       for (var i in collikes) {
         like_counts[i] = collikes[i].length;
         like_count_keys.push(i);
@@ -310,9 +308,100 @@ Likeometer = function () {
       like_count_keys.sort(compare_collikes);
 
       processed = true;
+
       show_top_likes();
+			
+			// wire this off for now
+			// show_distribution();
     }
   };
+
+	var show_distribution = function() { 
+		// show some sort of histogram showing the long long tail
+		var like_count_lengths = [];
+		for (var i=0; i < like_count_keys.length; i++) {
+			var h = collikes[like_count_keys[i]].length;
+			like_count_lengths.push(h);
+		}
+		var max = 0;
+		var dist = {};
+		for (var i= like_count_lengths.length; i >= 0; i--) {
+			if (like_count_lengths[i] > max) {
+				max = like_count_lengths[i];
+			}
+			if (typeof(dist[ like_count_lengths[i]]) === 'undefined') {
+				dist[ like_count_lengths[i]] = 1;
+			} else { 
+				dist[ like_count_lengths[i]]++;
+			}
+		}
+		var DIST = []
+		for(di in dist) {
+			if (di !== 'undefined') { 
+				DIST.push( { 'dx': 1 , 'x' : dist[di] , 'y' : di });	
+			}
+		}
+
+	//	console.log(dist);
+		//var data = {
+		//	'like_count_lengths' : like_count_lengths,	
+		//};
+		// var d = tmpl("histogram", data);
+		// $("#friendslikes").before(d);
+
+		$("#friendslikes").append("<div id='vis'></div>");
+		createLayout(like_count_lengths, like_count_lengths.length, 1+max);	
+
+	}
+	var createLayout = function(data, points, max) {
+		// console.log(data);
+		var w = 620,
+			h = 200,
+			x = pv.Scale.linear(0, max).range(0,w),
+			bins = pv.histogram(data).bins(x.ticks(30));
+			var y = pv.Scale.root(0, points).range(0,h).power(3);
+			console.log(bins);	
+
+			var vis = new pv.Panel()
+				.width(w)
+				.height(h)
+				.margin(40);
+
+			vis.add(pv.Bar)
+				.data(bins)
+				.bottom(0)
+				.left(function(d){return x(d.x)   })
+				.width(function(d){return x(d.dx) })
+				.height(function(d){return y(d.y)})
+				.fillStyle("#f36")
+				.strokeStyle("rgba(255,255,255, 1)")
+				.lineWidth(1)
+				.antialias(false);
+
+			vis.add(pv.Rule)
+				.data(y.ticks(5))
+				.bottom(y)
+				.left(0)
+				.strokeStyle("#333")
+				.anchor("left").add(pv.Label)
+				.text(y.tickFormat);
+
+			vis.add(pv.Rule)
+				.data(x.ticks())
+				.strokeStyle("#333")
+				.left(x)
+				.bottom(-5)
+				.height(5)
+				.anchor("bottom").add(pv.Label)
+				.text(x.tickFormat);
+
+				vis.add(pv.Rule)
+				.bottom(0);
+
+				vis.render();
+
+
+	}
 
   var _build = function(res) {
     // console.log("_build");

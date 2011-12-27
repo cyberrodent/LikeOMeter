@@ -175,3 +175,19 @@ span.bigger {
 	margin:8px 10px 0 0;
 
 }
+
+.histogram LI {
+	display: inline;
+}
+
+/* for protovis graphing lib */
+#center {
+  display: table-cell;
+  vertical-align: middle;
+}
+#fig {
+  position: relative;
+  margin: auto;
+}
+
+
