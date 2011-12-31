@@ -164,7 +164,7 @@ if ($_POST) {
 <script type="text/html" id="ltr_tpl">
 <div class="ltr" id="ltr<%=thing_id %>">
 	<div class="h2" id="h2<%=thing_id %>">
-	<a href="<%=link %>" target=_blank><img src="http://graph.facebook.com/<%=thing_id %>/picture?type=large&auth_token=<%=token %>" align="top" border="0" width="200" alt="x" class="thing" border="0" />
+	<a href="<%=link %>" target=_blank><img src="https://graph.facebook.com/<%=thing_id %>/picture?type=large&auth_token=<%=token %>" align="top" border="0" width="200" alt="x" class="thing" border="0" />
 
 	</a>
 		<span class="bigger"><%=how_many_friends %></span> friends like 

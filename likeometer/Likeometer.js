@@ -90,10 +90,12 @@ Likeometer = function () {
 			return thing;
 		}
 	}
-	var check_if_recently_announced = function(callback, param) {
+	var if_not_already_announced = function(callback, param) {
 		// look on my own wall and see if likeometer published recently
-		// if not we will allow publishing to the wall.
-		// console.log("Checking my wall");
+		// if no then call callback with params 
+
+//        console.log("Checking my wall");
+
 		FB.api("/me/feed", function(res) { 
 				// console.log(res);
 				if (typeof(res.data) === 'object') {
@@ -101,8 +103,10 @@ Likeometer = function () {
 						try { 
 							if (res.data[i].application.namespace === client_name) { 
 								//"ns_enilemit_local") {
-							// console.log("not announcing ... too recent");
-							return false;
+
+//                                console.log("not announcing ... too recent"); console.log(res.data[i].created_time);
+
+							 return false;
 						} else {
 							//
 						}
@@ -114,24 +118,25 @@ Likeometer = function () {
 					// console.log("ERROR: Undefined Data ");
 					return false;
 				}	
-				// console.log("announcing ... ");
+ 
 				callback(param);
-				// self.announce_on_wall(param);
 			});
 	};
-	var announce_on_wall = function(stuff) {
+	var announce_on_wall = function() {
 
-		// console.log("Announce on Wall");
-		var first = stuff[0]
-		var second = stuff[1];
+//		console.log("Announce on Wall");
+
+		var first = things[like_count_keys[0]];
+		var second = things[like_count_keys[1]];
 		var lucky = find_thing_with_two() ;
 		var third = things[ lucky ];
-		var o = "I just used the Like-O-Meter and found out that " +
-			like_counts[first.id] + " of my friends like " +first.name +", "+
-		 " and " + like_counts[second.id] + " like " + second.name +" but only 2 of my friends like \"" + third.name
-  +"\"."	 ;
 
-		// console.log(o);
+		var o = "I found out that " +
+			like_counts[first.id] + " of my friends like " +first.name +", "+
+            " and " + like_counts[second.id] + " like " + second.name + 
+            " but only 2 of them like \"" + third.name +"\"."	 ;
+
+//		console.log(o);
 
 		var params = {};
 		params['message']  = o;
@@ -140,16 +145,42 @@ Likeometer = function () {
 		params['link'] = 'https://apps.facebook.com/like_o_meter/';
 		// params['picture'] = '';
 		// params['caption'] = '';
-		
-		FB.api('/me/feed', 'post', params, function(res) {
-				if (!res || res.error) {
-					alert('error'+ res.error.message);
-					// console.log(res.error);
 
-				} else { 
-					alert("published to stream");
-				}
-			});
+
+        var use_ui = 1;
+        if (use_ui === 1) { 
+
+            // calling the API ...
+            var obj = {
+                method: 'feed',
+                link: 'https://apps.facebook.com/like_o_meter/',
+                picture: 'https://enilemit.home/images/lom.png',
+                name: 'Like-O_Meter',
+                caption: o,
+                description: 'See what stuff your friends like.'
+            };
+
+            function callback(response) {
+                // document.getElementById('msg').innerHTML = "Post ID: " + response['post_id'];
+                console.log("wrote to wall");
+            }
+
+            FB.ui(obj, callback);
+
+        } else { 
+            // use graph api
+
+
+            FB.api('/me/feed', 'post', params, function(res) {
+                if (!res || res.error) {
+                    alert('error'+ res.error.message);
+                    // console.log(res.error);
+                } else { 
+//                    alert("published to stream");
+
+                }
+            });
+        }
 	}
 	var show_top_likes = function () {
 		// shows a set of the users friends top likes
@@ -195,6 +226,13 @@ Likeometer = function () {
 				// on callback swap DOM with the placeholder
 				FB.api('/' + thing_id +"?fields=link,username,id" , function(res) {
 						var data = rThings[res.id]; 
+                        if (typeof(data) === "undefined") {
+                            console.log("got back undefined data");
+                            console.log(res);
+                            // TODO: we asked for something like username which the
+                            // object in question doesn't have FIXME
+                            return;
+                        }
 						if (res.link) { 
 							data.link = res.link;
 						} 
@@ -211,17 +249,16 @@ Likeometer = function () {
 			$("#statusline").hide();
 			$('#flikes').click(flikes_action);
 			$('#home').click(home_action); // this is the "about likeometer page"
+
+            // this command would load the common like feature 
 			// $('#common').click(common_action);
+
 			$("nav").show();
 			switch_page("#friendslikes");
 		
 			// write on the users wall if we haven't aleady done so recently	
-			var stuff = [ 
-					things[like_count_keys[0]],
-					things[like_count_keys[1]],
-					things[like_count_keys[2]]
-				];
-/////////////            var go = check_if_recently_announced(announce_on_wall, stuff);
+///////////// DARK            
+var go = if_not_already_announced(announce_on_wall);
 
 			// attach scroll handler
 			$(document).scroll(function() {
@@ -247,7 +284,7 @@ Likeometer = function () {
 						};
 						var d = tmpl("debug_tpl", data);
 						$("#debug").replaceWith(d);
-					}
+					} // end scrolling debug block
 				});
 		}
 		$("#more").remove();
