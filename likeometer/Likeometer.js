@@ -221,7 +221,7 @@ Likeometer = function () {
 					things[like_count_keys[1]],
 					things[like_count_keys[2]]
 				];
-			var go = check_if_recently_announced(announce_on_wall, stuff);
+/////////////            var go = check_if_recently_announced(announce_on_wall, stuff);
 
 			// attach scroll handler
 			$(document).scroll(function() {
