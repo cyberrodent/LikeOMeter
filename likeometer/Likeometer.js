@@ -160,7 +160,7 @@ Likeometer = function () {
 
             function callback(response) {
                 // document.getElementById('msg').innerHTML = "Post ID: " + response['post_id'];
-                console.log("wrote to wall");
+                // console.log("wrote to wall");
             }
 
             FB.ui(obj, callback);
