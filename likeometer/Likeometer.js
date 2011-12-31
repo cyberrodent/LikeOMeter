@@ -1,21 +1,5 @@
 
 
-
-// Likeometer depends on being able to call size like this:
-// Object.size(your_so_called_dictionary_or_associative_array)
-Object.size = function(obj) {
-  var size = 0, key;
-  for (key in obj) {
-    if (obj.hasOwnProperty(key)) size++;
-  }
-  return size;
-};
-
-
-
-
-
-
 Likeometer = function () {
 
   var self = this;
@@ -88,6 +72,85 @@ Likeometer = function () {
    
   }
 
+	var find_thing_with_two = function() {
+		// this is used as part of creating the message to write on the users wall
+		var thing = 0;
+		for(i in like_counts) {
+			if (like_counts[i] === 2) {
+				thing = i;
+				break
+			}  else { 
+				// console.log("thing " + i + " was liked " + like_counts[i] + " times");
+			}
+		}
+		// console.log("finding ..."); console.log(thing);
+		if (thing === 0) {
+			return like_counts[ Math.floor(Math.random() * like_counts.length) ];
+		} else { 
+			return thing;
+		}
+	}
+	var check_if_recently_announced = function(callback, param) {
+		// look on my own wall and see if likeometer published recently
+		// if not we will allow publishing to the wall.
+		// console.log("Checking my wall");
+		FB.api("/me/feed", function(res) { 
+				// console.log(res);
+				if (typeof(res.data) === 'object') {
+					for(var i=0; i < res.data.length; i++) {
+						try { 
+							if (res.data[i].application.namespace === client_name) { 
+								//"ns_enilemit_local") {
+							// console.log("not announcing ... too recent");
+							return false;
+						} else {
+							//
+						}
+					} catch (e) { 
+						// 
+					}
+					}
+				} else { 
+					// console.log("ERROR: Undefined Data ");
+					return false;
+				}	
+				// console.log("announcing ... ");
+				callback(param);
+				// self.announce_on_wall(param);
+			});
+	};
+	var announce_on_wall = function(stuff) {
+
+		// console.log("Announce on Wall");
+		var first = stuff[0]
+		var second = stuff[1];
+		var lucky = find_thing_with_two() ;
+		var third = things[ lucky ];
+		var o = "I just used the Like-O-Meter and found out that " +
+			like_counts[first.id] + " of my friends like " +first.name +", "+
+		 " and " + like_counts[second.id] + " like " + second.name +" but only 2 of my friends like \"" + third.name
+  +"\"."	 ;
+
+		// console.log(o);
+
+		var params = {};
+		params['message']  = o;
+		params['name'] = 'Like-O-Meter';
+		params['description'] = 'What your friends like';
+		params['link'] = 'https://apps.facebook.com/like_o_meter/';
+		// params['picture'] = '';
+		// params['caption'] = '';
+		
+		FB.api('/me/feed', 'post', params, function(res) {
+				if (!res || res.error) {
+					alert('error'+ res.error.message);
+					// console.log(res.error);
+
+				} else { 
+					alert("published to stream");
+				}
+			});
+	}
 	var show_top_likes = function () {
 		// shows a set of the users friends top likes
 		// the size of the set is determinied by scroll_point
@@ -97,6 +160,10 @@ Likeometer = function () {
 
 		if (!processed) { return; } 
 
+
+		if (scroll_point === 0) {
+			page_size += page_size;
+		}
 		var limit = scroll_point + page_size;
 
 		// track how far down someone scrolls
@@ -132,6 +199,7 @@ Likeometer = function () {
 							data.link = res.link;
 						} 
 						data.friend_name = all_friends;
+						data.picture = res.picture;
 						var d = tmpl("ltr_tpl", data);
 						$("#ltr"+res.id).replaceWith(d);
 						FB.XFBML.parse(document.getElementById("h2"+res.id ));
@@ -140,13 +208,20 @@ Likeometer = function () {
 		}
 
 		if (scroll_point === 0) {  // first time only
+			$("#statusline").hide();
 			$('#flikes').click(flikes_action);
-			$('#home').click(home_action);
-			$('#common').click(common_action);
+			$('#home').click(home_action); // this is the "about likeometer page"
+			// $('#common').click(common_action);
 			$("nav").show();
 			switch_page("#friendslikes");
-			set_status_line("Ready.");
-			$("#statusline").hide();
+		
+			// write on the users wall if we haven't aleady done so recently	
+			var stuff = [ 
+					things[like_count_keys[0]],
+					things[like_count_keys[1]],
+					things[like_count_keys[2]]
+				];
+			var go = check_if_recently_announced(announce_on_wall, stuff);
 
 			// attach scroll handler
 			$(document).scroll(function() {
@@ -392,7 +467,7 @@ Likeometer = function () {
 			x = pv.Scale.linear(0, max).range(0,w),
 			bins = pv.histogram(data).bins(x.ticks(30));
 			var y = pv.Scale.root(0, points).range(0,h).power(3);
-			console.log(bins);	
+			// console.log(bins);	
 
 			var vis = new pv.Panel()
 				.width(w)

@@ -8,11 +8,21 @@ footer {
   margin-top:18px;
   padding:10px;
 }
+header { 
+	position:fixed;
+	z-index:9999;
+	top:0;
+	left:0;
+	height:90px;
+	width:738px;
+	background:white;
+}
 nav {
   display:none;
   padding:1px;
   background-color:#41a0ea;
   color:#000;
+	border-bottom:0px solid black;
 }
 nav a {
   display:inline-block;
@@ -28,7 +38,7 @@ nav a:hover {
 }
 h1 {
   padding:0;
-  margin:0;
+  margin:10px 0 0 0;
   font-size:52px;
 }
 h1 img {
@@ -64,7 +74,7 @@ h1 img {
   border:1px solid black;
 }
 #friendslikes { 
-  padding:10px 0;
+  padding:100px 0 0 0;
 }
 #friendslikes div {
   font-size:24px;
@@ -78,7 +88,9 @@ h1 img {
 img.thing {
   display:inline-block;
   margin-right:11px;
+	margin-bottom:20px;
 	width:200px;
+
 }
 
 footer { 
@@ -89,7 +101,7 @@ footer {
 
 }
 .about { 
-  padding-top:5px;
+  padding-top:115px;
   font-size:120%;
 
 } 
@@ -132,11 +144,17 @@ span.bigger {
 	font-size:28px;
 	color:#00c;
 }
-#friendslikes div.h2 img { float:left; width:160px; margin-top:-5px; } 
+#friendslikes div.h2 img { 
+	float:left; 
+	width:180px; 
+	margin-top:-10px; 
+	margin-right:28px;
+	border:1px solid #ccc;
+} 
 
 
 #friendslikes div.h3 {
-  margin-left:170px;
+  margin-left:202px;
   margin-bottom:18px;
 }
 

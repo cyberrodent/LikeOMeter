@@ -6,8 +6,8 @@
  */
 
 $FBSECRET = getenv("FACEBOOK_SECRET");
-
 $YOUR_APP_ID = getenv("FACEBOOK_APP_ID");
+
 
 if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 	$YOUR_CANVAS_PAGE = "https://apps.facebook.com/ns_enilemit_local/";
@@ -41,10 +41,11 @@ function base64_url_decode($input) {
   return base64_decode(strtr($input, '-_', '+/'));
 }
 
-if (1) { 
-
-
-	if ($_POST) {
+if ($_POST) {
+	/* Turning off all php authentication steps 
+	 *   but still responding only to POST
+	 */
+	if (0) { 
 		$decode = parse_signed_request($_POST['signed_request'], $FBSECRET);
 
 		// if we don't have a token then we need to ask this dude for permission
@@ -58,13 +59,13 @@ if (1) {
 
 		# You seem ok...on with the app!
 		$token = $decode['oauth_token'];
-
-	} else { 
-		die("nothing to get here");
 	}
-
-
+} else { 
+	die("nothing to get here");
 }
+
+
+
 
 /* <html xmlns:fb="http://ogp.me/ns/fb#">
  * Add an XML namespace to the <html> tag of your document. This is necessary for XFBML 
@@ -82,7 +83,8 @@ if (1) {
 </head>
 <body>
 <div id="debug"></div>
-<h1><img src="/images/lom.png" height="75" width="75">Facebook Like-O-Meter</h1>
+<header>
+<h1><img src="/images/lom.png" height="75" width="75" />Facebook Like-O-Meter</h1>
 <nav>
 <a id="flikes">Friends' Likes</a>
 <!-- 
@@ -96,6 +98,7 @@ if (1) {
 <div id="statusline">
 	Initializing the Like-O-Meter.
 </div>
+</header>
 <?php /* <div id="scroll"></div> */ ?>
 
 <div id="friendslikes">
@@ -161,7 +164,9 @@ if (1) {
 <script type="text/html" id="ltr_tpl">
 <div class="ltr" id="ltr<%=thing_id %>">
 	<div class="h2" id="h2<%=thing_id %>">
-		<a href="<%=link %>" target=_blank><img src="http://graph.facebook.com/<%=thing_id %>/picture?type=large&auth_token=<%=token %>" align="top" border="0" width="200" alt="x" class="thing" border="0" /></a>
+	<a href="<%=link %>" target=_blank><img src="http://graph.facebook.com/<%=thing_id %>/picture?type=large&auth_token=<%=token %>" align="top" border="0" width="200" alt="x" class="thing" border="0" />
+
+	</a>
 		<span class="bigger"><%=how_many_friends %></span> friends like 
 		<br />
    <a target=_blank href="<%=link %>"><%=things_name %></a>
