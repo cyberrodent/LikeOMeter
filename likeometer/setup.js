@@ -17,8 +17,8 @@
 			var client_name = "like_o_meter";
 
 			// FIXME: HARDCODED DEV ENVIRONMENT SWAP
-			client_id = '260337734005390'; // local
-			client_name = 'ns_enilemit_local';
+			// client_id = '260337734005390'; // local
+			// client_name = 'ns_enilemit_local';
 
 
 

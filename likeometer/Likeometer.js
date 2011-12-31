@@ -103,9 +103,8 @@ Likeometer = function () {
 						try { 
 							if (res.data[i].application.namespace === client_name) { 
 								//"ns_enilemit_local") {
-
-//                                console.log("not announcing ... too recent"); console.log(res.data[i].created_time);
-
+//                           console.log("not announcing ... too recent"); 
+//                           console.log(res.data[i].created_time);
 							 return false;
 						} else {
 							//
@@ -118,7 +117,6 @@ Likeometer = function () {
 					// console.log("ERROR: Undefined Data ");
 					return false;
 				}	
- 
 				callback(param);
 			});
 	};
