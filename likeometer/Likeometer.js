@@ -156,7 +156,7 @@ Likeometer = function () {
                 // FIXME: 
                 // picture: 'https://enilemit.home/images/lom.png',
                 picture: 'https://young-autumn-6232.herokuapp.com/images/lom.png',
-                name: 'Like-O_Meter',
+                name: 'Like-O-Meter',
                 caption: o,
                 description: 'See what stuff your friends like.'
             };
