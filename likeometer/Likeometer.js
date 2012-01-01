@@ -126,13 +126,14 @@ Likeometer = function () {
 
 		var first = things[like_count_keys[0]];
 		var second = things[like_count_keys[1]];
+		var third = things[like_count_keys[2]];
 		var lucky = find_thing_with_two() ;
-		var third = things[ lucky ];
-
-		var o = "I found out that " +
-			like_counts[first.id] + " of my friends like " +first.name +", "+
-            " and " + like_counts[second.id] + " like " + second.name + 
-            " but only 2 of them like \"" + third.name +"\"."	 ;
+		var rand = things[ lucky ];
+		// like_counts[first.id] + 
+		// " like_counts[second.id] + " like 
+		var o = "More of my friends like " +first.name +", "+
+						second.name + " and " + third.name + " than anything else. "+
+            "But only 2 of them like \"" + rand.name + "\"." 
 
 //		console.log(o);
 
