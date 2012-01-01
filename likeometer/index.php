@@ -167,7 +167,7 @@ Loading. Hang on.
 <script type="text/html" id="ltr_tpl">
 <div class="ltr" id="ltr<%=thing_id %>">
 	<div class="h2" id="h2<%=thing_id %>">
-		<a href="<%=link %>" target=_blank><img src="http://graph.facebook.com/<%=thing_id %>/picture?type=large&auth_token=<%=token %>" align="top" border="0" width="200" alt="x" class="thing" border="0" /></a>
+		<a href="<%=link %>" target=_blank><img src="http://graph.facebook.com/<%=thing_id %>/picture?type=large&auth_token=<%=token %>" align="top" border="0" width="200" alt="<%=things_name %>" class="thing" border="0" /></a>
 		<span class="bigger"><%=how_many_friends %></span> friends like<br />
 		<a target=_blank href="<%=link %>"><%=things_name %></a>
 		<span class="category">(<%=things_category %>)</span>

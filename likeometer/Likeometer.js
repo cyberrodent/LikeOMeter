@@ -191,7 +191,6 @@ Likeometer = function () {
 
 		if (!processed) { return; } 
 
-
 		if (scroll_point === 0) {
 			page_size += page_size;
 		}
@@ -291,7 +290,7 @@ var go = if_not_already_announced(announce_on_wall);
 
 		// Draw a button at the bottom if there are more to get
 		// This is a fallback if the infinite scroll didn't work
-		if (Object.size(collikes > 0) && (limit < Object.size(collikes))) { 
+		if (limit!== page_size && Object.size(collikes) > 0 && (limit < Object.size(collikes))) { 
 			$("#friendslikes").append("<div id='more'>Click to see more.</div>");
 			$("#more").click(show_top_likes);
 		}
