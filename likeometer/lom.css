@@ -62,6 +62,7 @@ h1 img {
   padding:0;
   font-family:courier, monospace;
 }
+
 #statusline {
   font-size:18px;
   padding:10px;
@@ -74,6 +75,7 @@ h1 img {
   border:1px solid black;
 }
 #friendslikes { 
+  display:none;
   padding:100px 0 0 0;
 }
 #friendslikes div {
@@ -100,10 +102,15 @@ footer {
   display:none;
 
 }
+.loading { 
+	padding-top:215px;
+	font-size:200%;
+	text-align:center;
+}
 .about { 
   padding-top:115px;
   font-size:120%;
-
+ display:none;
 } 
 .about div {
   margin-bottom:12px;
@@ -167,8 +174,9 @@ span.bigger {
 #more {
 	clear:both;
 	float:none;
-	background-color:yellow;
+	background-color:#ddd;
 	color:red;
+	font-weight:bold;
 	cursor:pointer;
 	text-align:center;
 	padding:6px 0;

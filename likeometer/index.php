@@ -78,45 +78,39 @@ if ($_POST) {
 	<meta charset=utf-8>
 	<title>Like-O-Meter</title>
 	<link rel="stylesheet" href="https://<?php echo $_SERVER['HTTP_HOST'] ?>/likeometer/lom.css" type="text/css" media="screen,projection" />
-<script type="text/javascript" src="https://<?php echo $_SERVER['HTTP_HOST'] ?>/jquery-1.7.min.js"></script>
-<script type="text/javascript" src="https://<?php echo $_SERVER['HTTP_HOST'] ?>/likeometer/protovis.min.js"></script>
+	<script type="text/javascript" src="https://<?php echo $_SERVER['HTTP_HOST'] ?>/jquery-1.7.min.js"></script>
+	<script type="text/javascript" src="https://<?php echo $_SERVER['HTTP_HOST'] ?>/likeometer/protovis.min.js"></script>
 </head>
 <body>
 <div id="debug"></div>
 <header>
-<h1><img src="/images/lom.png" height="75" width="75" />Facebook Like-O-Meter</h1>
-<nav>
-<a id="flikes">Friends' Likes</a>
-<!-- 
-<a id="you">Your Likes</a>
-<a id="common">Common Likes</a>
--->
-<a id="home">About the Like-O-Meter</a>
-
-</nav>
+	<h1><img src="/images/lom.png" height="75" width="75" />Like-o-Meter</h1>
+	<nav>
+		<a id="flikes">Friends' Likes</a>
+		<!-- 
+		<a id="you">Your Likes</a>
+		<a id="common">Common Likes</a>
+		-->
+		<a id="home">About the Like-O-Meter</a>
+	</nav>
 
 <div id="statusline">
-	Initializing the Like-O-Meter.
+	Initializing Like-o-Meter.
 </div>
 </header>
-<?php /* <div id="scroll"></div> */ ?>
 
-<div id="friendslikes">
-<div id="fig">
+<?php /* scroll output as data loads	
+<div id="scroll"></div> 
+ */ ?>
 
-</div>
+<div id="friendslikes"> </div>
 
-
-
-
-</div>
+<!--
 <div id="commnlikes"></div>
+
 <div id="yourlikes"></div>
-
-
+-->
 <div class="about">
-
-
 
 	<div>
 		<ul>
@@ -126,31 +120,37 @@ if ($_POST) {
 		<li>	A great way to discover new things.</li>
 		</ul>
 		Here's a picture:
-		 </div>
+	</div>
 		
-		<div>
-			<img src="/images/lom-explained.jpg" height="343" width="722" />
-		</div>
+	<div>
+		<img src="/images/lom-explained.jpg" height="343" width="722" />
+	</div>
 
-		<div>
-		Here is the <a target="_top" href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID ?>">Like-O-Meter's page on Facebook</a>
-		</div>
-		<div class="fb-like-box" data-href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID  ?>" data-width="292" data-show-faces="false" data-stream="false" data-header="true"></div>
-		<input type="button" value="Click To Fix Permission Errors" id="log_in_now" class="login_button" />
+	<div>
+		Visit the <a target="_top" href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID ?>">Like-O-Meter's page on Facebook</a>
+	</div>
+	<div class="fb-like-box" data-href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID  ?>" data-width="292" data-show-faces="false" data-stream="false" data-header="true"></div>
+<?php /*	<input type="button" value="Click To Fix Permission Errors" id="log_in_now" class="login_button hidden" /> */ ?>
+
+
 </div>
-<div></div>
+
+
+<div class="loading">
+Loading. Hang on.
+<p><img src="/images/loading.gif" /></p>
+</div>
 <footer>
 &copy;2011 Jeff Kolber
 </footer>
-<script type="text/javascript">
-<?php include "./setup.js" ?>
-</script>
+
+
+<?php /* Templates hidden as script tags for microtemplate */ ?>
 
 <script type="text/html" id="ltrph_tpl">
-<div class="ltr" id="ltr<%=thing_id %>">
-
-</div>
+<div class="ltr" id="ltr<%=thing_id %>"></div>
 </script>
+
 <script type="text/html" id="histogram">
 <h3>Distribution of likes</h3>
 	<ol class="histogram">
@@ -159,35 +159,40 @@ if ($_POST) {
 		</li>
 	<% } %>
 	</ol>
-
 </script>
+
 <script type="text/html" id="ltr_tpl">
 <div class="ltr" id="ltr<%=thing_id %>">
 	<div class="h2" id="h2<%=thing_id %>">
-	<a href="<%=link %>" target=_blank><img src="https://graph.facebook.com/<%=thing_id %>/picture?type=large&auth_token=<%=token %>" align="top" border="0" width="200" alt="x" class="thing" border="0" />
-
-	</a>
-		<span class="bigger"><%=how_many_friends %></span> friends like 
+		<a href="<%=link %>" target=_blank><img src="http://graph.facebook.com/<%=thing_id %>/picture?type=large&auth_token=<%=token %>" align="top" border="0" width="200" alt="x" class="thing" border="0" /></a>
+		<span class="bigger"><%=how_many_friends %></span> friends like<br />
+		<a target=_blank href="<%=link %>"><%=things_name %></a>
+		<span class="category">(<%=things_category %>)</span>
 		<br />
-   <a target=_blank href="<%=link %>"><%=things_name %></a>
-	 <span class="category">(<%=things_category %>)</span><br />
-	  <fb:like send="false" show_faces="false" href="<%=link %>"></fb:like>
+		<fb:like send="false" show_faces="false" href="<%=link %>"></fb:like>
 	</div>
 	<div class="h3">
 		<% for (var j=0; j < how_many_friends; j++) { %>
-    <div class="fimg">
+		<div class="fimg">
 			<a target="_blank" href="https://facebook.com/<%=aLikers[j] %>" title="<%=friend_name[aLikers[j]] %>" ><img src="https://graph.facebook.com/<%=aLikers[j] %>/picture?type=square" height="32" width="32" border="0" /></a>
 		</div>
 		<% } %>
 	</div>
 </div>
 </script>
+
 <script type="text/html" id="debug_tpl">
 <div id="debug">
   <div><%=doc_height %></div>
 	<div><%=scrolltop %></div>
 	<div><%=scroll_bar_height %></div>
 	</div>
+</script>
+
+<?php /* Now load our javascript, setup and app */ ?>
+
+<script type="text/javascript">
+<?php include "./setup.js" ?>
 </script>
 
 <script type="text/javascript">
@@ -199,12 +204,10 @@ if ($_POST) {
 </html><?php
 
 
-
+// hit graphite
 $errno = $errstr = null;
 $fp = fsockopen("home.cyberrodent.com", 20003, $errno, $errstr, 3);
-if ($fp) {
-	fwrite($fp, "likeometer.view 1 ". time() . "\n");
-	fclose($fp);
+if ($fp) { fwrite($fp, "likeometer.view 1 ". time() . "\n"); fclose($fp);
 }
 
 

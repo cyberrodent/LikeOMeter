@@ -144,15 +144,17 @@ Likeometer = function () {
 		// params['picture'] = '';
 		// params['caption'] = '';
 
-
         var use_ui = 1;
+
         if (use_ui === 1) { 
 
             // calling the API ...
             var obj = {
                 method: 'feed',
                 link: 'https://apps.facebook.com/like_o_meter/',
-                picture: 'https://enilemit.home/images/lom.png',
+                // FIXME: 
+                // picture: 'https://enilemit.home/images/lom.png',
+                picture: 'https://young-autumn-6232.herokuapp.com/images/lom.png',
                 name: 'Like-O_Meter',
                 caption: o,
                 description: 'See what stuff your friends like.'
@@ -289,7 +291,7 @@ var go = if_not_already_announced(announce_on_wall);
 
 		// Draw a button at the bottom if there are more to get
 		// This is a fallback if the infinite scroll didn't work
-		if (limit < Object.size(collikes)) { 
+		if (Object.size(collikes > 0) && (limit < Object.size(collikes))) { 
 			$("#friendslikes").append("<div id='more'>Click to see more.</div>");
 			$("#more").click(show_top_likes);
 		}
@@ -390,6 +392,7 @@ var go = if_not_already_announced(announce_on_wall);
 
   var switch_page = function(to_show){
     $(".about").hide();
+    $(".loading").hide();
     $("#friendslikes").hide();
     $("#yourlikes").hide();
     $("#commonlikes").hide();
@@ -593,7 +596,8 @@ var go = if_not_already_announced(announce_on_wall);
     var ts = Math.round((new Date()).getTime() / 1000);
     if (!started) {  
       started = true;
-      switch_page(".about");
+      switch_page(".loading");
+      // switch_page(".about");
       var me = FB.Data.query('select name, uid from user where uid={0}', uid);
       me.wait(function(rows) {
           // console.log("wait came back");
