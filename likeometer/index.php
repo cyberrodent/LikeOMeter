@@ -1,20 +1,21 @@
 <?php
 /**
  * Likeometer index.php
- * This is for the canvas app version of fblikes
+ * This is for the canvas app version of Like-O-Meter
  *
+ * Copyright 2011 Jeffrey Kolber
+ * All Rights Reserved
  */
 
 $FBSECRET = getenv("FACEBOOK_SECRET");
 $YOUR_APP_ID = getenv("FACEBOOK_APP_ID");
 
-
 if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
+	// handles dev and production setup
 	$YOUR_CANVAS_PAGE = "https://apps.facebook.com/ns_enilemit_local/";
 } else { 
 	$YOUR_CANVAS_PAGE = "https://apps.facebook.com/like_o_meter/";
 }
-
 
 /**
  * parse_signed_request
@@ -46,6 +47,8 @@ if ($_POST) {
 	 *   but still responding only to POST
 	 */
 	if (0) { 
+		// all the auth now happens in javascript
+		// this is left over
 		$decode = parse_signed_request($_POST['signed_request'], $FBSECRET);
 
 		// if we don't have a token then we need to ask this dude for permission
