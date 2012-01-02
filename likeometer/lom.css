@@ -19,32 +19,46 @@ header {
 }
 nav {
   display:none;
-  padding:1px;
+  padding:1px 1px 0 1px;
   background-color:#41a0ea;
   color:#000;
 	border-bottom:0px solid black;
 }
 nav a {
   display:inline-block;
-  padding:4px 8px;
-  color:#fff;
-  margin-right:1px;
+	font-weight:normal;
+	margin-right:-4px;
+  padding:4px 10px; 
+  color:#1d4088;
+	border-right:1px solid white; 
 }
 nav a:hover {
-  color:#000;
+	 color:#fff;
   /* background-color: #ffffff; */
   text-decoration: underline;
   cursor:pointer;
 }
-h1 {
+nav a.here { 
+	color:#1D4088;
+	background-color:white;
+	border-right:1px solid #1d4088;
+}
+nav a.here:hover { 
+	color:#1d4088;
+	background-color:white;
+}
+header h1 {
+	font-weight:normal;
+	color:#1d4088;
   padding:0;
   margin:10px 0 0 0;
   font-size:52px;
 }
-h1 img {
+header h1 img {
   height:50px;
   width:50px;
-  margin-right:10px;
+  margin-right:1px;
+	float:right;
 }
 #scroll {
   background-color: #000;
@@ -67,6 +81,8 @@ h1 img {
   font-size:18px;
   padding:10px;
   background-color:#41a0ea;
+	font-weight:normal;
+	color:#1D4088;
 }
 #LOM {
   font-size:23px;
@@ -74,11 +90,11 @@ h1 img {
   color:yellow;
   border:1px solid black;
 }
-#friendslikes { 
+div#friendslikes { 
   display:none;
   padding:100px 0 0 0;
 }
-#friendslikes div {
+div#friendslikes div {
   font-size:24px;
 }
 
@@ -100,43 +116,53 @@ footer {
   border-top:1px dotted black;
   height:20px;
   display:none;
-
 }
-.loading { 
+div.loading { 
+	color:#1d4088;
 	padding-top:215px;
 	font-size:200%;
 	text-align:center;
 }
-.about { 
+div#about { 
   padding-top:115px;
   font-size:120%;
- display:none;
+	display:none;
 } 
-.about div {
+div#about div {
   margin-bottom:12px;
 }
-.about ul { 
+div#about ul { 
 	margin-top:0;
   font-size:24px;
   font-weight:bold;
 	line-height:32px;
 	width:660px;
 }
-.about ul li { 
+div#about ul li { 
 	color:#336;
 	margin:0 20px 0 20px;
 }
 
+div#common, 
+div#yourlikes {
+		display:none;
+		margin-top:120px;
+		font-size:200%;
+}
+
+
+
 span.bigger {
- display:inline-block;
-  font-size:72px; 
-	line-height:60px; 
+  display:inline-block;
+  font-size:61px; 
+  line-height:60px; 
 	float:left;
-	margin-right:8px;
+	margin-right:5px;
+	color:#1d4088;
 } 
 .category { font-size:12px; } 
 
-#friendslikes div.h2 {
+div#friendslikes div.h2 {
   border-top:1px solid #fff;
   margin-bottom:5px;
 	padding-top:8px;
@@ -144,14 +170,16 @@ span.bigger {
 	float:none;
 	clear:left;
 	font-size:14px;
+	color:#1d4088;
 }
 
-#friendslikes div.h2 a:visited ,
-#friendslikes div.h2 a {
+div#friendslikes div.h2 a:visited ,
+div#friendslikes div.h2 a {
 	font-size:28px;
+	line-height:32px;
 	color:#00c;
 }
-#friendslikes div.h2 img { 
+div#friendslikes div.h2 img { 
 	float:left; 
 	width:180px; 
 	margin-top:-10px; 
@@ -160,7 +188,7 @@ span.bigger {
 } 
 
 
-#friendslikes div.h3 {
+div#friendslikes div.h3 {
   margin-left:202px;
   margin-bottom:18px;
 }

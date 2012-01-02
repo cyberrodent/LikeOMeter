@@ -69,7 +69,6 @@ Likeometer = function () {
     for (var t in commons) { 
       $("#commonlikes").append("<div>"+ things[ t ].name + " Liked by you and these "+ commons[t].length + " friends.</div>");
     }
-   
   }
 
 	var find_thing_with_two = function() {
@@ -94,7 +93,7 @@ Likeometer = function () {
 		// look on my own wall and see if likeometer published recently
 		// if no then call callback with params 
 
-//        console.log("Checking my wall");
+		// console.log("Checking my wall");
 
 		FB.api("/me/feed", function(res) { 
 				// console.log(res);
@@ -139,7 +138,7 @@ Likeometer = function () {
 
 		var params = {};
 		params['message']  = o;
-		params['name'] = 'Like-O-Meter';
+		params['name'] = 'Like-o-Meter';
 		params['description'] = 'What your friends like';
 		params['link'] = 'https://apps.facebook.com/like_o_meter/';
 		// params['picture'] = '';
@@ -219,9 +218,10 @@ Likeometer = function () {
 				// stash it where a callback and template can access it
 				rThings[thing_id] = dataObject; 
 
-				// render a placeholder template to handle sorting
+				// render a placeholder template to handle keeping things in
+				// ranked order 
 				var d = tmpl("ltrph_tpl", dataObject);
-				$("#friendslikes").append(d);
+				$("div#friendslikes").append(d);
 
 				// on callback swap DOM with the placeholder
 				FB.api('/' + thing_id +"?fields=link,username,id" , function(res) {
@@ -247,18 +247,18 @@ Likeometer = function () {
 
 		if (scroll_point === 0) {  // first time only
 			$("#statusline").hide();
-			$('#flikes').click(flikes_action);
-			$('#home').click(home_action); // this is the "about likeometer page"
-
-            // this command would load the common like feature 
-			// $('#common').click(common_action);
+			$('nav a#friendslikes').click(flikes_action);
+			$('nav a#about').click(home_action); 
+			// this command would enable click to the "common likes" page
+			$('nav a#common').click(common_action);
+			// this would enable the "your likes" page
+			$('nav a#yourlikes').click(you_action);
 
 			$("nav").show();
 			switch_page("#friendslikes");
 		
 			// write on the users wall if we haven't aleady done so recently	
-///////////// DARK            
-var go = if_not_already_announced(announce_on_wall);
+			var go = if_not_already_announced(announce_on_wall);
 
 			// attach scroll handler
 			$(document).scroll(function() {
@@ -277,22 +277,25 @@ var go = if_not_already_announced(announce_on_wall);
 						var data = {
 							'doc_height' : doc_h,
 							'scrolltop' : $(window).scrollTop() + $(window).height(),
-							'scroll_bar_height' :  (st + win_h + win_h > doc_h) ? 'LOAD DATA NOW!' : '',
-							'crap' : " DocH: " + $(document).height()  + 
-								" WinH:" + $(window).height() + " ~~~>> " + 
-								( $(window).height() / $(document).height() ) * $(window).height()
+							'scroll_bar_height' : (st + win_h + win_h > doc_h) ? 'LOAD NOW!' : '',
+							// debug info if you want it
+							//'crap' : " DocH: " + $(document).height()  + 
+							//	" WinH:" + $(window).height() + " ~~~>> " + 
+							//	( $(window).height() / $(document).height() ) * $(window).height()
 						};
 						var d = tmpl("debug_tpl", data);
 						$("#debug").replaceWith(d);
 					} // end scrolling debug block
+					
 				});
 		}
 		$("#more").remove();
 
 		// Draw a button at the bottom if there are more to get
 		// This is a fallback if the infinite scroll didn't work
-		if (limit!== page_size && Object.size(collikes) > 0 && (limit < Object.size(collikes))) { 
-			$("#friendslikes").append("<div id='more'>Click to see more.</div>");
+		// if (limit!== page_size && Object.size(collikes) > 0 && (limit < Object.size(collikes))) { 
+		if (limit < Object.size(collikes)) { 
+			$("div#friendslikes").append("<div id='more'>Click to see more.</div>");
 			$("#more").click(show_top_likes);
 		}
 		scroll_point = limit; // ready for more ...
@@ -313,7 +316,6 @@ var go = if_not_already_announced(announce_on_wall);
     var my_likes = likes[self.uid];
     var my_cats = {};
     var my_cat_keys = new Array();
-
     var sort_cat_counts = function(a,b) {
       if (my_cats[a].length < my_cats[b].length) {
         return 1;
@@ -346,10 +348,10 @@ var go = if_not_already_announced(announce_on_wall);
         o += '<div style="display:inline-block;"><a title=' + things[thing_id].name +' target=_blank href="https://www.facebook.com/'+ thing_id + '">'+ '<img src="https://graph.facebook.com/'+ thing_id +'/picture?type=square&auth_token='+ self.token  +'" border="0" align="absmiddle" />&nbsp;' + "</a></div>";
       }
       o += "</div>";
-      $("#yourlikes").append(o);
+      $("div#yourlikes").append(o);
     }
     set_status_line("Your Likes are ready");
-    $('#you').click(you_action);
+    $('a#yourlikes').click(you_action);
   }
 
   var make_things = function(data) {
@@ -369,7 +371,7 @@ var go = if_not_already_announced(announce_on_wall);
   }
 
   var home_action = function() {
-    switch_page(".about");
+    switch_page("#about");
     set_status_line("Welcome");
   }
 
@@ -380,7 +382,7 @@ var go = if_not_already_announced(announce_on_wall);
 
   var common_action = function() {
     set_status_line("What you and your friends have in common");
-    switch_page("#commonlikes");
+    switch_page("#common");
   }
 
 
@@ -391,13 +393,17 @@ var go = if_not_already_announced(announce_on_wall);
   }
 
   var switch_page = function(to_show){
-    $(".about").hide();
-    $(".loading").hide();
-    $("#friendslikes").hide();
-    $("#yourlikes").hide();
-    $("#commonlikes").hide();
+    $("div.loading").hide();
+    $("div#about").hide();
+    $("div#friendslikes").hide();
+    $("div#yourlikes").hide();
+    $("div#common").hide();
+
+		$("nav a").removeClass("here");
+
     if (to_show) {
-      $(to_show).show();
+      $('div'+to_show).show();
+			$("nav").find(to_show).addClass("here");	
     }
   }
 
@@ -492,7 +498,7 @@ var go = if_not_already_announced(announce_on_wall);
 		// var d = tmpl("histogram", data);
 		// $("#friendslikes").before(d);
 
-		$("#friendslikes").append("<div id='vis'></div>");
+		$("div#friendslikes").append("<div id='vis'></div>");
 		createLayout(like_count_lengths, like_count_lengths.length, 1+max);	
 
 	}
@@ -597,10 +603,8 @@ var go = if_not_already_announced(announce_on_wall);
     if (!started) {  
       started = true;
       switch_page(".loading");
-      // switch_page(".about");
       var me = FB.Data.query('select name, uid from user where uid={0}', uid);
       me.wait(function(rows) {
-          // console.log("wait came back");
           self.user = rows[0];
           self.user.id = self.user.uid;
           _init(token, uid);
@@ -618,12 +622,9 @@ var go = if_not_already_announced(announce_on_wall);
         'where uid1=me() order by rand() ' +
         ')');
       friends_id.wait(function(rows){
-          //console.log("friends_ids came back");
           _build(rows);
         });
     }
-
-
 		// - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - = 
     return {
       init : init

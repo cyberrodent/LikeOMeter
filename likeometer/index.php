@@ -1,7 +1,7 @@
 <?php
 /**
  * Likeometer index.php
- * This is for the canvas app version of Like-O-Meter
+ * This is for the canvas app version of Like-o-Meter
  *
  * Copyright 2011 Jeffrey Kolber
  * All Rights Reserved
@@ -17,58 +17,6 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 	$YOUR_CANVAS_PAGE = "https://apps.facebook.com/like_o_meter/";
 }
 
-/**
- * parse_signed_request
- * deal with facebook login, oauth2
- */
-function parse_signed_request($signed_request, $secret) {
-  list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
-  // decode the data
-  $sig = base64_url_decode($encoded_sig);
-  $data = json_decode(base64_url_decode($payload), true);
-  if (strtoupper($data['algorithm']) !== 'HMAC-SHA256') {
-    error_log('Unknown algorithm. Expected HMAC-SHA256');
-    return null;
-  }
-  // check sig
-  $expected_sig = hash_hmac('sha256', $payload, $secret, $raw = true);
-  if ($sig !== $expected_sig) {
-    error_log('Bad Signed JSON signature!');
-    return null;
-  }
-  return $data;
-}
-function base64_url_decode($input) {
-  return base64_decode(strtr($input, '-_', '+/'));
-}
-
-if ($_POST) {
-	/* Turning off all php authentication steps 
-	 *   but still responding only to POST
-	 */
-	if (0) { 
-		// all the auth now happens in javascript
-		// this is left over
-		$decode = parse_signed_request($_POST['signed_request'], $FBSECRET);
-
-		// if we don't have a token then we need to ask this dude for permission
-		if (!isset($decode['oauth_token'])) {
-			error_log("authenticate with the fb");
-			error_log("Location: https://www.facebook.com/dialog/oauth?client_id=$YOUR_APP_ID".
-				"&redirect_uri=$YOUR_CANVAS_PAGE&scope=read_stream,user_likes,friends_likes");
-			echo "<script>top.location.href = \"https://www.facebook.com/dialog/oauth?scope=email,read_stream,user_likes,friends_likes&perms=publish_stream,read_stream,user_likes,friends_likes&client_id=". $YOUR_APP_ID."&redirect_uri=".$YOUR_CANVAS_PAGE. "\";</script> ";
-			die();
-		}	
-
-		# You seem ok...on with the app!
-		$token = $decode['oauth_token'];
-	}
-} else { 
-	die("nothing to get here");
-}
-
-
-
 
 /* <html xmlns:fb="http://ogp.me/ns/fb#">
  * Add an XML namespace to the <html> tag of your document. This is necessary for XFBML 
@@ -79,7 +27,7 @@ if ($_POST) {
 <html lang="en-US">
 <head>
 	<meta charset=utf-8>
-	<title>Like-O-Meter</title>
+	<title>Like-o-Meter</title>
 	<link rel="stylesheet" href="https://<?php echo $_SERVER['HTTP_HOST'] ?>/likeometer/lom.css" type="text/css" media="screen,projection" />
 	<script type="text/javascript" src="https://<?php echo $_SERVER['HTTP_HOST'] ?>/jquery-1.7.min.js"></script>
 	<script type="text/javascript" src="https://<?php echo $_SERVER['HTTP_HOST'] ?>/likeometer/protovis.min.js"></script>
@@ -87,19 +35,23 @@ if ($_POST) {
 <body>
 <div id="debug"></div>
 <header>
-	<h1><img src="/images/lom.png" height="75" width="75" />Like-o-Meter</h1>
+	<h1><img src="/images/lom.png" alt="logo" height="50" width="50" />
+	Like-o-Meter</h1>
 	<nav>
-		<a id="flikes">Friends' Likes</a>
-		<!-- 
-		<a id="you">Your Likes</a>
+		<a id="friendslikes">Friends' Likes</a>
+		<a id="about">About the Like-o-Meter</a>
+		<a id="yourlikes">Your Likes</a>
 		<a id="common">Common Likes</a>
+		<!-- 
+		// these are for future features
+		//	
+	
 		-->
-		<a id="home">About the Like-O-Meter</a>
 	</nav>
 
-<div id="statusline">
-	Initializing Like-o-Meter.
-</div>
+	<div id="statusline">
+		Initializing Like-o-Meter.
+	</div>
 </header>
 
 <?php /* scroll output as data loads	
@@ -108,45 +60,52 @@ if ($_POST) {
 
 <div id="friendslikes"> </div>
 
-<!--
-<div id="commnlikes"></div>
 
-<div id="yourlikes"></div>
--->
-<div class="about">
 
+<div id="common">
+<p>Like-o-meter can show you which of your friends like the same stuff that you do. Coming Soon. </p>
+</div>
+
+
+
+
+<div id="about">
 	<div>
 		<ul>
-		<li>	See what your Facebook friends like. </li>
-		<li>	See 100's of things that 2 or more of your friends like.</li>
-		<li>	Ranks liked-things based on how many friends like it.  </li>
-		<li>	A great way to discover new things.</li>
+		<li>Lists your friends most common likes.</li>
+		<li>Discover stuff that you'll like.</li>
 		</ul>
-		Here's a picture:
 	</div>
-		
+	<p>The Like-o-Meter finds all the things that all of your friends like on Facebook and collates them and then lists them in order from most common to least. You can scroll through and see who likes what.</p>
+	<p>Like-o-Meter will ask you to write on your wall with your top 3 most common likes. If you say yes, Like-o-Meter won't bother you for a while, but if you say no, Like-o-Meter will keep asking you to write on your wall each time you use it.
+	</p>
+	<p>I made the Like-o-Meter my spare time to get familiar with Facebook's Graph API.  I don't store any of your data. The Like-o-meter is written almost entirely in Javascript. If you like the Like-O-Meter please tell your friends to check it our too.  Its just for fun.  Thanks for visiting.</p>
+
 	<div>
-		<img src="/images/lom-explained.jpg" height="343" width="722" />
+		Here are my top 3:
+		<img src="/images/lom-explained.jpg" height="611" width="739" />
 	</div>
 
 	<div>
-		Visit the <a target="_top" href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID ?>">Like-O-Meter's page on Facebook</a>
+		Visit the <a target="_top" href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID ?>">Like-o-Meter's page on Facebook</a>
 	</div>
+
 	<div class="fb-like-box" data-href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID  ?>" data-width="292" data-show-faces="false" data-stream="false" data-header="true"></div>
-<?php /*	<input type="button" value="Click To Fix Permission Errors" id="log_in_now" class="login_button hidden" /> */ ?>
 
-
+	<?php /*	<input type="button" value="Click To Fix Permission Errors" id="log_in_now" class="login_button hidden" /> */ ?>
 </div>
 
+<div id="yourlikes">
+	<p>You might have liked alot of things over the years on facebook. Maybe your don't like some of those things anymore. Like-o-meter can help you manage your likes on Facebook. Coming Soon.
+</div>
 
 <div class="loading">
-Loading. Hang on.
-<p><img src="/images/loading.gif" /></p>
+	Loading. Hang on.<p><img src="/images/loading.gif" /></p>
 </div>
+
 <footer>
 &copy;2011 Jeff Kolber
 </footer>
-
 
 <?php /* Templates hidden as script tags for microtemplate */ ?>
 
