@@ -40,11 +40,11 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 	<nav>
 		<a id="friendslikes">Friends' Likes</a>
 		<a id="about">About the Like-o-Meter</a>
+	<!-- 
+		// these are for future features
+
 		<a id="yourlikes">Your Likes</a>
 		<a id="common">Common Likes</a>
-		<!-- 
-		// these are for future features
-		//	
 	
 		-->
 	</nav>
@@ -70,22 +70,19 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 
 
 <div id="about">
-	<div>
-		<ul>
-		<li>Lists your friends most common likes.</li>
-		<li>Discover stuff that you'll like.</li>
-		</ul>
-	</div>
-	<p>The Like-o-Meter finds all the things that all of your friends like on Facebook and collates them and then lists them in order from most common to least. You can scroll through and see who likes what.</p>
-	<p>Like-o-Meter will ask you to write on your wall with your top 3 most common likes. If you say yes, Like-o-Meter won't bother you for a while, but if you say no, Like-o-Meter will keep asking you to write on your wall each time you use it.
-	</p>
-	<p>I made the Like-o-Meter my spare time to get familiar with Facebook's Graph API.  I don't store any of your data. The Like-o-meter is written almost entirely in Javascript. If you like the Like-O-Meter please tell your friends to check it our too.  Its just for fun.  Thanks for visiting.</p>
+	<ul>
+		<li>Like-o-Meter collates all the things that your friends like on Facebook and lists them in order from most common to least.  Scroll through and see who likes what.</li>
+		<li>Like-o-Meter will ask you to share your friends’ top 3 most common likes on your wall.</li>
+		<li>Like-o-Meter will not store any of your data.</li>
+		<li>Like-o-Meter is written almost entirely in Javascript.</li>
+		<li>If you like the Like-o-Meter please tell your friends.</li> 
+		<li>Thanks!</li>
 
+	</ul>
 	<div>
 		Here are my top 3:
 		<img src="/images/lom-explained.jpg" height="611" width="739" />
 	</div>
-
 	<div>
 		Visit the <a target="_top" href="https://www.facebook.com/apps/application.php?id=<?php echo $YOUR_APP_ID ?>">Like-o-Meter's page on Facebook</a>
 	</div>

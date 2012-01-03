@@ -1,13 +1,11 @@
 /* css file for like-o-meter */
 
 body { 
+	padding:110px 0 0 0; 
+	margin:0;
   font-family:arial, helvetica; 
 }
-footer { 
-  font-size:8px;
-  margin-top:18px;
-  padding:10px;
-}
+
 header { 
 	position:fixed;
 	z-index:9999;
@@ -17,6 +15,30 @@ header {
 	width:738px;
 	background:white;
 }
+header h1 {
+	font-weight:normal;
+	color:#1d4088;
+  padding:0;
+  margin:10px 0 0 0;
+  font-size:52px;
+}
+header h1 img {
+  height:50px;
+  width:50px;
+  margin-right:1px;
+	float:right;
+}
+
+footer { 
+  display:none;
+	height:20px;
+	width:100%;
+	margin-top:18px;
+	padding:10px;
+  border-top:1px dotted black;
+  font-size:8px;
+}
+
 nav {
   display:none;
   padding:1px 1px 0 1px;
@@ -34,7 +56,6 @@ nav a {
 }
 nav a:hover {
 	 color:#fff;
-  /* background-color: #ffffff; */
   text-decoration: underline;
   cursor:pointer;
 }
@@ -47,27 +68,13 @@ nav a.here:hover {
 	color:#1d4088;
 	background-color:white;
 }
-header h1 {
-	font-weight:normal;
-	color:#1d4088;
-  padding:0;
-  margin:10px 0 0 0;
-  font-size:52px;
-}
-header h1 img {
-  height:50px;
-  width:50px;
-  margin-right:1px;
-	float:right;
-}
+
 #scroll {
   background-color: #000;
   height:42px;
   color:green;
   overflow: hidden;
   padding:5px 10px;
-
-
 }
 #scroll div {
   font-size:12px;
@@ -77,91 +84,34 @@ header h1 img {
   font-family:courier, monospace;
 }
 
-#statusline {
+div#statusline {
   font-size:18px;
   padding:10px;
   background-color:#41a0ea;
 	font-weight:normal;
 	color:#1D4088;
 }
-#LOM {
+#LOM { /* ?unused? */
   font-size:23px;
   background-color:red;
   color:yellow;
   border:1px solid black;
 }
+
+
+
 div#friendslikes { 
   display:none;
-  padding:100px 0 0 0;
+  padding:0 0 0 0;
+	border:0px solid gray;
 }
+
+
+
+
 div#friendslikes div {
   font-size:24px;
 }
-
-.fimg { 
-  display:inline-block;
-  margin-right:1px;
-}
-
-img.thing {
-  display:inline-block;
-  margin-right:11px;
-	margin-bottom:20px;
-	width:200px;
-
-}
-
-footer { 
-  width:100%;
-  border-top:1px dotted black;
-  height:20px;
-  display:none;
-}
-div.loading { 
-	color:#1d4088;
-	padding-top:215px;
-	font-size:200%;
-	text-align:center;
-}
-div#about { 
-  padding-top:115px;
-  font-size:120%;
-	display:none;
-} 
-div#about div {
-  margin-bottom:12px;
-}
-div#about ul { 
-	margin-top:0;
-  font-size:24px;
-  font-weight:bold;
-	line-height:32px;
-	width:660px;
-}
-div#about ul li { 
-	color:#336;
-	margin:0 20px 0 20px;
-}
-
-div#common, 
-div#yourlikes {
-		display:none;
-		margin-top:120px;
-		font-size:200%;
-}
-
-
-
-span.bigger {
-  display:inline-block;
-  font-size:61px; 
-  line-height:60px; 
-	float:left;
-	margin-right:5px;
-	color:#1d4088;
-} 
-.category { font-size:12px; } 
-
 div#friendslikes div.h2 {
   border-top:1px solid #fff;
   margin-bottom:5px;
@@ -169,10 +119,9 @@ div#friendslikes div.h2 {
 	min-height:60px;
 	float:none;
 	clear:left;
-	font-size:14px;
+	font-size:12px;
 	color:#1d4088;
 }
-
 div#friendslikes div.h2 a:visited ,
 div#friendslikes div.h2 a {
 	font-size:28px;
@@ -182,16 +131,80 @@ div#friendslikes div.h2 a {
 div#friendslikes div.h2 img { 
 	float:left; 
 	width:180px; 
-	margin-top:-10px; 
-	margin-right:28px;
+	margin-right:12px;
 	border:1px solid #ccc;
 } 
-
-
 div#friendslikes div.h3 {
-  margin-left:202px;
+  margin-left:180px;
   margin-bottom:18px;
 }
+
+
+.fimg { 
+  display:inline-block;
+  margin-right:1px;
+}
+
+img.thing {
+  display:inline-block;
+  margin-right:1px;
+	margin-bottom:20px;
+	width:180px;
+
+}
+
+
+div.loading { 
+	position:absolute;
+	top:130;
+	left:0;
+	width:99%;
+	display:none;
+	margin-top:20%;
+	color:#1d4088;
+	font-size:200%;
+	text-align:center;
+}
+
+div#about { 
+  font-size:120%;
+	display:none;
+} 
+div#about div {
+  margin-bottom:12px;
+}
+div#about ul { 
+	margin:10px 0;
+  font-weight:normal;
+	width:660px;
+	list-style-type:none;
+}
+div#about ul li { 
+	color:#336;
+	margin:0 20px 12px 20px;
+  font-size:16px;
+}
+
+div#common, 
+div#yourlikes {
+		display:none;
+		font-size:200%;
+}
+
+
+
+span.bigger {
+  display:inline-block;
+  font-size:46px; 
+  line-height:46px; 
+	float:left;
+	margin-right:5px;
+	color:#1d4088;
+} 
+.category { 
+	font-size:10px;
+	line-height:10px;
+} 
 
 .ltr {
 	/* liked thing row */
@@ -199,7 +212,9 @@ div#friendslikes div.h3 {
 	padding:0;
 	margin:0;
 }
-#more {
+
+
+#more { /* this is the manual override for auto scrolling */
 	clear:both;
 	float:none;
 	background-color:#ddd;
