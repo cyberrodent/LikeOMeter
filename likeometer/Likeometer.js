@@ -1,4 +1,21 @@
-
+/*
+ * Initialization Cycle
+ *
+ * init is exported and calling init() will start the likeometer.
+ *
+ * init() will ask the graph a little bit about the user (me) and callback to _init
+ *
+ * _init  asks for the uid of all me's friends in a random orger and calls back _build
+ *
+ * _build takes that list of friend uids and in chunks asks the grid for all the things
+ * those uids like. The callback to _collate
+ *
+ * _collate builds the "collikes" and "things" array. _collate keeps track to make sure we
+ * get called back for all your friends and then calls show_top_likes()
+ *
+ * show_top_likes draws the list of things that me's friends like for the likeometer.
+ *
+ */
 
 Likeometer = function () {
 
@@ -38,8 +55,7 @@ Likeometer = function () {
     }
   }
   var do_common = function() {
-		// This finds a list of friends who have likes in common
-		// with you
+		// This finds a list of friends who have likes in common with you
     var my_likes = likes[self.uid];
     var my_like_ids = [];
     var commons = {};
@@ -52,12 +68,9 @@ Likeometer = function () {
       if (n === self.uid) {
         continue;
       }
-      // console.log("n is " + n);
       var friend_likes = likes[n];
-      // console.log("friend " + n + " likes " + friend_likes.length);
       for(var i=0; i < friend_likes.length; i++) {
         if (my_like_ids.indexOf(friend_likes[i].id) > 0) {
-          // console.log(all_friends[n] + " also likes " + things[friend_likes[i].id].name);
           if (typeof(commons[friend_likes[i].id]) === "undefined") {
             commons[friend_likes[i].id] = [n];
           } else { 
@@ -78,11 +91,8 @@ Likeometer = function () {
 			if (like_counts[i] === 2) {
 				thing = i;
 				break
-			}  else { 
-				// console.log("thing " + i + " was liked " + like_counts[i] + " times");
 			}
 		}
-		// console.log("finding ..."); console.log(thing);
 		if (thing === 0) {
 			return like_counts[ Math.floor(Math.random() * like_counts.length) ];
 		} else { 
@@ -93,17 +103,13 @@ Likeometer = function () {
 		// look on my own wall and see if likeometer published recently
 		// if no then call callback with params 
 
-		// console.log("Checking my wall");
 
 		FB.api("/me/feed", function(res) { 
-				// console.log(res);
 				if (typeof(res.data) === 'object') {
 					for(var i=0; i < res.data.length; i++) {
 						try { 
 							if (res.data[i].application.namespace === client_name) { 
 								//"ns_enilemit_local") {
-//                           console.log("not announcing ... too recent"); 
-//                           console.log(res.data[i].created_time);
 							 return false;
 						} else {
 							//
@@ -113,16 +119,12 @@ Likeometer = function () {
 					}
 					}
 				} else { 
-					// console.log("ERROR: Undefined Data ");
 					return false;
 				}	
 				callback(param);
 			});
 	};
 	var announce_on_wall = function() {
-
-//		console.log("Announce on Wall");
-
 		var first = things[like_count_keys[0]];
 		var second = things[like_count_keys[1]];
 		var third = things[like_count_keys[2]];
@@ -133,9 +135,6 @@ Likeometer = function () {
 		var o = "More of my friends like " +first.name +", "+
 						second.name + " and " + third.name + " than anything else. "+
             "But only 2 of them like \"" + rand.name + "\"." 
-
-//		console.log(o);
-
 		var params = {};
 		params['message']  = o;
 		params['name'] = 'Like-o-Meter';
@@ -162,7 +161,6 @@ Likeometer = function () {
 
             function callback(response) {
                 // document.getElementById('msg').innerHTML = "Post ID: " + response['post_id'];
-                // console.log("wrote to wall");
             }
 
             FB.ui(obj, callback);
@@ -174,7 +172,6 @@ Likeometer = function () {
             FB.api('/me/feed', 'post', params, function(res) {
                 if (!res || res.error) {
                     alert('error'+ res.error.message);
-                    // console.log(res.error);
                 } else { 
 //                    alert("published to stream");
 
@@ -199,8 +196,8 @@ Likeometer = function () {
 		// track how far down someone scrolls
 		$.get('/likeometer/graphit.php', { 'page' : scroll_point / page_size } );
 
-		// collikes is our data of things keyed by thing_id
-		// like_count_keys is an index of things sorted by likes
+		// collikes are things keyed by thing_id
+		// like_count_keys is an index of things sorted by how many of me's friends like it
 		for (var i=scroll_point;  i < limit; i++) {
 			if (collikes[like_count_keys[i]].length > 1) { 
 				var thing_id = like_count_keys[i];
@@ -227,10 +224,11 @@ Likeometer = function () {
 				FB.api('/' + thing_id +"?fields=link,username,id" , function(res) {
 						var data = rThings[res.id]; 
                         if (typeof(data) === "undefined") {
-                            console.log("got back undefined data");
-                            console.log(res);
-                            // TODO: we asked for something like username which the
-                            // object in question doesn't have FIXME
+                            // console.log("got back undefined data");
+                            // console.log(res);
+                            //
+                            // FIXME Need somewhere to put errors like this
+                            // FIXME Need someone to look at error logs from time to time
                             return;
                         }
 						if (res.link) { 
@@ -289,11 +287,13 @@ Likeometer = function () {
 					
 				});
 		}
-		$("#more").remove();
-
+	
+		/*
 		// Draw a button at the bottom if there are more to get
 		// This is a fallback if the infinite scroll didn't work
-		// if (limit!== page_size && Object.size(collikes) > 0 && (limit < Object.size(collikes))) { 
+		// if (limit!== page_size && Object.size(collikes) > 0 && (limit < Object.size(collikes)))  
+		*/
+		$("#more").remove();
 		if (limit < Object.size(collikes)) { 
 			$("div#friendslikes").append("<div id='more'>Click to see more.</div>");
 			$("#more").click(show_top_likes);
@@ -491,7 +491,6 @@ Likeometer = function () {
 			}
 		}
 
-	//	console.log(dist);
 		//var data = {
 		//	'like_count_lengths' : like_count_lengths,	
 		//};
@@ -504,15 +503,11 @@ Likeometer = function () {
 	}
 	var createLayout = function(data, points, max) {
 		// part of the histogram
-	
-		// console.log(data);
 		var w = 620,
 			h = 200,
 			x = pv.Scale.linear(0, max).range(0,w),
 			bins = pv.histogram(data).bins(x.ticks(30));
 			var y = pv.Scale.root(0, points).range(0,h).power(3);
-			// console.log(bins);	
-
 			var vis = new pv.Panel()
 				.width(w)
 				.height(h)
@@ -555,8 +550,7 @@ Likeometer = function () {
 	}
 
   var _build = function(res) {
-		// gets the list of friends that kicks off the whole
-		// show
+		// gets the list of friends that kicks off the whole show
     if (typeof(res.error) !== 'undefined') {
       set_status_line(res.error.type + " Error: " + res.error.message);
       return;
@@ -572,26 +566,26 @@ Likeometer = function () {
     f.push(self.user.id);
 
     how_many_friends_i_have = Object.size(all_friends) ;
-    // really this can't work for largis result sets
-    // you get a network error.  So we need to chunk
-    // DON'T DO THIS -->  var fids = f.join(',');
 
+    // DON'T JUST DO THIS -->  var fids = f.join(',');
+    // Doesn't work for large result sets. You get a network error.  
+    // So we need to chunk.
     var message = "Asking Facebook what your friends like. "
     set_status_line(message);
 
     var chunk_size = 8; // how many friend likes to ask for in a batch?
-    var c = 0;
+    var c = 0; // to keep track of how many chunks we've fetched
     while (f.length) {
-      var chunk = f.splice(0,chunk_size);
-      c++;
-      var fids = chunk.join(',');
-      FB.api("/likes?ids="+fids, function(res) {
-          _collate(res);
-        });	
       if (c>9999) { 
 				// stop runaway
 				break; 
-			}  
+			}
+      c++;
+      var chunk = f.splice(0,chunk_size);
+      var fids = chunk.join(','); // fid ~ "Friends' ids"
+      FB.api("/likes?ids="+fids, function(res) {
+          _collate(res);
+        });	
 		}
   }
 
