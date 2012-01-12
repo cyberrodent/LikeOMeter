@@ -16,7 +16,6 @@
  * show_top_likes draws the list of things that me's friends like for the likeometer.
  *
  */
-
 Likeometer = function () {
 
   var self = this;
@@ -35,7 +34,8 @@ Likeometer = function () {
   var started = false; // rm? // if the app has been started - presumably to prevent restarting the app but as yet unimplemented
 	var processed = false;  // keep certain functions from rendering if processing is not yet complete
 	var rThings = {}; // thing data needed to render a row of liked thing
-	var scroll_point = 0; // track how far down we've infinite scrolled
+	var scroll_point = 0; // track how far down in pixels we've infinite scrolled
+  var scrolled_pages = 0; // track how many pages we've loaded
 	var page_size = 5; // how many items to load on each call - attach to infinite scroll
 
   var count_likes = function() {
@@ -167,8 +167,6 @@ Likeometer = function () {
 
         } else { 
             // use graph api
-
-
             FB.api('/me/feed', 'post', params, function(res) {
                 if (!res || res.error) {
                     alert('error'+ res.error.message);
@@ -194,7 +192,8 @@ Likeometer = function () {
 		var limit = scroll_point + page_size;
 
 		// track how far down someone scrolls
-		$.get('/likeometer/graphit.php', { 'page' : scroll_point / page_size } );
+    scrolled_pages = scrolled_pages + 1;
+		$.get('/likeometer/graphit.php', { 'page' : scrolled_pages } );
 
 		// collikes are things keyed by thing_id
 		// like_count_keys is an index of things sorted by how many of me's friends like it
