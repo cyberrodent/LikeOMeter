@@ -40,6 +40,7 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 	<nav>
 		<a id="friendslikes">Friends' Likes</a>
 		<a id="about">About the Like-o-Meter</a>
+		<a id="share">Share</a>
 	<!-- 
 		// these are for future features
 
@@ -48,10 +49,6 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 	
 		-->
 	</nav>
-
-	<div id="statusline">
-		Initializing Like-o-Meter.
-	</div>
 </header>
 
 <?php /* scroll output as data loads	
@@ -163,10 +160,9 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 </html><?php
 
 
-// hit graphite
+// hit graphite // bad hardcoded // good short and quick
 $errno = $errstr = null;
 $fp = fsockopen("home.cyberrodent.com", 20003, $errno, $errstr, 3);
-if ($fp) { fwrite($fp, "likeometer.view 1 ". time() . "\n"); fclose($fp);
+if ($fp) { 
+	fwrite($fp, "likeometer.view 1 ". time() . "\n"); fclose($fp);
 }
-
-

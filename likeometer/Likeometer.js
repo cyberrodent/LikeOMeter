@@ -250,12 +250,16 @@ Likeometer = function () {
 			$('nav a#common').click(common_action);
 			// this would enable the "your likes" page
 			$('nav a#yourlikes').click(you_action);
+			$('nav a#share').click(announce_on_wall);
 
 			$("nav").show();
 			switch_page("#friendslikes");
 		
 			// write on the users wall if we haven't aleady done so recently	
 			var go = if_not_already_announced(announce_on_wall);
+
+			// Metrics gathering via facebook	
+			FB.Canvas.setDoneLoading();
 
 			// attach scroll handler
 			$(document).scroll(function() {
