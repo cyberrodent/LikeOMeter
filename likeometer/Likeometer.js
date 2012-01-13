@@ -161,6 +161,11 @@ Likeometer = function () {
 
             function callback(response) {
                 // document.getElementById('msg').innerHTML = "Post ID: " + response['post_id'];
+								$.get('/likeometer/tographite.php', { 
+										'key' : 'share_on_wall',
+										'val' :  1
+									});
+
             }
 
             FB.ui(obj, callback);
@@ -193,7 +198,10 @@ Likeometer = function () {
 
     // track how far down someone scrolls
     scrolled_pages = scrolled_pages + 1;
-    $.get('/likeometer/graphit.php', { 'page' : scrolled_pages } );
+		$.get('/likeometer/tographite.php', { 
+				'key' : 'page',
+				'val' :  scrolled_pages
+			});
 
     // collikes are things keyed by thing_id
     // like_count_keys is an index of things sorted by how many of me's friends like it
