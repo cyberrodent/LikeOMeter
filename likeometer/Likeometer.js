@@ -270,27 +270,29 @@ Likeometer = function () {
           // FIXME: be more sure these are ints before
           // using + on them ?
           if (st + win_h + win_h > doc_h) {
-            show_top_likes();    
+              show_top_likes();    
           }
           if (false) { // shows some scrolling debug info
-            var data = {
-              'doc_height' : doc_h,
-              'scrolltop' : $(window).scrollTop() + $(window).height(),
-              'scroll_bar_height' : (st + win_h + win_h > doc_h) ? 'LOAD NOW!' : '',
-              // debug info if you want it
-              //'crap' : " DocH: " + $(document).height()  + 
-              //  " WinH:" + $(window).height() + " ~~~>> " + 
-              //  ( $(window).height() / $(document).height() ) * $(window).height()
-            };
-            var d = tmpl("debug_tpl", data);
-            $("#debug").replaceWith(d);
+              var data = {
+                  'doc_height' : doc_h,
+          'scrolltop' : $(window).scrollTop() + $(window).height(),
+          'scroll_bar_height' : (st + win_h + win_h > doc_h) ? 'LOAD NOW!' : '',
+          // debug info if you want it
+          //'crap' : " DocH: " + $(document).height()  + 
+          //  " WinH:" + $(window).height() + " ~~~>> " + 
+          //  ( $(window).height() / $(document).height() ) * $(window).height()
+              };
+              var d = tmpl("debug_tpl", data);
+              $("#debug").replaceWith(d);
           } // end scrolling debug block
-          
-        });
-            // Metrics gathering via facebook
-            FB.Canvas.setDoneLoading(function (result) {
-                // alert(result.time_delta_ms);
-            });
+      });
+      // Metrics gathering via facebook
+      FB.Canvas.setDoneLoading(function (result) {
+          $.get('/likeometer/tographite.php', { 
+              'key' : 'load_time_ms',
+              'val' : result.time_delta_ms
+          });
+      });
     }
   
     /*

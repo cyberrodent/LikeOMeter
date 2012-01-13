@@ -9,5 +9,3 @@ if (array_key_exists('page', $_GET)) {
 		fclose($fp);
 	}
 }
-
-
