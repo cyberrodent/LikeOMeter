@@ -87,9 +87,10 @@ nav a.here:hover {
 div#statusline {
   font-size:18px;
   padding:10px;
-  background-color:#41a0ea;
+  background-color:#fff;
 	font-weight:normal;
 	color:#1D4088;
+	text-align:center;
 }
 #LOM { /* ?unused? */
   font-size:23px;
@@ -159,7 +160,7 @@ div.loading {
 	top:130;
 	left:0;
 	width:99%;
-	display:none;
+	display:block;
 	margin-top:20%;
 	color:#1d4088;
 	font-size:200%;

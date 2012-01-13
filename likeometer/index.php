@@ -34,6 +34,7 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 </head>
 <body>
 <div id="debug"></div>
+
 <header>
 	<h1><img src="/images/lom.png" alt="logo" height="50" width="50" />
 	Like-o-Meter</h1>
@@ -94,7 +95,9 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 </div>
 
 <div class="loading">
-	Loading. Hang on.<p><img src="/images/loading.gif" /></p>
+	Loading. Hang on.
+	<div id="statusline">We're setting things up..</div>
+	<p><img src="/images/loading.gif" /></p>
 </div>
 
 <footer>
