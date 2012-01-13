@@ -262,7 +262,20 @@ Likeometer = function () {
 
       $("nav").show();
       switch_page("#friendslikes");
-    
+				
+			FB.Event.subscribe('edge.create', function (response) {
+					$.get('/likeometer/tographite.php', { 
+              'key' : 'newfound_like',
+              'val' : 1
+          });
+			});
+			FB.Event.subscribe('edge.remove', function (response) {
+					$.get('/likeometer/tographite.php', { 
+							'key' : 'lost_like',
+							'val' : 1
+						});
+			});
+		
       // write on the users wall if we haven't aleady done so recently  
       var go = if_not_already_announced(announce_on_wall);
 
