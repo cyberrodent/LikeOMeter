@@ -5,8 +5,10 @@
  *
  * Copyright 2011 Jeffrey Kolber
  * All Rights Reserved
+ *
+ * https://github.com/cyberrodent/LikeOMeter
+ *
  */
-
 $FBSECRET = getenv("FACEBOOK_SECRET");
 $YOUR_APP_ID = getenv("FACEBOOK_APP_ID");
 
@@ -16,13 +18,10 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 } else { 
 	$YOUR_CANVAS_PAGE = "https://apps.facebook.com/like_o_meter/";
 }
-
-
 /* <html xmlns:fb="http://ogp.me/ns/fb#">
  * Add an XML namespace to the <html> tag of your document. This is necessary for XFBML 
  * to work in earlier versions of Internet Explorer.
  */
-
 ?><!DOCTYPE html>
 <html lang="en-US">
 <head>
@@ -67,8 +66,6 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 <div id="common">
 <p>Like-o-meter can show you which of your friends like the same stuff that you do. Coming Soon. </p>
 </div>
-
-
 
 
 <div id="about">
@@ -171,8 +168,7 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 </body>
 </html><?php
 
-
- // hit graphite // bad hardcoded // good short and quick
+ // hit graphite 
 if ("enilemit.home" !== $_SERVER['SERVER_NAME']) {
 	$errno = $errstr = null;
 	$fp = fsockopen("home.cyberrodent.com", 20003, $errno, $errstr, 3);
