@@ -187,11 +187,18 @@ div#about ul li {
 }
 
 div#common, 
-div#yourlikes {
+div#melikes {
 		display:none;
-		font-size:200%;
+		font-size:120%;
 }
-
+div#melikes h3 {
+	color:#1D4088;
+	font-weight:normal;
+	font-size:36px;
+	padding:0;
+	border-top:1px solid #cccccc;
+	margin:15px 0 5px 0;
+}
 
 
 span.bigger {

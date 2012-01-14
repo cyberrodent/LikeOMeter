@@ -41,14 +41,14 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 <fb:like send="true" width="600" show_faces="false" href="https://www.facebook.com/the.real.like.o.meter"></fb:like>
 	<nav>
 		<a id="friendslikes">Friends' Likes</a>
-		<a id="about">About the Like-o-Meter</a>
+		<a id="melikes">Your Likes</a>
 		<a id="share">Share</a>
 		<a target="_top" href="https://www.facebook.com/the.real.like.o.meter">Fan Page</a>
-
+		<a id="about">About the Like-o-Meter</a>
 	<!-- 
 		// these are for future features
 
-		<a id="yourlikes">Your Likes</a>
+	
 		<a id="common">Common Likes</a>
 	
 		-->
@@ -94,8 +94,8 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 	<?php /*	<input type="button" value="Click To Fix Permission Errors" id="log_in_now" class="login_button hidden" /> */ ?>
 </div>
 
-<div id="yourlikes">
-	<p>You might have liked alot of things over the years on facebook. Maybe your don't like some of those things anymore. Like-o-meter can help you manage your likes on Facebook. Coming Soon.
+<div id="melikes">
+	<p>You might have liked alot of things over the years on facebook. Maybe your don't like some of those things anymore. Like-o-meter can help you manage your likes on Facebook. Coming Soon.</p>
 </div>
 
 <div class="loading">
@@ -109,6 +109,11 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 </footer>
 
 <?php /* Templates hidden as script tags for microtemplate */ ?>
+<script type="text/html" id="my_cat_tpl">
+ <div style="display:inline-block;">
+ <a title="<%=thing_name %>" target=_blank href="https://www.facebook.com/<%=thing_id %>"><img src="https://graph.facebook.com/<%=thing_id %>/picture?type=square&auth_token=<%=token  %>" border="0" align="absmiddle" /></a>
+ </div>
+</script>
 
 <script type="text/html" id="ltrph_tpl">
 <div class="ltr" id="ltr<%=thing_id %>"></div>
@@ -167,9 +172,11 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 </html><?php
 
 
-// hit graphite // bad hardcoded // good short and quick
-$errno = $errstr = null;
-$fp = fsockopen("home.cyberrodent.com", 20003, $errno, $errstr, 3);
-if ($fp) { 
-	fwrite($fp, "likeometer.view 1 ". time() . "\n"); fclose($fp);
+ // hit graphite // bad hardcoded // good short and quick
+if ("enilemit.home" !== $_SERVER['SERVER_NAME']) {
+	$errno = $errstr = null;
+	$fp = fsockopen("home.cyberrodent.com", 20003, $errno, $errstr, 3);
+	if ($fp) { 
+		fwrite($fp, "likeometer.view 1 ". time() . "\n"); fclose($fp);
+	}
 }

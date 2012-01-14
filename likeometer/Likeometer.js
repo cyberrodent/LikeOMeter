@@ -6,7 +6,7 @@
  * init() will ask the graph a little bit about the user (me) and callback to _init
  *
  * _init  asks for the uid of all me's friends in a random orger and calls back _build
- *
+ * 
  * _build takes that list of friend uids and in chunks asks the grid for all the things
  * those uids like. The callback to _collate
  *
@@ -257,7 +257,7 @@ Likeometer = function () {
       // this command would enable click to the "common likes" page
       $('nav a#common').click(common_action);
       // this would enable the "your likes" page
-      $('nav a#yourlikes').click(you_action);
+      $('nav a#melikes').click(you_action);
       $('nav a#share').click(announce_on_wall);
 			FB.XFBML.parse(document.getElementById("header"));
 
@@ -276,11 +276,12 @@ Likeometer = function () {
 							'val' : 1
 						});
 			});
-		
+	
+
       // write on the users wall if we haven't aleady done so recently  
       var go = if_not_already_announced(announce_on_wall);
 
-            
+
       // attach scroll handler
       $(document).scroll(function() {
           var doc_h = $(document).height();
@@ -320,7 +321,6 @@ Likeometer = function () {
     /*
     // Draw a button at the bottom if there are more to get
     // This is a fallback if the infinite scroll didn't work
-    // if (limit!== page_size && Object.size(collikes) > 0 && (limit < Object.size(collikes)))  
     */
     $("#more").remove();
     if (limit < Object.size(collikes)) { 
@@ -338,12 +338,13 @@ Likeometer = function () {
   var got_my_likes = function() {
     //
     // Categorize your likes by category
-    //   currently unused in the application
+    //   currently beta in the application
     //
 
-    set_status_line("Categorizing your likes");
-
+		$("div#melikes").replaceWith($("<div id='melikes'>Here are the things you like grouped by category.</div>"))
     var my_likes = likes[self.uid];
+
+
     var my_cats = {};
     var my_cat_keys = new Array();
     var sort_cat_counts = function(a,b) {
@@ -364,24 +365,33 @@ Likeometer = function () {
         my_cats[my_likes[like].category].push( my_likes[like].id);
       }
     }
-
+		
+	
     my_cat_keys.sort(sort_cat_counts);
 
     for (var i in my_cat_keys) {
-      key = my_cat_keys[i];
+      var key = my_cat_keys[i];
       var o = "<div><h3>" + key + "</h3>";
       var how_many =  my_cats[key].length;
-      o += "You like " + how_many + " " + key + "<br />";
+      o += "You like " + how_many + " things from \"" + key + "\"<br />";
 
       for (var j in my_cats[key]) {
-        var thing_id = my_cats[key][j];
-        o += '<div style="display:inline-block;"><a title=' + things[thing_id].name +' target=_blank href="https://www.facebook.com/'+ thing_id + '">'+ '<img src="https://graph.facebook.com/'+ thing_id +'/picture?type=square&auth_token='+ self.token  +'" border="0" align="absmiddle" />&nbsp;' + "</a></div>";
+       var thing_id = my_cats[key][j];
+			 var thing_name = (typeof things[thing_id] !== 'undefined') ? things[thing_id].name : 'huh';
+			 var tpl_data = { 
+				'token' : self.token,
+				'thing_id' : thing_id,
+				'thing_name' : thing_name
+			 };
+			 o += tmpl("my_cat_tpl", tpl_data);
       }
+			
+		
       o += "</div>";
-      $("div#yourlikes").append(o);
+
+      $("div#melikes").append(o);
     }
-    set_status_line("Your Likes are ready");
-    $('a#yourlikes').click(you_action);
+    $('a#melikes').click(you_action);
   }
 
   var make_things = function(data) {
@@ -406,8 +416,8 @@ Likeometer = function () {
   }
 
   var you_action = function() {
-    set_status_line("Here's what you like");
-    switch_page("#yourlikes");
+    set_status_line("Here's what you like grouped by category.");
+    switch_page("#melikes");
   }
 
   var common_action = function() {
@@ -426,7 +436,7 @@ Likeometer = function () {
     $("div.loading").hide();
     $("div#about").hide();
     $("div#friendslikes").hide();
-    $("div#yourlikes").hide();
+    $("div#melikes").hide();
     $("div#common").hide();
 
     $("nav a").removeClass("here");
@@ -439,7 +449,7 @@ Likeometer = function () {
 
   var _collate = function(res) {
     //
-    // Collates friend likes by liked thing
+    // Collates friend likes by liked thing:
     // handles batches of input coming back async
     // build things and collikes arrays
     // sets processing to true when this is done
@@ -462,6 +472,11 @@ Likeometer = function () {
     for(var friend_id in res) {
       arrived.push(friend_id); 
       var flikes = res[friend_id].data;
+      likes[friend_id] = res[friend_id].data;
+
+			if (friend_id == self.uid) {
+				got_my_likes();
+			}
       set_status_line("Collated " + Object.size(collikes) + " things from " + arrived.length + " friends.");
       for (var j = 0; j < flikes.length; j++) {
         var thing_id = flikes[j].id;
@@ -593,11 +608,11 @@ Likeometer = function () {
       f.push(friends[i].uid);
       all_friends[ friends[i].uid] = friends[i].name;
     }
+		// add me to my set of frineds
     f.push(self.user.id);
 
     how_many_friends_i_have = Object.size(all_friends) ;
 
-    // DON'T JUST DO THIS -->  var fids = f.join(',');
     // Doesn't work for large result sets. You get a network error.  
     // So we need to chunk.
     var message = "Asking Facebook what your friends like. "
@@ -649,7 +664,11 @@ Likeometer = function () {
           _build(rows);
         });
     }
-    // - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - = 
+
+		// var my_likes = FB.api("/me/likes?access_token="+ self.token, got_my_likes);
+    
+		
+		// - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - = 
     return {
       init : init
     };
