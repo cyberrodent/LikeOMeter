@@ -416,8 +416,12 @@ Likeometer = function () {
   }
 
   var you_action = function() {
-    set_status_line("Here's what you like grouped by category.");
-    switch_page("#melikes");
+		$.get('/likeometer/tographite.php', { 
+				'key' : 'melikes',
+				'val' : 1
+			});
+
+		switch_page("#melikes");
   }
 
   var common_action = function() {
