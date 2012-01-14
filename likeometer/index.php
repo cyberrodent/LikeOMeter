@@ -35,13 +35,16 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 <body>
 <div id="debug"></div>
 
-<header>
+<header id="header">
 	<h1><img src="/images/lom.png" alt="logo" height="50" width="50" />
 	Like-o-Meter</h1>
+<fb:like send="true" width="600" show_faces="false" href="https://www.facebook.com/the.real.like.o.meter"></fb:like>
 	<nav>
 		<a id="friendslikes">Friends' Likes</a>
 		<a id="about">About the Like-o-Meter</a>
 		<a id="share">Share</a>
+		<a target="_top" href="https://www.facebook.com/the.real.like.o.meter">Fan Page</a>
+
 	<!-- 
 		// these are for future features
 
@@ -49,6 +52,7 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 		<a id="common">Common Likes</a>
 	
 		-->
+
 	</nav>
 </header>
 
@@ -75,8 +79,8 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 		<li>Like-o-Meter is written almost entirely in Javascript.</li>
 		<li>If you like the Like-o-Meter please tell your friends.</li> 
 		<li>Thanks!</li>
-
 	</ul>
+
 	<div>
 		Here are my top 3:
 		<img src="/images/lom-explained.jpg" height="611" width="739" />

@@ -259,6 +259,7 @@ Likeometer = function () {
       // this would enable the "your likes" page
       $('nav a#yourlikes').click(you_action);
       $('nav a#share').click(announce_on_wall);
+			FB.XFBML.parse(document.getElementById("header"));
 
       $("nav").show();
       switch_page("#friendslikes");

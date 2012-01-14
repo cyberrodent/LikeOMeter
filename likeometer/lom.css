@@ -1,7 +1,7 @@
 /* css file for like-o-meter */
 
 body { 
-	padding:110px 0 0 0; 
+	padding:140px 0 0 0; 
 	margin:0;
   font-family:arial, helvetica; 
 }
@@ -11,7 +11,7 @@ header {
 	z-index:9999;
 	top:0;
 	left:0;
-	height:90px;
+	height:120px;
 	width:738px;
 	background:white;
 }
