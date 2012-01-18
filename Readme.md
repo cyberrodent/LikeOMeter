@@ -1,19 +1,18 @@
 Like-O-Meter
 ============
 
-This is a Facebook Canvas App that uses the Facebook Javascript SDK
-
+This is a [Facebook Canvas
+App](https://developers.facebook.com/docs/guides/canvas/) that uses the
+[Facebook Javascript SDK](https://developers.facebook.com/docs/reference/javascript/)
 
 Set the Canvas URL to your.herokuapp.com/likeometer/ 
 You can use that URL for mobile web URL as well - it just runs likeometer smaller.
 
 It assumes a php enabled server as it uses php to grab facebook app id from the apache environment, as described in the heroku VirtualHost below. 
 
-You can see more about the like-o-meter including some screenshots here:
-https://www.facebook.com/the.real.like.o.meter
+You can see more about the like-o-meter including some screenshots [here](https://www.facebook.com/the.real.like.o.meter).
 
-You can try the like-o-meter on facebook here: https://apps.facebook.com/like_o_meter/ (facebook
-account required)
+You can try the like-o-meter on [Facebook](https://apps.facebook.com/like_o_meter/) (facebook account required)
 
 
 Run locally
