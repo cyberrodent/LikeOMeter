@@ -1,10 +1,10 @@
 <?php
 
-if (!empty(getenv("GRAPHITE_HOST"))) {
-
 	$gh = getenv('GRAPHITE_HOST');
 	$gp = getenv('GRAPHITE_PORT');
 	$gk = getenv('GRAPHITE_KEY');
+
+if (!empty($gh)) {
 
 	if (array_key_exists('key', $_GET) &&  array_key_exists('val', $_GET)) { 
 		$key= $_GET['key'];
