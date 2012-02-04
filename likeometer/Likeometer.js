@@ -30,7 +30,7 @@ Likeometer = function () {
   var like_counts = {}; // keyed by thing_id, how many friends like it
   var all_friends = []; // keyed by id, the name of each friend
   var arrived = []; // track which users like data has arrived 
-  var like_count_keys = new Array(); // sorted array of the thing_ids like
+  var like_count_keys = []; // sorted array of the thing_ids like
   var started = false; // rm? // if the app has been started - presumably to prevent restarting the app but as yet unimplemented
   var processed = false;  // keep certain functions from rendering if processing is not yet complete
   var rThings = {}; // thing data needed to render a row of liked thing
@@ -41,56 +41,63 @@ Likeometer = function () {
   var count_likes = function() {
     var count = 0;
     for (var i in likes) {
-      count++;
+        if (likes.hasOwnProperty(i)) { 
+            count++;
+        }
     }
     return count;
-  }
+  };
   var compare_collikes = function(a, b) {
-    if (collikes[a].length > collikes[b].length ) {
+    if (collikes[a].length > collikes[b].length) {
       return -1;
     } else if (collikes[a].length === collikes[b].length) {
       return 0;
     } else { 
       return 1;
     }
-  }
+  };
   var do_common = function() {
+    var n,i; 
     // This finds a list of friends who have likes in common with you
     var my_likes = likes[self.uid];
     var my_like_ids = [];
     var commons = {};
-    for (var i=0; i < my_likes.length; i++) {
+    for (i = 0; i < my_likes.length; i++) {
       my_like_ids.push(my_likes[i].id);
     }
     set_status_line("Initializing: Finding common interests");
 
-    for (var n in all_friends) {
-      if (n === self.uid) {
-        continue;
-      }
-      var friend_likes = likes[n];
-      for(var i=0; i < friend_likes.length; i++) {
-        if (my_like_ids.indexOf(friend_likes[i].id) > 0) {
-          if (typeof(commons[friend_likes[i].id]) === "undefined") {
-            commons[friend_likes[i].id] = [n];
-          } else { 
-            commons[friend_likes[i].id].push(n);
-          }
+    for (n in all_friends) {
+        if (all_friends.hasOwnProperty(n)) {
+            if (n === self.uid) {
+                continue;
+            }
+            var friend_likes = likes[n];
+            for(i = 0; i < friend_likes.length; i = i + 1) {
+                if (my_like_ids.indexOf(friend_likes[i].id) > 0) {
+                    if (typeof(commons[friend_likes[i].id]) === "undefined") {
+                        commons[friend_likes[i].id] = [n];
+                    } else { 
+                        commons[friend_likes[i].id].push(n);
+                    }
+                }
+            }
         }
-      }
     }
-    for (var t in commons) { 
-      $("#commonlikes").append("<div>"+ things[ t ].name + " Liked by you and these "+ commons[t].length + " friends.</div>");
+    for (var t in commons) {
+        if (commons.hasOwnProperty(t)) {
+            $("#commonlikes").append("<div>"+ things[ t ].name + " Liked by you and these "+ commons[t].length + " friends.</div>");
+        }
     }
-  }
+  };
 
   var find_thing_with_two = function() {
     // this is used as part of creating the message to write on the users wall
-    var thing = 0;
+    var thing = 0, i;
     for(i in like_counts) {
       if (like_counts[i] === 2) {
         thing = i;
-        break
+        break;
       }
     }
     if (thing === 0) {
@@ -98,7 +105,7 @@ Likeometer = function () {
     } else { 
       return thing;
     }
-  }
+  };
   var if_not_already_announced = function(callback, param) {
     // look on my own wall and see if likeometer published recently
     // if no then call callback with params 
@@ -106,7 +113,7 @@ Likeometer = function () {
 
     FB.api("/me/feed", function(res) { 
       if (typeof(res.data) === 'object') {
-        for(var i=0; i < res.data.length; i++) {
+        for (var i=0; i < res.data.length; i++) {
           try { 
             if (res.data[i].application.namespace === client_name) { 
               //"ns_enilemit_local") {
@@ -134,43 +141,39 @@ Likeometer = function () {
       // " like_counts[second.id] + " like 
       var o = "More of my friends like " +first.name +", "+
             second.name + " and " + third.name + " than anything else. "+
-            "But only 2 of them like \"" + rand.name + "\"." 
+            "But only 2 of them like \"" + rand.name + "\".";
     var params = {};
-    params['message']  = o;
-    params['name'] = 'Like-o-Meter';
-    params['description'] = 'What your friends like';
-    params['link'] = 'https://apps.facebook.com/like_o_meter/';
+    params.message = o;
+    params.name    = 'Like-o-Meter';
+    params.description = 'What your friends like';
+    params.link = 'https://apps.facebook.com/like_o_meter/';
     // params['picture'] = '';
     // params['caption'] = '';
 
-        var use_ui = 1;
+    var use_ui = 1;
 
-        if (use_ui === 1) { 
+    if (use_ui === 1) {
 
-            // calling the API ...
-            var obj = {
-                method: 'feed',
-                link: 'https://apps.facebook.com/like_o_meter/',
-                // FIXME: 
-                // picture: 'https://enilemit.home/images/lom.png',
-                picture: 'https://young-autumn-6232.herokuapp.com/images/lom.png',
-                name: 'Like-O-Meter',
-                caption: o,
-                description: 'See what stuff your friends like.'
-            };
+        // calling the API ...
+        var obj = {
+            method: 'feed',
+            link: 'https://apps.facebook.com/like_o_meter/',
+            // FIXME: 
+            // picture: 'https://enilemit.home/images/lom.png',
+            picture: 'https://young-autumn-6232.herokuapp.com/images/lom.png',
+            name: 'Like-O-Meter',
+            caption: o,
+            description: 'See what stuff your friends like.'
+        };
 
-            function callback(response) {
-                // document.getElementById('msg').innerHTML = "Post ID: " + response['post_id'];
-								$.get('/likeometer/tographite.php', { 
-										'key' : 'share_on_wall',
-										'val' :  1
-									});
+        FB.ui(obj,  function (response) {
+            $.get('/likeometer/tographite.php', { 
+                'key' : 'share_on_wall',
+                'val' :  1
+            });
+        });
 
-            }
-
-            FB.ui(obj, callback);
-
-        } else { 
+    } else { 
             // use graph api
             FB.api('/me/feed', 'post', params, function(res) {
                 if (!res || res.error) {
@@ -181,7 +184,7 @@ Likeometer = function () {
                 }
             });
         }
-  }
+  };
   var show_top_likes = function () {
     // shows a set of the users friends top likes
     // the size of the set is determinied by scroll_point
@@ -209,15 +212,14 @@ Likeometer = function () {
       if (collikes[like_count_keys[i]].length > 1) { 
         var thing_id = like_count_keys[i];
         var dataObject = {};
-        dataObject['thing_id'] = thing_id;
-        dataObject['token'] = self.token;
-        dataObject['how_many_friends'] = collikes[thing_id].length;
-        dataObject['things_name'] = things[thing_id].name;
-        dataObject['things_category'] = things[thing_id].category;
-        dataObject['aLikers'] = collikes[thing_id];
-        dataObject['friend_name'] = null;
-        dataObject['link'] = '';
-        dataObject['link'] = '';
+        dataObject.thing_id = thing_id;
+        dataObject.token = self.token;
+        dataObject.how_many_friends = collikes[thing_id].length;
+        dataObject.things_name = things[thing_id].name;
+        dataObject.things_category = things[thing_id].category;
+        dataObject.aLikers = collikes[thing_id];
+        dataObject.friend_name = null;
+        dataObject.link = '';
 
         // stash it where a callback and template can access it
         rThings[thing_id] = dataObject; 
@@ -299,7 +301,7 @@ Likeometer = function () {
               var data = {
                   'doc_height' : doc_h,
           'scrolltop' : $(window).scrollTop() + $(window).height(),
-          'scroll_bar_height' : (st + win_h + win_h > doc_h) ? 'LOAD NOW!' : '',
+          'scroll_bar_height' : (st + win_h + win_h > doc_h) ? 'LOAD NOW!' : ''
           // debug info if you want it
           //'crap' : " DocH: " + $(document).height()  + 
           //  " WinH:" + $(window).height() + " ~~~>> " + 
@@ -333,7 +335,7 @@ Likeometer = function () {
       $("#debug").append("<p>S" + $(window).scrollTop() + "</p>");
     }
 
-  }
+  };
 
   var got_my_likes = function() {
     //
@@ -341,12 +343,12 @@ Likeometer = function () {
     //   currently beta in the application
     //
 
-		$("div#melikes").replaceWith($("<div id='melikes'>Here are the things you like grouped by category.</div>"))
+    $("div#melikes").replaceWith($("<div id='melikes'>Here are the things you like grouped by category.</div>"));
     var my_likes = likes[self.uid];
 
 
     var my_cats = {};
-    var my_cat_keys = new Array();
+    var my_cat_keys = [];
     var sort_cat_counts = function(a,b) {
       if (my_cats[a].length < my_cats[b].length) {
         return 1;
@@ -355,7 +357,7 @@ Likeometer = function () {
       } else { 
         return -1;
       }
-    }
+    };
 
     for (var like in my_likes) {
       if (typeof(my_cats[my_likes[like].category]) === 'undefined') {
@@ -370,35 +372,41 @@ Likeometer = function () {
     my_cat_keys.sort(sort_cat_counts);
 
     for (var i in my_cat_keys) {
-      var key = my_cat_keys[i];
-      var o = "<div><h3>" + key + "</h3>";
-      var how_many =  my_cats[key].length;
-      o += "You like " + how_many + " things from \"" + key + "\"<br />";
+        if (my_cat_keys.hasOwnPropery(i)) {
+            var key = my_cat_keys[i];
+            var o = "<div><h3>" + key + "</h3>";
+            var how_many =  my_cats[key].length;
+            o += "You like " + how_many + " things from \"" + key + "\"<br />";
 
-      for (var j in my_cats[key]) {
-       var thing_id = my_cats[key][j];
-			 var thing_name = (typeof things[thing_id] !== 'undefined') ? things[thing_id].name : 'huh';
-			 var tpl_data = { 
-				'token' : self.token,
-				'thing_id' : thing_id,
-				'thing_name' : thing_name
-			 };
-			 o += tmpl("my_cat_tpl", tpl_data);
-      }
-			
-		
-      o += "</div>";
+            for (var j in my_cats[key]) {
+                if (my_cats[key].hasOwnProperty(j)) {
+                    var thing_id = my_cats[key][j];
+                    var thing_name = (typeof things[thing_id] !== 'undefined') ? things[thing_id].name : 'huh';
+                    var tpl_data = { 
+                        'token' : self.token,
+                        'thing_id' : thing_id,
+                        'thing_name' : thing_name
+                    };
+                    o += tmpl("my_cat_tpl", tpl_data);
+                }
+            }
 
-      $("div#melikes").append(o);
+
+            o += "</div>";
+
+            $("div#melikes").append(o);
+        }
     }
     $('a#melikes').click(you_action);
-  }
+  };
 
   var make_things = function(data) {
     for (var i in data) {
-      things[data[i].id] = data[i];
+        if (data.hasOwnProperty(i)) {
+          things[data[i].id] = data[i];
+      }
     }
-  }
+  };
 
   //
   // these "*_action" functions handle what "page"
@@ -408,12 +416,12 @@ Likeometer = function () {
     var uid = self.uid;
     set_status_line("What your friend's like");
     switch_page("#friendslikes");  
-  }
+  };
 
   var home_action = function() {
     switch_page("#about");
     set_status_line("Welcome");
-  }
+  };
 
   var you_action = function() {
 		$.get('/likeometer/tographite.php', { 
@@ -422,19 +430,19 @@ Likeometer = function () {
 			});
 
 		switch_page("#melikes");
-  }
+  };
 
   var common_action = function() {
     set_status_line("What you and your friends have in common");
     switch_page("#common");
-  }
+  };
 
 
 
 
   var set_status_line = function(message) {
     $("#statusline").text(message);
-  }
+  };
 
   var switch_page = function(to_show){
     $("div.loading").hide();
@@ -449,7 +457,7 @@ Likeometer = function () {
       $('div'+to_show).show();
       $("nav").find(to_show).addClass("here");  
     }
-  }
+  };
 
   var _collate = function(res) {
     //
@@ -523,7 +531,7 @@ Likeometer = function () {
     }
     var max = 0;
     var dist = {};
-    for (var i= like_count_lengths.length; i >= 0; i--) {
+    for (i= like_count_lengths.length; i >= 0; i--) {
       if (like_count_lengths[i] > max) {
         max = like_count_lengths[i];
       }
@@ -533,8 +541,8 @@ Likeometer = function () {
         dist[ like_count_lengths[i]]++;
       }
     }
-    var DIST = []
-    for(di in dist) {
+    var DIST = [];
+    for(var di in dist) {
       if (di !== 'undefined') { 
         DIST.push( { 'dx': 1 , 'x' : dist[di] , 'y' : di });  
       }
@@ -549,7 +557,7 @@ Likeometer = function () {
     $("div#friendslikes").append("<div id='vis'></div>");
     createLayout(like_count_lengths, like_count_lengths.length, 1+max);  
 
-  }
+  };
   var createLayout = function(data, points, max) {
     // part of the histogram
     var w = 620,
@@ -565,9 +573,9 @@ Likeometer = function () {
       vis.add(pv.Bar)
         .data(bins)
         .bottom(0)
-        .left(function(d){return x(d.x)   })
-        .width(function(d){return x(d.dx) })
-        .height(function(d){return y(d.y)})
+        .left(function(d){return x(d.x)  ; })
+        .width(function(d){return x(d.dx); })
+        .height(function(d){return y(d.y);})
         .fillStyle("#f36")
         .strokeStyle("rgba(255,255,255, 1)")
         .lineWidth(1)
@@ -596,7 +604,7 @@ Likeometer = function () {
         vis.render();
 
 
-  }
+  };
 
   var _build = function(res) {
     // gets the list of friends that kicks off the whole show
@@ -619,7 +627,7 @@ Likeometer = function () {
 
     // Doesn't work for large result sets. You get a network error.  
     // So we need to chunk.
-    var message = "Asking Facebook what your friends like. "
+    var message = "Asking Facebook what your friends like. ";
     set_status_line(message);
 
     var chunk_size = 8; // how many friend likes to ask for in a batch?
@@ -631,12 +639,12 @@ Likeometer = function () {
       }
       c++;
       var chunk = f.splice(0,chunk_size);
-      var fids = chunk.join(','); // fid ~ "Friends' ids"
+      fids = chunk.join(','); // fid ~ "Friends' ids"
       FB.api("/likes?ids="+fids, function(res) {
           _collate(res);
         });  
     }
-  }
+  };
 
   var init = function (token, uid) {
     // set_status_line("Hello.  We're just starting");
@@ -653,7 +661,7 @@ Likeometer = function () {
           _init(token, uid);
         });  
     }
-  }
+  };
   var _init = function (token, uid) {
     self.token = token;
     self.uid = uid;
@@ -667,13 +675,13 @@ Likeometer = function () {
       friends_id.wait(function(rows){
           _build(rows);
         });
-    }
+    };
 
-		// var my_likes = FB.api("/me/likes?access_token="+ self.token, got_my_likes);
+    // var my_likes = FB.api("/me/likes?access_token="+ self.token, got_my_likes);
     
 		
-		// - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - = 
+    // - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - =  - = 
     return {
       init : init
     };
-  }
+  };
