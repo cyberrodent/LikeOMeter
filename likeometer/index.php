@@ -11,6 +11,10 @@
  */
 $FBSECRET = getenv("FACEBOOK_SECRET");
 $YOUR_APP_ID = getenv("FACEBOOK_APP_ID");
+$gh = getenv('GRAPHITE_HOST');
+$gp = getenv('GRAPHITE_PORT');
+$gk = getenv('GRAPHITE_KEY');
+
 
 if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 	// handles dev and production setup
@@ -169,10 +173,10 @@ if ($_SERVER['HTTP_HOST'] == "enilemit.home")  {
 </html><?php
 
  // hit graphite 
-if ("enilemit.home" !== $_SERVER['SERVER_NAME']) {
+if (!empty($gh)) {
 	$errno = $errstr = null;
-	$fp = fsockopen("home.cyberrodent.com", 20003, $errno, $errstr, 3);
+	$fp = fsockopen($gh, $gp, $errno, $errstr, 3);
 	if ($fp) { 
-		fwrite($fp, "likeometer.view 1 ". time() . "\n"); fclose($fp);
+		fwrite($fp, "$gk.view 1 ". time() . "\n"); fclose($fp);
 	}
 }
