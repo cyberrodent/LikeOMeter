@@ -73,7 +73,7 @@ Object.size = function(obj) {
 
 
 var perms_needed =	'read_stream,'+
-	// 'publish_stream,'+
+	'publish_actions,'+
 	// 'email,'+
 	'user_likes,'+
 	'friends_likes';
@@ -123,7 +123,7 @@ $(function(){
 				perms_needed + "&perms=" + perms_needed + "&client_id=" + 
 				client_id + "&redirect_uri=https://apps.facebook.com/"+client_name +"/";
 
-			var fql_confirm_perms = 'SELECT friends_likes,user_likes,publish_stream FROM permissions WHERE uid=me()';
+			var fql_confirm_perms = 'SELECT friends_likes,user_likes,publish_actions FROM permissions WHERE uid=me()';
 
 			var _to_login = function() {
 				top.location.href=oauth_url;
@@ -133,6 +133,7 @@ $(function(){
 				// for perm in perms_needed ??
 				if (resp[0]['friends_likes'] != 1){_to_login();}
 				if (resp[0]['user_likes'] != 1){_to_login();}
+				// if (resp[0]['publish_actions'] != 1){_to_login();}
 				// if (resp[0]['publish_stream'] != 1){_to_login();}
 
 				LOM.init(response.authResponse.accessToken, 
@@ -146,7 +147,7 @@ $(function(){
 					} else { // User not logged in.
 						_to_login();		
 					}
-				}, {scope: 'friends_likes,user_likes'});
+				}, {scope: 'friends_likes,user_likes,publish_actions'});
 		}; 
 		// end fbAsyncInit 
 
