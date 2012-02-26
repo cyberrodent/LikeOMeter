@@ -336,21 +336,12 @@ var Likeometer = function () {
                         'key' : 'newfound_like',
                         'val' : 1
                     });
-//                    console.log('edge_create');
-//                    console.log(response);
-                    $.post('https://graph.facebook.com/me/like_o_meter:discover', {'access_token' : self.token, 'profile' : response}, function (res) {
-//                            console.log('discovered');
-//                            console.log(res);
+
+                    // write to the open graph when user finds a new like
+                    params = {'access_token' : self.token, 'profile' : response};
+                    $.post('https://graph.facebook.com/me/like_o_meter:discover', params, function (res) {
+                        $.noop();
                     });
-                    // write to the open graph
-                    // user discovered like
-                    // curl -F 'access_token=AAADlCZA0zbfkBALm69ZB3ZCmdr8iDsR5SZCmsL3ZAadh2lVQ6vCB7Y8ZCdKPXZBpjxTpYsiPsYvn3vWcOEMjfOqwRsoVROsC9fIBQvDaaftUgZDZD' \
-                    //     -F 'like=http://samples.ogp.me/337671356275578' \
-                    //        'https://graph.facebook.com/me/like_o_meter:discover'
-
-
-
-
 
                 });
                 FB.Event.subscribe('edge.remove', function (response) {
