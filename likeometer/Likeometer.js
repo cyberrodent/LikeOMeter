@@ -65,14 +65,16 @@ var Likeometer = function () {
         },
 
         compare_collikes = function (a, b) {
+            var ret = null;
             // sorting function to sort things by how many friends like them
             if (collikes[a].length > collikes[b].length) {
-                return -1;
+                ret = -1;
             } else if (collikes[a].length === collikes[b].length) {
-                return 0;
+                ret = 0;
             } else {
-                return 1;
+                ret = 1;
             }
+            return ret;
         },
 
         do_common = function () {
@@ -112,7 +114,7 @@ var Likeometer = function () {
         find_thing_with_two = function () {
             // this is used as part of creating the message to write on the users wall
             // it picks a random thing that exactly 2 of your friends like
-            var thing = 0, i;
+            var thing = 0, i, ret;
             for (i in like_counts) {
                 if (like_counts[i] === 2) {
                     thing = i;
@@ -120,10 +122,11 @@ var Likeometer = function () {
                 }
             }
             if (thing === 0) {
-                return like_counts[Math.floor(Math.random() * like_counts.length)];
+                ret = like_counts[Math.floor(Math.random() * like_counts.length)];
             } else {
-                return thing;
+                ret = thing;
             }
+            return ret;
         },
 
         if_not_already_announced = function (callback, param) {
@@ -427,13 +430,15 @@ var Likeometer = function () {
             my_cats = {};
             my_cat_keys = [];
             sort_cat_counts = function (a, b) {
+                var ret = null;
                 if (my_cats[a].length < my_cats[b].length) {
-                    return 1;
+                    ret = 1;
                 } else if (my_cats[a].length ===  my_cats[b].length) {
-                    return 0;
+                    ret = 0;
                 } else {
-                    return -1;
+                    ret = -1;
                 }
+                return ret;
             };
             for (like in my_likes) {
                 if (my_likes.hasOwnProperty(like)) {
