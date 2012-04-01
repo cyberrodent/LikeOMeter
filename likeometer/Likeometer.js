@@ -341,7 +341,7 @@ var Likeometer = function () {
                     });
 
                     // write to the open graph when user finds a new like
-                    params = {'access_token' : self.token, 'profile' : response};
+                    params = {'access_token' : self.token, 'website' : response};
                     $.post('https://graph.facebook.com/me/like_o_meter:discover', params, function (res) {
                         $.noop();
                     });
