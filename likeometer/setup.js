@@ -13,12 +13,12 @@
 // //////////////////////////////////////////////////////////////
 
 
-			var client_id = '251829454859769';
-			var client_name = "like_o_meter";
+var client_id = '251829454859769';
+var client_name = "like_o_meter";
 
-			// FIXME: HARDCODED DEV ENVIRONMENT SWAP
-			// client_id = '260337734005390'; // local
-			// client_name = 'ns_enilemit_local';
+// FIXME: HARDCODED DEV ENVIRONMENT SWAP
+// client_id = '260337734005390'; // local
+// client_name = 'ns_enilemit_local';
 
 
 
@@ -79,8 +79,7 @@ var perms_needed =	'read_stream,'+
 	'friends_likes';
 
 
-// this is attached to the "fix permission errors button on the about
-// page"
+// this is attached to the "fix permission errors button on the about page"
 FBLogin = function() {
   FB.login(function(response) {
 
@@ -105,15 +104,19 @@ FBLogin = function() {
 
 // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  
 $(function(){
+        // use this to pass around our auth response
+        var auth_response;
+
 		window.fbAsyncInit = function() {
+
 			FB.init({
-					appId      : '<?php echo $YOUR_APP_ID ?>', // App ID
-					channelURL : '/likeometer/channel.php', // Channel File
-					status     : true, // check login status
-					cookie     : true, // enable cookies to allow the server to access the session
-					oauth      : true, // enable OAuth 2.0
-					xfbml      : false // parse XFBML
-				});
+				appId      : '<?php echo $YOUR_APP_ID ?>', // App ID
+				channelURL : '/likeometer/channel.php', // Channel File
+				status     : true, // check login status
+				cookie     : true, // enable cookies to allow the server to access the session
+				oauth      : true, // enable OAuth 2.0
+				xfbml      : false // parse XFBML
+            });
 
 			// Additional initialization code here
 
@@ -136,13 +139,15 @@ $(function(){
 				// if (resp[0]['publish_actions'] != 1){_to_login();}
 				// if (resp[0]['publish_stream'] != 1){_to_login();}
 
-				LOM.init(response.authResponse.accessToken, 
-					response.authResponse.userID);
+				LOM.init(auth_response.authResponse.accessToken, 
+					auth_response.authResponse.userID);
 			};
 
 			// Check if we have enough permission to do this
 			FB.getLoginStatus(function(response) {
+
 					if (response.authResponse) { // user is logged in
+                        auth_response = response;
 						FB.api({ method: 'fql.query', query: fql_confirm_perms }, _check_perms);
 					} else { // User not logged in.
 						_to_login();		
